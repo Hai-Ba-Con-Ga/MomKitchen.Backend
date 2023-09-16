@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="Configuration\" />
+    <Folder Include="Service\Interface\" />
+    <Folder Include="Service\Implement\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MK.Infrastructure\MK.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
