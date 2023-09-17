@@ -9,6 +9,13 @@ namespace MK.API.Configuration
 {
     public static class DbContextsRegister
     {
+        public static void AddDbContexts(this IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseNpgsql(AppConfig.ConnectionStrings.DefaultConnection).UseSnakeCaseNamingConvention();
+            });
+        }
         public static void AddDbContexts(this ContainerBuilder builder)
         {
             //builder.RegisterType<ServiceMapper>().As<IMapper>().InstancePerLifetimeScope();.AddDbContext<ApplicationDbContext>(options =>

@@ -1,4 +1,6 @@
 
+using Autofac.Core;
+
 namespace MK.API
 {
     public class Program
@@ -13,11 +15,20 @@ namespace MK.API
             // Add services to the container.
             builder.ConfigureAutofacContainer();
 
+            builder.Services.AddDbContexts();
+
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            //builder.Services.AddVersionedApiExplorer(setup =>
+            //{
+            //    setup.GroupNameFormat = "'v'VVV";
+            //    setup.SubstituteApiVersionInUrl = true;
+            //});
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            //builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
 
             var app = builder.Build();
 

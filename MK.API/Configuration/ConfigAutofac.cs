@@ -24,7 +24,6 @@
             builder.RegisterMapster();
             //Register DbContext
             builder.AddDbContexts();
-
             base.Load(builder);
         }
     }

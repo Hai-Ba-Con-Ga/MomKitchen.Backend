@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace MK.Application.Repository
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
-        IGenericRepository<Account> AcccountRepository { get; }
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();

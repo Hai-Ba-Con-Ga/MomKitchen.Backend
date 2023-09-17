@@ -5,7 +5,7 @@ namespace MK.Infrastructure.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
     {
         protected readonly DbContext dbContext;
-        protected readonly DbSet<T> dbSet;
+        protected DbSet<T> dbSet;
         public GenericRepository(DbContext context)
         {
             dbContext = context;
@@ -204,5 +204,30 @@ namespace MK.Infrastructure.Repository
         //    }
         //    list = await query.Where(predicate).AsNoTracking().ToListAsync();
         //    return list;
+
+        #region Dispose
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                }
+                dbSet = null;
+            }
+            disposed = true;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        ~GenericRepository()
+        {
+            Dispose(false);
+        }
+
+        #endregion Dispose
     }
 }

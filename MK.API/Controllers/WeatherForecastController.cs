@@ -14,7 +14,10 @@ namespace BBS.API.Controllers
             _logger = logger;
             _weatherForecastService = weatherForecastService;
         }
-
+        /// <summary>
+        /// Get Wather forecast
+        /// </summary>
+        /// <returns></returns>
         [HttpGet(Name = "GetWeatherForecast")]
         public IActionResult Get()
         {

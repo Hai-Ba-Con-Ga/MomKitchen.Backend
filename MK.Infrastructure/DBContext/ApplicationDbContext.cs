@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore.Design;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +18,17 @@ namespace MK.Infrastructure.DBContext
         {
         }
 
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseNpgsql(AppConfig.ConnectionStrings.DefaultConnection)
                             .UseSnakeCaseNamingConvention();
-            
+            base.OnConfiguring(optionsBuilder);
         }
 
         #region DbSet
+       
         #endregion DbSet
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
