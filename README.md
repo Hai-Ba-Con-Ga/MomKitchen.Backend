@@ -1,5 +1,5 @@
-# BSS.Backend
-Source backend for Bike subscription service project
+# MK.Backend
+Source backend for MomKitchen project
 
 
 # Teachnologies
