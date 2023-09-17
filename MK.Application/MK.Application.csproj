@@ -9,12 +9,11 @@
   <ItemGroup>
     <Folder Include="Common\" />
     <Folder Include="Configuration\" />
-    <Folder Include="Service\Interface\" />
-    <Folder Include="Service\Implement\" />
+    <Folder Include="ApiHelper\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MK.Infrastructure\MK.Infrastructure.csproj" />
+    <ProjectReference Include="..\MK.Domain\MK.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-namespace BBS.API
+namespace MK.Domain.Common
 {
     public class WeatherForecast
     {

@@ -1,5 +1,5 @@
 
-namespace BBS.API
+namespace MK.API
 {
     public class Program
     {
@@ -7,9 +7,14 @@ namespace BBS.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            //Binding appsettings.json to AppConfig
+            builder.Configuration.SettingsBinding();
+
             // Add services to the container.
+            builder.ConfigureAutofacContainer();
 
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

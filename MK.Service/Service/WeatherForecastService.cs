@@ -1,0 +1,45 @@
+﻿
+
+using MK.API.Application.Repository;
+using MK.Domain.Common;
+using System.CodeDom;
+
+namespace MK.Service.Service
+{
+    public class WeatherForecastService : IWeatherForecastService
+    {
+
+        private static readonly string[] Summaries = new[]
+        {
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+
+        private readonly IMapper _mapper;
+        private readonly IGenericRepository<WeatherForecast> _weatherForecastRepository;
+
+        public WeatherForecastService(IMapper mapper, IGenericRepository<WeatherForecast> weatherForecastRepository)
+        {
+            _mapper = mapper;
+            _weatherForecastRepository = weatherForecastRepository;
+        }
+
+        public IEnumerable<WeatherForecast> GetWeatherForecast()
+        {
+            var weatherForecastList = new List<WeatherForecast>();
+
+            var weatherForecast = _mapper.Map<WeatherForecast>(new
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            });
+                
+            if (weatherForecast != null)
+            {
+                weatherForecastList.Add(weatherForecast);
+            }
+
+            return weatherForecastList;
+        }
+    }
+}

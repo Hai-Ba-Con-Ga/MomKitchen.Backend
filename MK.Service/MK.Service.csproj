@@ -7,13 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Mapster" Version="7.3.0" />
-		<PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
+		<PackageReference Include="Autofac" Version="7.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Dto\" />
+		<Folder Include="ApiHelper\" />
+		<Folder Include="Common\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MK.Infrastructure\MK.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>
