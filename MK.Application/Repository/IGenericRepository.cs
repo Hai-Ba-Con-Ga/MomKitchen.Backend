@@ -1,7 +1,7 @@
 ﻿
 namespace MK.API.Application.Repository
 {
-    public interface IGenericRepository<T> : IDisposable where T : class, new()
+    public interface IGenericRepository<T> : IDisposable where T : BaseEntity, new()
     {
         Task CreateAsync(T entity);
         Task<int> DeleteAsync(Func<T, bool> filter);

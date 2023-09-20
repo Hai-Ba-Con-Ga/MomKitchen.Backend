@@ -15,12 +15,11 @@ namespace MK.Service.Service
         };
 
         private readonly IMapper _mapper;
-        private readonly IGenericRepository<WeatherForecast> _weatherForecastRepository;
+        //private readonly IGenericRepository<WeatherForecast> _weatherForecastRepository;
 
-        public WeatherForecastService(IMapper mapper, IGenericRepository<WeatherForecast> weatherForecastRepository)
+        public WeatherForecastService(IMapper mapper)
         {
             _mapper = mapper;
-            _weatherForecastRepository = weatherForecastRepository;
         }
 
         public IEnumerable<WeatherForecast> GetWeatherForecast()

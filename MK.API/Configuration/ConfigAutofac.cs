@@ -1,4 +1,5 @@
-﻿namespace MK.API.Configuration
+﻿
+namespace MK.API.Configuration
 {
     public static class ConfigAutofac
     {
@@ -24,6 +25,8 @@
             builder.RegisterMapster();
             //Register DbContext
             builder.AddDbContexts();
+            //Register Repository
+            builder.RegisterRepository();
             base.Load(builder);
         }
     }
