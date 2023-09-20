@@ -18,18 +18,26 @@ namespace MK.Infrastructure.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task CreateAsync(T entity)
+        public async Task CreateAsync(T entity, bool isSaveChange = false)
         {
             await dbSet.AddAsync(entity);
+            if (isSaveChange)
+            {
+                await SaveChangesAsync().ConfigureAwait(false);
+            }
         }
         /// <summary>
         /// Add a list of entities to DbSet, need to call SaveChanges to save to database
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
-        public async Task CreateAsync(IEnumerable<T> entities)
+        public async Task CreateAsync(IEnumerable<T> entities, bool isSaveChange = false)
         {
             await dbSet.AddRangeAsync(entities);
+            if (isSaveChange)
+            {
+                await SaveChangesAsync().ConfigureAwait(false);
+            }
         }
         #endregion
 
@@ -39,27 +47,22 @@ namespace MK.Infrastructure.Repository
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public async Task<int> DeleteAsync(Func<T, bool> predicate)
+        public async Task<int> DeleteAsync(Expression<Func<T, bool>> predicate)
         {
-            return await dbSet.Where(predicate).AsQueryable().ExecuteDeleteAsync();
+            return await dbSet.Where(predicate)
+                                .ExecuteDeleteAsync()
+                                .ConfigureAwait(false);
         }
         /// <summary>
         /// Update IsDeleted to true by condition predicate without SaveChanges action
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<int> SoftDeleteAsync(Func<T, bool> predicate)
+        public async Task<int> SoftDeleteAsync(Expression<Func<T, bool>> predicate)
         {
-            //T _entity = await GetByIdAsync(id);
-            //if (_entity != null)
-            //{
-            //    _entity.is_deleted = true;
-            //    await UpdateAsync(_entity);
-            //}
-
             return await dbSet.Where(predicate)
-                                    .AsQueryable()
-                                    .ExecuteUpdateAsync(setter => setter.SetProperty(e => e.IsDeleted, false));
+                                .ExecuteUpdateAsync(setter => setter.SetProperty(e => e.IsDeleted, false))
+                                .ConfigureAwait(false);
         }
         #endregion Delete
 
@@ -68,9 +71,13 @@ namespace MK.Infrastructure.Repository
         ///  Change stated of entity to Modified (mark this entity will update), need to call SaveChanges to save to database
         /// </summary>
         /// <param name="entity"></param>
-        public void Update(T entity)
+        public async void Update(T entity, bool isSaveChange = false)
         {
             dbContext.Attach(entity).State = EntityState.Modified;
+            if (isSaveChange)
+            {
+                await SaveChangesAsync();
+            }
         }
         /// <summary>
         /// reposiopry.Update(a => a.Name = "ABC", setter => setter.SetProperty(i => i.Age, 18).SetProperty(i => i.Name = "CCC"))
@@ -99,7 +106,7 @@ namespace MK.Infrastructure.Repository
         /// <param name="predicate">can null</param>
         /// <param name="includes"></param>
         /// <returns></returns>
-        public async Task<T> GetById(Guid id, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[]? includes)
+        public async Task<T?> GetById(Guid id, Expression<Func<T, T>> selector, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[]? includes)
         {
             Expression<Func<T, bool>> isNotDeleteCondition = p => p.IsDeleted == false && p.Id == id;
 
@@ -119,7 +126,10 @@ namespace MK.Infrastructure.Repository
             else
             {
                 var query = dbSet.AsNoTracking().Where(predicate);
-                return await query.Includes(includes).SingleOrDefaultAsync();
+                return await query
+                            .Includes(includes)
+                            .Select(selector)
+                            .SingleOrDefaultAsync();
             }
         }
         /// <summary>
@@ -128,7 +138,7 @@ namespace MK.Infrastructure.Repository
         /// <param name="predicate"></param>
         /// <param name="includes"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> GetWithCondition(Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[]? includes)
+        public async Task<IEnumerable<T>> GetWithCondition(Expression<Func<T, T>> selector, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[]? includes)
         {
             Expression<Func<T, bool>> isNotDeleteCondition = p => p.IsDeleted == false;
 
@@ -149,7 +159,8 @@ namespace MK.Infrastructure.Repository
             {
                 var query = dbSet.AsNoTracking().Where(predicate);
 
-                return query.Includes(includes);
+                return query.Includes(includes)
+                            .Select(selector);
             }
         }
 

@@ -37,6 +37,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MK.Application\MK.Application.csproj" />
+		<ProjectReference Include="..\MK.Infrastructure\MK.Infrastructure.csproj" />
 		<ProjectReference Include="..\MK.Service\MK.Service.csproj" />
 	</ItemGroup>
 
