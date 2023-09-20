@@ -1,0 +1,33 @@
+version: 2.1
+
+jobs:
+  scan:
+    docker:
+      - image: circleci/node:14
+
+    steps:
+      - checkout
+
+      # Create a directory for SonarScanner and install it
+      - run:
+          name: Install SonarScanner
+          command: |
+            mkdir -p ~/.sonar
+            wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip -O ~/.sonar/sonar-scanner-cli-4.6.2.2472-linux.zip
+            unzip ~/.sonar/sonar-scanner-cli-4.6.2.2472-linux.zip -d ~/.sonar/
+            echo 'export PATH=$PATH:$HOME/.sonar/sonar-scanner-4.6.2.2472-linux/bin' >> $BASH_ENV
+            source $BASH_ENV
+
+      # Perform code analysis with SonarQube
+      - run:
+          name: Run SonarQube Analysis
+          command: |
+            sonar-scanner \
+              -Dsonar.login=$SONAR_TOKEN \
+              -Dsonar.host.url=$SONAR_HOST_URL
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - scan
