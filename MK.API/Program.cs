@@ -9,6 +9,13 @@ namespace MK.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+            {
+                var kestrelSection = context.Configuration.GetSection("Kestrel");
+
+                serverOptions.Configure(kestrelSection);
+            });
+
             //Binding appsettings.json to AppConfig
             builder.Configuration.SettingsBinding();
 
