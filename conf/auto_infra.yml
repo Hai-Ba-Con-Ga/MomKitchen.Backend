@@ -1,0 +1,62 @@
+---
+- name: Auto infra for ec2
+  hosts: 18.143.139.216  
+  become: yes  
+
+  tasks:
+    - name: Update package cache and upgrade packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Copy Nginx configuration file
+      copy:
+        src: ./nginx.conf 
+        dest: /etc/nginx/nginx.conf
+      notify:
+        - Restart Nginx
+
+    - name: Install Docker dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update package cache (for Docker)
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
