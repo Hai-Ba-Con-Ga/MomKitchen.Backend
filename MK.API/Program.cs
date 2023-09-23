@@ -12,7 +12,7 @@ namespace MK.API
             builder.WebHost.ConfigureKestrel((context, serverOptions) =>
             {
                 var kestrelSection = context.Configuration.GetSection("Kestrel");
-
+                    
                 serverOptions.Configure(kestrelSection);
             });
 
