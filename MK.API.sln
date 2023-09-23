@@ -5,6 +5,7 @@ VisualStudioVersion = 17.6.33927.249
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Note", "Note", "{9AECEE2E-5FAC-45C0-8EA5-93A6DBD2BB66}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		global.json = global.json
 		README.md = README.md
 	EndProjectSection
@@ -19,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK.Infrastructure", "MK.Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK.Domain", "MK.Domain\MK.Domain.csproj", "{FB53DD53-1E54-4CF5-8672-CAA5422687A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK.Service", "MK.Service\MK.Service.csproj", "{EEC94904-120C-4FB9-AA6B-3E39E0145783}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK.Service", "MK.Service\MK.Service.csproj", "{EEC94904-120C-4FB9-AA6B-3E39E0145783}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

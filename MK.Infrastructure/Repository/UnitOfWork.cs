@@ -14,7 +14,6 @@ namespace MK.Infrastructure.Repository
         private ApplicationDbContext _dbContext;
         private IDbContextTransaction _transaction;
 
-  
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
