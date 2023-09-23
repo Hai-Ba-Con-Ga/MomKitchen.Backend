@@ -47,6 +47,9 @@ namespace MK.Domain.Entity
         [InverseProperty("Kitchens")]
         public virtual ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
 
+        [InverseProperty("Kitchen")]
+        public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
+
 
     }
 }

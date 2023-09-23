@@ -31,5 +31,10 @@ namespace MK.Domain.Entity
         //many to many with dish
         [InverseProperty("Meals")]
         public virtual ICollection<Dish> Dishes { get; set; } = new List<Dish>();
+
+        //many to one with kitchen
+        [ForeignKey("KitchenId")]
+        [InverseProperty("Meals")]
+        public Kitchen Kitchen { get; set; } = null!;
     }
 }
