@@ -35,7 +35,6 @@ namespace MK.Infrastructure.DBContext
         public DbSet<Customer> Customers { get; set; }
 
         public DbSet<Dish> Dish { get; set; }
-        public DbSet<District> Districts { get; set; }
 
         public DbSet<Feedback> Feedbacks { get; set; }
 
@@ -51,13 +50,8 @@ namespace MK.Infrastructure.DBContext
 
         public DbSet<Promotion> Promotions { get; set; }
 
-        public DbSet<Province> Provinces { get; set; }
-
-        public DbSet<Voucher> Vouchers { get; set; }
-
-        public DbSet<Ward> Wards { get; set; }
-
         public DbSet<User> Users { get; set; }
+
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<Kitchen> Kitchens { get; set; }
