@@ -4,6 +4,7 @@ using MK.Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,34 +30,36 @@ namespace MK.Infrastructure.DBContext
         }
 
         #region DbSet
-        public DbSet<Area> Areas { get; set; }
-        public DbSet<Conversation> Conversations { get; set; }
-
-        public DbSet<Customer> Customers { get; set; }
-
-        public DbSet<Dish> Dish { get; set; }
-
-        public DbSet<Feedback> Feedbacks { get; set; }
-
-        public DbSet<FavouriteKitchen> FavouriteKitchens { get; set; }
-
-        public DbSet<Meal> Meals { get; set; }
-
-        public DbSet<Notification> Notifications { get; set; }
-
-        public DbSet<Order> Orders { get; set; }
-
-        public DbSet<OrderPayment> OrderPayments { get; set; }
-
-        public DbSet<Promotion> Promotions { get; set; }
 
         public DbSet<User> Users { get; set; }
 
         public DbSet<Role> Roles { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }
+
+        public DbSet<Feedback> Feedbacks { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderPayment> OrderPayments { get; set; }
+
+        public DbSet<PaymentType> PaymentTypes { get; set; }
+
+        public DbSet<Meal> Meals { get; set; }
+
+        public DbSet<Tray> Trays { get; set; }
+
+        public DbSet<Dish> Dish { get; set; }
+
         public DbSet<Kitchen> Kitchens { get; set; }
 
+        public DbSet<Area> Areas { get; set; }
 
+        public DbSet<Location> Locations { get; set; }
+ 
+        public DbSet<FavouriteKitchen> FavouriteKitchens { get; set; }
         #endregion DbSet
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -64,12 +67,177 @@ namespace MK.Infrastructure.DBContext
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
+            #region Config for Relationship
+            //config one to many for User and Role
+            modelBuilder.Entity<User>()
+                .HasOne(x => x.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(x => x.RoleId);
+
+            //config one to one for User and Customer
             modelBuilder.Entity<Customer>()
-                .Property(e => e.Status)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (CustomerStatus)Enum.Parse(typeof(CustomerStatus), v)
-                );
+                .HasOne(x => x.User)
+                .WithOne(r => r.Customer)
+                .HasForeignKey<Customer>(r => r.UserId);
+
+            //config one to one for User and Kitchen
+            modelBuilder.Entity<Kitchen>()
+                .HasOne(x => x.Owner)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey<Kitchen>(r => r.OwnerId);
+
+            //config one to many for Customer and FavouriteKitchen
+            modelBuilder.Entity<Customer>()
+                .HasMany(x => x.FavouriteKitchens)
+                .WithOne(r => r.Customer)
+                .HasForeignKey(x => x.CustomerId)
+                .IsRequired();
+
+            //config one to many for Kitchen and FavouriteKitchen
+            modelBuilder.Entity<Kitchen>()
+                .HasMany(x => x.FavoriteKitchens)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey(x => x.KitchenId)
+                .IsRequired();
+
+            //config one to one for kithen and location
+            modelBuilder.Entity<Kitchen>()
+                .HasOne(x => x.Location)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey<Kitchen>(r => r.LocationId)
+                .IsRequired();
+
+            //config one to many for Area and Kitchen
+            modelBuilder.Entity<Kitchen>()
+                .HasOne(x => x.Area)
+                .WithMany(r => r.Kitchens)
+                .HasForeignKey(x => x.AreaId)
+                .IsRequired();
+
+            //config one to one for Kitchen and location
+            modelBuilder.Entity<Kitchen>()
+                .HasOne(x => x.Location)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey<Kitchen>(r => r.LocationId)
+                .IsRequired();
+
+            //config one to one for Area and Location
+            modelBuilder.Entity<Area>()
+                .HasOne(x => x.North)
+                .WithOne(r => r.AreaAsNorth)
+                .HasForeignKey<Area>(r => r.NorthId)
+                .IsRequired();
+
+            modelBuilder.Entity<Area>()
+                .HasOne(x => x.East)
+                .WithOne(r => r.AreaAsEast)
+                .HasForeignKey<Area>(r => r.EastId)
+                .IsRequired();
+
+            modelBuilder.Entity<Area>()
+                .HasOne(x => x.South)
+                .WithOne(r => r.AreaAsSouth)
+                .HasForeignKey<Area>(r => r.SouthId)
+                .IsRequired();
+
+            modelBuilder.Entity<Area>()
+               .HasOne(x => x.West)
+               .WithOne(r => r.AreaAsWest)
+               .HasForeignKey<Area>(r => r.WestId)
+               .IsRequired();
+
+            //config one to many for Kitchen and Dish
+            modelBuilder.Entity<Kitchen>()
+                .HasMany(x => x.Dishes)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey(x => x.KitchenId)
+                .IsRequired();
+
+            //config one to many for Kitchen and Tray
+            modelBuilder.Entity<Kitchen>()
+                .HasMany(x => x.Trays)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey(x => x.KitchenId)
+                .IsRequired();
+
+            //config many to many for Dish and Tray
+            modelBuilder.Entity<Dish>()
+                .HasMany(x => x.Trays)
+                .WithMany(r => r.Dishies)
+                .UsingEntity(i => i.ToTable("dish_tray"));
+
+            //config one to many for tray and meal
+            modelBuilder.Entity<Tray>()
+                .HasMany(x => x.Meals)
+                .WithOne(r => r.Tray)
+                .HasForeignKey(x => x.TrayId);
+
+            //config one to many for Kitchen and Meal
+            modelBuilder.Entity<Kitchen>()
+                .HasMany(x => x.Meals)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey(x => x.KitchenId);
+
+            //config one to many for Customer and Order
+            modelBuilder.Entity<Customer>()
+                .HasMany(x => x.Orders)
+                .WithOne(r => r.Customer)
+                .HasForeignKey(x => x.CustomerId);
+
+            //config one to many for Meal and Order
+            modelBuilder.Entity<Meal>()
+                .HasMany(x => x.Orders)
+                .WithOne(r => r.Meal)
+                .HasForeignKey(x => x.MealId);
+
+            //config one to many for Order and OrderPayment
+            modelBuilder.Entity<Order>()
+                .HasMany(x => x.OrderPayments)
+                .WithOne(r => r.Order)
+                .HasForeignKey(x => x.OrderId);
+
+            //config one to many for PaymentType and OrderPayment
+            modelBuilder.Entity<PaymentType>()
+                .HasMany(x => x.OrderPayments)
+                .WithOne(r => r.PaymentType)
+                .HasForeignKey(x => x.PaymentTypeId);
+
+            //config one to one for Feedback and Order
+            modelBuilder.Entity<Order>()
+                .HasOne(x => x.Feedback)
+                .WithOne(r => r.Order)
+                .HasForeignKey<Feedback>(x => x.OrderId)
+                .IsRequired();
+            //config one to many for Customer and Feedback
+            modelBuilder.Entity<Customer>()
+                .HasMany(x => x.Feedbacks)
+                .WithOne(r => r.Customer)
+                .HasForeignKey(x => x.CustomerId)
+                .IsRequired();
+
+            #endregion Config for Relationship
+
+            #region Config for mapping data type 
+            //config for Notification status
+            modelBuilder.Entity<Notification>()
+               .Property(e => e.NotificationType)
+               .HasConversion(
+                   e => e.ToString(),
+                   e => (NotificationType)Enum.Parse(typeof(NotificationType), e));
+
+            modelBuilder.Entity<OrderPayment>()
+              .Property(e => e.Status)
+              .HasConversion(
+                  v => v.ToString(),
+                  v => (PaymentStatus)Enum.Parse(typeof(PaymentStatus), v)
+              );
+
+            modelBuilder.Entity<Customer>()
+               .Property(e => e.Status)
+               .HasConversion(
+                   v => v.ToString(),
+                   v => (CustomerStatus)Enum.Parse(typeof(CustomerStatus), v)
+               );
 
             modelBuilder.Entity<Dish>()
                 .Property(e => e.Status)
@@ -78,47 +246,7 @@ namespace MK.Infrastructure.DBContext
                     v => (DishStatus)Enum.Parse(typeof(DishStatus), v)
                 );
 
-            modelBuilder.Entity<Order>()
-                .Property(e => e.Status)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (OrderStatus)Enum.Parse(typeof(OrderStatus), v)
-                );
-
-            modelBuilder.Entity<OrderPayment>()
-                .Property(e => e.Status)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (PaymentStatus)Enum.Parse(typeof(PaymentStatus), v)
-                );
-
-            modelBuilder.Entity<Promotion>()
-                .Property(e => e.Status)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (PromotionStatus)Enum.Parse(typeof(PromotionStatus), v)
-                );
-
-            modelBuilder.Entity<Voucher>()
-                .Property(e => e.Status)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (VoucherStatus)Enum.Parse(typeof(VoucherStatus), v)
-                );
-
-            modelBuilder.Entity<Kitchen>()
-                .Property(e => e.Status)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (KitchenStatus)Enum.Parse(typeof(KitchenStatus), v)
-                );
-
-            modelBuilder.Entity<Notification>()
-                .Property(e => e.NotificationType)
-                .HasConversion(
-                    e => e.ToString(),
-                    e => (NotificationType)Enum.Parse(typeof(NotificationType), e)
-                );
+            #endregion Config for mapping data type 
         }
 
 

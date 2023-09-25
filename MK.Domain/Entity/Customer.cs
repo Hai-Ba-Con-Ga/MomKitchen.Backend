@@ -11,20 +11,13 @@ namespace MK.Domain.Entity
     [Table("customer")]
     public partial class Customer : BaseEntity
     {
-        [Column("point_wallet")]
-        public int PointWallet { get; set; }
-
-        [ForeignKey("UserId")]
-        [InverseProperty("Customer")]
+        public Guid UserId { get; set; }
         public virtual User User { get; set; } = null!;
 
         public CustomerStatus Status { get; set; }
 
         [InverseProperty("Customer")]
         public virtual ICollection<FavouriteKitchen> FavouriteKitchens { get; set; } = new List<FavouriteKitchen>();
-
-        [InverseProperty("Customer")]
-        public virtual ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
 
         [InverseProperty("Customer")]
         public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();

@@ -6,17 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MK.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initdb : Migration
+    public partial class InitDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "area",
+                name: "location",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    lat = table.Column<double>(type: "double precision", nullable: false),
+                    lng = table.Column<double>(type: "double precision", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -25,19 +26,18 @@ namespace MK.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_area", x => x.id);
+                    table.PrimaryKey("pk_location", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "dish",
+                name: "payment_type",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    price = table.Column<double>(type: "double precision", nullable: false),
-                    image_url = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    status = table.Column<string>(type: "text", nullable: false),
+                    provider = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -46,67 +46,7 @@ namespace MK.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_dish", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "meal",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    price = table.Column<double>(type: "double precision", nullable: false),
-                    service_from = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    service_to = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_meal", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "promotion",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    amount = table.Column<int>(type: "integer", nullable: false),
-                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    status = table.Column<string>(type: "text", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_promotion", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "province",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    no = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_province", x => x.id);
+                    table.PrimaryKey("pk_payment_type", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,7 +54,7 @@ namespace MK.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -127,62 +67,15 @@ namespace MK.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "area_meal",
-                columns: table => new
-                {
-                    areas_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    meals_id = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_area_meal", x => new { x.areas_id, x.meals_id });
-                    table.ForeignKey(
-                        name: "fk_area_meal_area_areas_id",
-                        column: x => x.areas_id,
-                        principalTable: "area",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_area_meal_meal_meals_id",
-                        column: x => x.meals_id,
-                        principalTable: "meal",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "dish_meal",
-                columns: table => new
-                {
-                    dishes_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    meals_id = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_dish_meal", x => new { x.dishes_id, x.meals_id });
-                    table.ForeignKey(
-                        name: "fk_dish_meal_dish_dishes_id",
-                        column: x => x.dishes_id,
-                        principalTable: "dish",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_dish_meal_meal_meals_id",
-                        column: x => x.meals_id,
-                        principalTable: "meal",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "voucher",
+                name: "area",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    code = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    discount = table.Column<double>(type: "double precision", nullable: false),
-                    status = table.Column<string>(type: "text", nullable: false),
-                    promotion_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    north_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    south_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    east_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    west_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -191,35 +84,29 @@ namespace MK.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_voucher", x => x.id);
+                    table.PrimaryKey("pk_area", x => x.id);
                     table.ForeignKey(
-                        name: "fk_voucher_promotion_promotion_id",
-                        column: x => x.promotion_id,
-                        principalTable: "promotion",
+                        name: "fk_area_location_east_id",
+                        column: x => x.east_id,
+                        principalTable: "location",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "district",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    province_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_district", x => x.id);
                     table.ForeignKey(
-                        name: "fk_district_province_province_id",
-                        column: x => x.province_id,
-                        principalTable: "province",
+                        name: "fk_area_location_north_id",
+                        column: x => x.north_id,
+                        principalTable: "location",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_area_location_south_id",
+                        column: x => x.south_id,
+                        principalTable: "location",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_area_location_west_id",
+                        column: x => x.west_id,
+                        principalTable: "location",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -234,8 +121,8 @@ namespace MK.Infrastructure.Migrations
                     phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     birthday = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     avatar_url = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    full_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    role_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    fullname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    role_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -249,36 +136,6 @@ namespace MK.Infrastructure.Migrations
                         name: "fk_user_role_role_id",
                         column: x => x.role_id,
                         principalTable: "role",
-                        principalColumn: "id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ward",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    district_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    province_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_ward", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_ward_district_district_id",
-                        column: x => x.district_id,
-                        principalTable: "district",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_ward_province_province_id",
-                        column: x => x.province_id,
-                        principalTable: "province",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -288,7 +145,6 @@ namespace MK.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    point_wallet = table.Column<int>(type: "integer", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     status = table.Column<string>(type: "text", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -309,13 +165,54 @@ namespace MK.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "kitchen",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    address = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
+                    location_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    owner_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    area_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_by = table.Column<string>(type: "text", nullable: true),
+                    updated_by = table.Column<string>(type: "text", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_kitchen", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_kitchen_area_area_id",
+                        column: x => x.area_id,
+                        principalTable: "area",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_kitchen_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_kitchen_user_owner_id",
+                        column: x => x.owner_id,
+                        principalTable: "user",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "notification",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    content = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    content = table.Column<string>(type: "text", nullable: false),
                     title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     notification_type = table.Column<string>(type: "text", nullable: false),
+                    sent_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     receiver_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -335,90 +232,15 @@ namespace MK.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "kitchen",
+                name: "dish",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    image_url = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    description = table.Column<string>(type: "text", nullable: true),
                     status = table.Column<string>(type: "text", nullable: false),
-                    owner_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    province_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    district_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ward_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_kitchen", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_kitchen_district_district_id",
-                        column: x => x.district_id,
-                        principalTable: "district",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_kitchen_province_province_id",
-                        column: x => x.province_id,
-                        principalTable: "province",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_kitchen_user_owner_id",
-                        column: x => x.owner_id,
-                        principalTable: "user",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_kitchen_ward_ward_id",
-                        column: x => x.ward_id,
-                        principalTable: "ward",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "order",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    total_price = table.Column<double>(type: "double precision", nullable: false),
-                    voucher_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    status = table.Column<string>(type: "text", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_order", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_order_customer_customer_id",
-                        column: x => x.customer_id,
-                        principalTable: "customer",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_order_voucher_voucher_id",
-                        column: x => x.voucher_id,
-                        principalTable: "voucher",
-                        principalColumn: "id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "conversation",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     kitchen_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    content = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -427,15 +249,9 @@ namespace MK.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_conversation", x => x.id);
+                    table.PrimaryKey("pk_dish", x => x.id);
                     table.ForeignKey(
-                        name: "fk_conversation_customer_customer_id",
-                        column: x => x.customer_id,
-                        principalTable: "customer",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_conversation_kitchen_kitchen_id",
+                        name: "fk_dish_kitchen_kitchen_id",
                         column: x => x.kitchen_id,
                         principalTable: "kitchen",
                         principalColumn: "id",
@@ -473,14 +289,32 @@ namespace MK.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "feedbacks",
+                name: "dish_tray",
+                columns: table => new
+                {
+                    dishies_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    trays_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_dish_tray", x => new { x.dishies_id, x.trays_id });
+                    table.ForeignKey(
+                        name: "fk_dish_tray_dish_dishies_id",
+                        column: x => x.dishies_id,
+                        principalTable: "dish",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "feedback",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    kitchen_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    content = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    content = table.Column<string>(type: "text", nullable: false),
                     rating = table.Column<int>(type: "integer", nullable: false),
+                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    order_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -489,15 +323,38 @@ namespace MK.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_feedbacks", x => x.id);
+                    table.PrimaryKey("pk_feedback", x => x.id);
                     table.ForeignKey(
-                        name: "fk_feedbacks_customer_customer_id",
+                        name: "fk_feedback_customer_customer_id",
                         column: x => x.customer_id,
                         principalTable: "customer",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "meal",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    price = table.Column<decimal>(type: "numeric", nullable: false),
+                    service_from = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    service_to = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    service_quantity = table.Column<int>(type: "integer", nullable: false),
+                    tray_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    kitchen_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_by = table.Column<string>(type: "text", nullable: true),
+                    updated_by = table.Column<string>(type: "text", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_meal", x => x.id);
                     table.ForeignKey(
-                        name: "fk_feedbacks_kitchen_kitchen_id",
+                        name: "fk_meal_kitchen_kitchen_id",
                         column: x => x.kitchen_id,
                         principalTable: "kitchen",
                         principalColumn: "id",
@@ -505,27 +362,70 @@ namespace MK.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "kitchen_promotion",
+                name: "order",
                 columns: table => new
                 {
-                    kitchens_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    promotions_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    total_price = table.Column<double>(type: "double precision", nullable: false),
+                    total_quantity = table.Column<int>(type: "integer", nullable: false),
+                    surcharge = table.Column<decimal>(type: "numeric", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
+                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    meal_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_by = table.Column<string>(type: "text", nullable: true),
+                    updated_by = table.Column<string>(type: "text", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_kitchen_promotion", x => new { x.kitchens_id, x.promotions_id });
+                    table.PrimaryKey("pk_order", x => x.id);
                     table.ForeignKey(
-                        name: "fk_kitchen_promotion_kitchen_kitchens_id",
-                        column: x => x.kitchens_id,
+                        name: "fk_order_customer_customer_id",
+                        column: x => x.customer_id,
+                        principalTable: "customer",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_order_meal_meal_id",
+                        column: x => x.meal_id,
+                        principalTable: "meal",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tray",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    img_url = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    price = table.Column<decimal>(type: "numeric", nullable: false),
+                    kitchen_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    meal_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_by = table.Column<string>(type: "text", nullable: true),
+                    updated_by = table.Column<string>(type: "text", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_tray", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_tray_kitchen_kitchen_id",
+                        column: x => x.kitchen_id,
                         principalTable: "kitchen",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_kitchen_promotion_promotion_promotions_id",
-                        column: x => x.promotions_id,
-                        principalTable: "promotion",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "fk_tray_meal_meal_id",
+                        column: x => x.meal_id,
+                        principalTable: "meal",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -533,9 +433,10 @@ namespace MK.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    order_id = table.Column<Guid>(type: "uuid", nullable: false),
                     status = table.Column<string>(type: "text", nullable: false),
+                    amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    order_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    payment_type_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -551,22 +452,37 @@ namespace MK.Infrastructure.Migrations
                         principalTable: "order",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_order_payment_payment_type_payment_type_id",
+                        column: x => x.payment_type_id,
+                        principalTable: "payment_type",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_area_meal_meals_id",
-                table: "area_meal",
-                column: "meals_id");
+                name: "ix_area_east_id",
+                table: "area",
+                column: "east_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_conversation_customer_id",
-                table: "conversation",
-                column: "customer_id");
+                name: "ix_area_north_id",
+                table: "area",
+                column: "north_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_conversation_kitchen_id",
-                table: "conversation",
-                column: "kitchen_id");
+                name: "ix_area_south_id",
+                table: "area",
+                column: "south_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_area_west_id",
+                table: "area",
+                column: "west_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_customer_user_id",
@@ -575,14 +491,14 @@ namespace MK.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_dish_meal_meals_id",
-                table: "dish_meal",
-                column: "meals_id");
+                name: "ix_dish_kitchen_id",
+                table: "dish",
+                column: "kitchen_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_district_province_id",
-                table: "district",
-                column: "province_id");
+                name: "ix_dish_tray_trays_id",
+                table: "dish_tray",
+                column: "trays_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_favourite_kitchen_customer_id",
@@ -595,39 +511,42 @@ namespace MK.Infrastructure.Migrations
                 column: "kitchen_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_feedbacks_customer_id",
-                table: "feedbacks",
+                name: "ix_feedback_customer_id",
+                table: "feedback",
                 column: "customer_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_feedbacks_kitchen_id",
-                table: "feedbacks",
-                column: "kitchen_id");
+                name: "ix_feedback_order_id",
+                table: "feedback",
+                column: "order_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_kitchen_district_id",
+                name: "ix_kitchen_area_id",
                 table: "kitchen",
-                column: "district_id");
+                column: "area_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_kitchen_location_id",
+                table: "kitchen",
+                column: "location_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_kitchen_owner_id",
                 table: "kitchen",
-                column: "owner_id");
+                column: "owner_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_kitchen_province_id",
-                table: "kitchen",
-                column: "province_id");
+                name: "ix_meal_kitchen_id",
+                table: "meal",
+                column: "kitchen_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_kitchen_ward_id",
-                table: "kitchen",
-                column: "ward_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_kitchen_promotion_promotions_id",
-                table: "kitchen_promotion",
-                column: "promotions_id");
+                name: "ix_meal_tray_id",
+                table: "meal",
+                column: "tray_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_notification_receiver_id",
@@ -640,57 +559,107 @@ namespace MK.Infrastructure.Migrations
                 column: "customer_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_order_voucher_id",
+                name: "ix_order_meal_id",
                 table: "order",
-                column: "voucher_id");
+                column: "meal_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_order_payment_order_id",
                 table: "order_payment",
-                column: "order_id",
-                unique: true);
+                column: "order_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_order_payment_payment_type_id",
+                table: "order_payment",
+                column: "payment_type_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tray_kitchen_id",
+                table: "tray",
+                column: "kitchen_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tray_meal_id",
+                table: "tray",
+                column: "meal_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_role_id",
                 table: "user",
                 column: "role_id");
 
-            migrationBuilder.CreateIndex(
-                name: "ix_voucher_promotion_id",
-                table: "voucher",
-                column: "promotion_id");
+            migrationBuilder.AddForeignKey(
+                name: "fk_dish_tray_tray_trays_id",
+                table: "dish_tray",
+                column: "trays_id",
+                principalTable: "tray",
+                principalColumn: "id",
+                onDelete: ReferentialAction.Cascade);
 
-            migrationBuilder.CreateIndex(
-                name: "ix_ward_district_id",
-                table: "ward",
-                column: "district_id");
+            migrationBuilder.AddForeignKey(
+                name: "fk_feedback_order_order_id",
+                table: "feedback",
+                column: "order_id",
+                principalTable: "order",
+                principalColumn: "id",
+                onDelete: ReferentialAction.Cascade);
 
-            migrationBuilder.CreateIndex(
-                name: "ix_ward_province_id",
-                table: "ward",
-                column: "province_id");
+            migrationBuilder.AddForeignKey(
+                name: "fk_meal_tray_tray_id",
+                table: "meal",
+                column: "tray_id",
+                principalTable: "tray",
+                principalColumn: "id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "area_meal");
+            migrationBuilder.DropForeignKey(
+                name: "fk_area_location_east_id",
+                table: "area");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_area_location_north_id",
+                table: "area");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_area_location_south_id",
+                table: "area");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_area_location_west_id",
+                table: "area");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_kitchen_location_location_id",
+                table: "kitchen");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_kitchen_user_owner_id",
+                table: "kitchen");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_meal_kitchen_kitchen_id",
+                table: "meal");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_tray_kitchen_kitchen_id",
+                table: "tray");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_meal_tray_tray_id",
+                table: "meal");
 
             migrationBuilder.DropTable(
-                name: "conversation");
-
-            migrationBuilder.DropTable(
-                name: "dish_meal");
+                name: "dish_tray");
 
             migrationBuilder.DropTable(
                 name: "favourite_kitchen");
 
             migrationBuilder.DropTable(
-                name: "feedbacks");
-
-            migrationBuilder.DropTable(
-                name: "kitchen_promotion");
+                name: "feedback");
 
             migrationBuilder.DropTable(
                 name: "notification");
@@ -699,43 +668,37 @@ namespace MK.Infrastructure.Migrations
                 name: "order_payment");
 
             migrationBuilder.DropTable(
-                name: "area");
-
-            migrationBuilder.DropTable(
                 name: "dish");
-
-            migrationBuilder.DropTable(
-                name: "meal");
-
-            migrationBuilder.DropTable(
-                name: "kitchen");
 
             migrationBuilder.DropTable(
                 name: "order");
 
             migrationBuilder.DropTable(
-                name: "ward");
+                name: "payment_type");
 
             migrationBuilder.DropTable(
                 name: "customer");
 
             migrationBuilder.DropTable(
-                name: "voucher");
-
-            migrationBuilder.DropTable(
-                name: "district");
+                name: "location");
 
             migrationBuilder.DropTable(
                 name: "user");
 
             migrationBuilder.DropTable(
-                name: "promotion");
-
-            migrationBuilder.DropTable(
-                name: "province");
-
-            migrationBuilder.DropTable(
                 name: "role");
+
+            migrationBuilder.DropTable(
+                name: "kitchen");
+
+            migrationBuilder.DropTable(
+                name: "area");
+
+            migrationBuilder.DropTable(
+                name: "tray");
+
+            migrationBuilder.DropTable(
+                name: "meal");
         }
     }
 }

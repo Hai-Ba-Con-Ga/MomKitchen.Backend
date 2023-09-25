@@ -13,7 +13,6 @@ namespace MK.Domain.Entity
     public partial class Notification : BaseEntity
     {
         [Column("content")]
-        [MaxLength(255)]
         public string Content { get; set; } = null!;
 
         [Column("title")]
@@ -22,8 +21,11 @@ namespace MK.Domain.Entity
 
         public NotificationType NotificationType { get; set; }
 
-        [ForeignKey("ReceiverId")]
-        [InverseProperty("Notifications")]
+        [Required]
+        public DateTime SentTime { get; set; }
+
+        [Required]
+        public Guid ReceiverId { get; set; }
         public virtual User Receiver { get; set; } = null!;
     }
 }

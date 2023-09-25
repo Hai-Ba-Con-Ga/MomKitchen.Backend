@@ -10,14 +10,10 @@ namespace MK.Domain.Entity
     [Table("favourite_kitchen")]
     public partial class FavouriteKitchen : BaseEntity
     {
-        [ForeignKey("CustomerId")]
-        [InverseProperty("FavouriteKitchens")]
+        public Guid CustomerId { get; set; }
         public virtual Customer Customer { get; set; } = null!;
 
-        [ForeignKey("KitchenId")]
-        //[InverseProperty("FavouriteKitchens")]
+        public Guid KitchenId { get; set; }
         public virtual Kitchen Kitchen { get; set; } = null!;
-
-
     }
 }

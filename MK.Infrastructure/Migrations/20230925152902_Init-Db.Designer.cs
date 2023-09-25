@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MK.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230923013028_init-db")]
-    partial class initdb
+    [Migration("20230925152902_Init-Db")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,61 +25,23 @@ namespace MK.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AreaMeal", b =>
+            modelBuilder.Entity("DishTray", b =>
                 {
-                    b.Property<Guid>("AreasId")
+                    b.Property<Guid>("DishiesId")
                         .HasColumnType("uuid")
-                        .HasColumnName("areas_id");
+                        .HasColumnName("dishies_id");
 
-                    b.Property<Guid>("MealsId")
+                    b.Property<Guid>("TraysId")
                         .HasColumnType("uuid")
-                        .HasColumnName("meals_id");
+                        .HasColumnName("trays_id");
 
-                    b.HasKey("AreasId", "MealsId")
-                        .HasName("pk_area_meal");
+                    b.HasKey("DishiesId", "TraysId")
+                        .HasName("pk_dish_tray");
 
-                    b.HasIndex("MealsId")
-                        .HasDatabaseName("ix_area_meal_meals_id");
+                    b.HasIndex("TraysId")
+                        .HasDatabaseName("ix_dish_tray_trays_id");
 
-                    b.ToTable("area_meal", (string)null);
-                });
-
-            modelBuilder.Entity("DishMeal", b =>
-                {
-                    b.Property<Guid>("DishesId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("dishes_id");
-
-                    b.Property<Guid>("MealsId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("meals_id");
-
-                    b.HasKey("DishesId", "MealsId")
-                        .HasName("pk_dish_meal");
-
-                    b.HasIndex("MealsId")
-                        .HasDatabaseName("ix_dish_meal_meals_id");
-
-                    b.ToTable("dish_meal", (string)null);
-                });
-
-            modelBuilder.Entity("KitchenPromotion", b =>
-                {
-                    b.Property<Guid>("KitchensId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("kitchens_id");
-
-                    b.Property<Guid>("PromotionsId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("promotions_id");
-
-                    b.HasKey("KitchensId", "PromotionsId")
-                        .HasName("pk_kitchen_promotion");
-
-                    b.HasIndex("PromotionsId")
-                        .HasDatabaseName("ix_kitchen_promotion_promotions_id");
-
-                    b.ToTable("kitchen_promotion", (string)null);
+                    b.ToTable("dish_tray", (string)null);
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Area", b =>
@@ -97,15 +59,27 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
+                    b.Property<Guid>("EastId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("east_id");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
                         .HasColumnName("name");
+
+                    b.Property<Guid>("NorthId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("north_id");
+
+                    b.Property<Guid>("SouthId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("south_id");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
@@ -114,64 +88,31 @@ namespace MK.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
+
+                    b.Property<Guid>("WestId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("west_id");
 
                     b.HasKey("Id")
                         .HasName("pk_area");
 
+                    b.HasIndex("EastId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_area_east_id");
+
+                    b.HasIndex("NorthId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_area_north_id");
+
+                    b.HasIndex("SouthId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_area_south_id");
+
+                    b.HasIndex("WestId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_area_west_id");
+
                     b.ToTable("area", (string)null);
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.Conversation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("content");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("customer_id");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<Guid>("KitchenId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("kitchen_id");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("updated_by");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_date");
-
-                    b.HasKey("Id")
-                        .HasName("pk_conversation");
-
-                    b.HasIndex("CustomerId")
-                        .HasDatabaseName("ix_conversation_customer_id");
-
-                    b.HasIndex("KitchenId")
-                        .HasDatabaseName("ix_conversation_kitchen_id");
-
-                    b.ToTable("conversation", (string)null);
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Customer", b =>
@@ -192,10 +133,6 @@ namespace MK.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
-
-                    b.Property<int>("PointWallet")
-                        .HasColumnType("integer")
-                        .HasColumnName("point_wallet");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -240,8 +177,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
+                        .HasColumnType("text")
                         .HasColumnName("description");
 
                     b.Property<string>("ImageUrl")
@@ -254,15 +190,15 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<Guid>("KitchenId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("kitchen_id");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision")
-                        .HasColumnName("price");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -280,53 +216,10 @@ namespace MK.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_dish");
 
+                    b.HasIndex("KitchenId")
+                        .HasDatabaseName("ix_dish_kitchen_id");
+
                     b.ToTable("dish", (string)null);
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.District", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
-
-                    b.Property<Guid>("ProvinceId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("province_id");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("updated_by");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_date");
-
-                    b.HasKey("Id")
-                        .HasName("pk_district");
-
-                    b.HasIndex("ProvinceId")
-                        .HasDatabaseName("ix_district_province_id");
-
-                    b.ToTable("district", (string)null);
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.FavouriteKitchen", b =>
@@ -385,8 +278,7 @@ namespace MK.Infrastructure.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
+                        .HasColumnType("text")
                         .HasColumnName("content");
 
                     b.Property<string>("CreatedBy")
@@ -405,9 +297,9 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<Guid>("KitchenId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uuid")
-                        .HasColumnName("kitchen_id");
+                        .HasColumnName("order_id");
 
                     b.Property<int>("Rating")
                         .HasColumnType("integer")
@@ -422,18 +314,91 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
-                        .HasName("pk_feedbacks");
+                        .HasName("pk_feedback");
 
                     b.HasIndex("CustomerId")
-                        .HasDatabaseName("ix_feedbacks_customer_id");
+                        .HasDatabaseName("ix_feedback_customer_id");
 
-                    b.HasIndex("KitchenId")
-                        .HasDatabaseName("ix_feedbacks_kitchen_id");
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_feedback_order_id");
 
-                    b.ToTable("feedbacks", (string)null);
+                    b.ToTable("feedback", (string)null);
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Kitchen", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("address");
+
+                    b.Property<Guid>("AreaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("area_id");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("location_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_id");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
+
+                    b.HasKey("Id")
+                        .HasName("pk_kitchen");
+
+                    b.HasIndex("AreaId")
+                        .HasDatabaseName("ix_kitchen_area_id");
+
+                    b.HasIndex("LocationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_kitchen_location_id");
+
+                    b.HasIndex("OwnerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_kitchen_owner_id");
+
+                    b.ToTable("kitchen", (string)null);
+                });
+
+            modelBuilder.Entity("MK.Domain.Entity.Location", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -448,32 +413,17 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
-                    b.Property<Guid>("DistrictId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("district_id");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
+                    b.Property<double>("Lat")
+                        .HasColumnType("double precision")
+                        .HasColumnName("lat");
 
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("owner_id");
-
-                    b.Property<Guid>("ProvinceId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("province_id");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("status");
+                    b.Property<double>("Lng")
+                        .HasColumnType("double precision")
+                        .HasColumnName("lng");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
@@ -483,26 +433,10 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
-                    b.Property<Guid>("WardId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("ward_id");
-
                     b.HasKey("Id")
-                        .HasName("pk_kitchen");
+                        .HasName("pk_location");
 
-                    b.HasIndex("DistrictId")
-                        .HasDatabaseName("ix_kitchen_district_id");
-
-                    b.HasIndex("OwnerId")
-                        .HasDatabaseName("ix_kitchen_owner_id");
-
-                    b.HasIndex("ProvinceId")
-                        .HasDatabaseName("ix_kitchen_province_id");
-
-                    b.HasIndex("WardId")
-                        .HasDatabaseName("ix_kitchen_ward_id");
-
-                    b.ToTable("kitchen", (string)null);
+                    b.ToTable("location", (string)null);
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Meal", b =>
@@ -524,23 +458,35 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<Guid>("KitchenId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("kitchen_id");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision")
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric")
                         .HasColumnName("price");
 
                     b.Property<DateTime>("ServiceFrom")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("service_from");
 
+                    b.Property<int>("ServiceQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("service_quantity");
+
                     b.Property<DateTime>("ServiceTo")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("service_to");
+
+                    b.Property<Guid>("TrayId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tray_id");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
@@ -552,6 +498,12 @@ namespace MK.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_meal");
+
+                    b.HasIndex("KitchenId")
+                        .HasDatabaseName("ix_meal_kitchen_id");
+
+                    b.HasIndex("TrayId")
+                        .HasDatabaseName("ix_meal_tray_id");
 
                     b.ToTable("meal", (string)null);
                 });
@@ -565,8 +517,7 @@ namespace MK.Infrastructure.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("text")
                         .HasColumnName("content");
 
                     b.Property<string>("CreatedBy")
@@ -589,6 +540,10 @@ namespace MK.Infrastructure.Migrations
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uuid")
                         .HasColumnName("receiver_id");
+
+                    b.Property<DateTime>("SentTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sent_time");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -636,14 +591,25 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<Guid>("MealId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("meal_id");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
+
+                    b.Property<decimal>("Surcharge")
+                        .HasColumnType("numeric")
+                        .HasColumnName("surcharge");
 
                     b.Property<double>("TotalPrice")
                         .HasColumnType("double precision")
                         .HasColumnName("total_price");
+
+                    b.Property<int>("TotalQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("total_quantity");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
@@ -653,18 +619,14 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
-                    b.Property<Guid?>("VoucherId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("voucher_id");
-
                     b.HasKey("Id")
                         .HasName("pk_order");
 
                     b.HasIndex("CustomerId")
                         .HasDatabaseName("ix_order_customer_id");
 
-                    b.HasIndex("VoucherId")
-                        .HasDatabaseName("ix_order_voucher_id");
+                    b.HasIndex("MealId")
+                        .HasDatabaseName("ix_order_meal_id");
 
                     b.ToTable("order", (string)null);
                 });
@@ -688,15 +650,13 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("name");
-
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid")
                         .HasColumnName("order_id");
+
+                    b.Property<Guid>("PaymentTypeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payment_type_id");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -711,26 +671,28 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
+                    b.Property<decimal>("amount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amount");
+
                     b.HasKey("Id")
                         .HasName("pk_order_payment");
 
                     b.HasIndex("OrderId")
-                        .IsUnique()
                         .HasDatabaseName("ix_order_payment_order_id");
+
+                    b.HasIndex("PaymentTypeId")
+                        .HasDatabaseName("ix_order_payment_payment_type_id");
 
                     b.ToTable("order_payment", (string)null);
                 });
 
-            modelBuilder.Entity("MK.Domain.Entity.Promotion", b =>
+            modelBuilder.Entity("MK.Domain.Entity.PaymentType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer")
-                        .HasColumnName("amount");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text")
@@ -741,13 +703,9 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("description");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("end_date");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -755,17 +713,18 @@ namespace MK.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
                         .HasColumnName("name");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
-
-                    b.Property<string>("Status")
+                    b.Property<string>("Provider")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("provider");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<string>("UpdatedBy")
@@ -777,54 +736,9 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
-                        .HasName("pk_promotion");
+                        .HasName("pk_payment_type");
 
-                    b.ToTable("promotion", (string)null);
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.Province", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("No")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("no");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("updated_by");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_date");
-
-                    b.HasKey("Id")
-                        .HasName("pk_province");
-
-                    b.ToTable("province", (string)null);
+                    b.ToTable("payment_type", (string)null);
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Role", b =>
@@ -848,8 +762,7 @@ namespace MK.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<string>("UpdatedBy")
@@ -864,6 +777,74 @@ namespace MK.Infrastructure.Migrations
                         .HasName("pk_role");
 
                     b.ToTable("role", (string)null);
+                });
+
+            modelBuilder.Entity("MK.Domain.Entity.Tray", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("ImgUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("img_url");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("KitchenId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("kitchen_id");
+
+                    b.Property<Guid?>("MealId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("meal_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric")
+                        .HasColumnName("price");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_date");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tray");
+
+                    b.HasIndex("KitchenId")
+                        .HasDatabaseName("ix_tray_kitchen_id");
+
+                    b.HasIndex("MealId")
+                        .HasDatabaseName("ix_tray_meal_id");
+
+                    b.ToTable("tray", (string)null);
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.User", b =>
@@ -900,7 +881,7 @@ namespace MK.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("full_name");
+                        .HasColumnName("fullname");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -918,7 +899,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone");
 
-                    b.Property<Guid?>("RoleId")
+                    b.Property<Guid>("RoleId")
                         .HasColumnType("uuid")
                         .HasColumnName("role_id");
 
@@ -939,183 +920,60 @@ namespace MK.Infrastructure.Migrations
                     b.ToTable("user", (string)null);
                 });
 
-            modelBuilder.Entity("MK.Domain.Entity.Voucher", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("code");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<double>("Discount")
-                        .HasColumnType("double precision")
-                        .HasColumnName("discount");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<Guid>("PromotionId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("promotion_id");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("updated_by");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_date");
-
-                    b.HasKey("Id")
-                        .HasName("pk_voucher");
-
-                    b.HasIndex("PromotionId")
-                        .HasDatabaseName("ix_voucher_promotion_id");
-
-                    b.ToTable("voucher", (string)null);
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.Ward", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<Guid>("DistrictId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("district_id");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<Guid>("ProvinceId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("province_id");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("updated_by");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_date");
-
-                    b.HasKey("Id")
-                        .HasName("pk_ward");
-
-                    b.HasIndex("DistrictId")
-                        .HasDatabaseName("ix_ward_district_id");
-
-                    b.HasIndex("ProvinceId")
-                        .HasDatabaseName("ix_ward_province_id");
-
-                    b.ToTable("ward", (string)null);
-                });
-
-            modelBuilder.Entity("AreaMeal", b =>
-                {
-                    b.HasOne("MK.Domain.Entity.Area", null)
-                        .WithMany()
-                        .HasForeignKey("AreasId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_area_meal_area_areas_id");
-
-                    b.HasOne("MK.Domain.Entity.Meal", null)
-                        .WithMany()
-                        .HasForeignKey("MealsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_area_meal_meal_meals_id");
-                });
-
-            modelBuilder.Entity("DishMeal", b =>
+            modelBuilder.Entity("DishTray", b =>
                 {
                     b.HasOne("MK.Domain.Entity.Dish", null)
                         .WithMany()
-                        .HasForeignKey("DishesId")
+                        .HasForeignKey("DishiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_dish_meal_dish_dishes_id");
+                        .HasConstraintName("fk_dish_tray_dish_dishies_id");
 
-                    b.HasOne("MK.Domain.Entity.Meal", null)
+                    b.HasOne("MK.Domain.Entity.Tray", null)
                         .WithMany()
-                        .HasForeignKey("MealsId")
+                        .HasForeignKey("TraysId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_dish_meal_meal_meals_id");
+                        .HasConstraintName("fk_dish_tray_tray_trays_id");
                 });
 
-            modelBuilder.Entity("KitchenPromotion", b =>
+            modelBuilder.Entity("MK.Domain.Entity.Area", b =>
                 {
-                    b.HasOne("MK.Domain.Entity.Kitchen", null)
-                        .WithMany()
-                        .HasForeignKey("KitchensId")
+                    b.HasOne("MK.Domain.Entity.Location", "East")
+                        .WithOne("AreaAsEast")
+                        .HasForeignKey("MK.Domain.Entity.Area", "EastId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_kitchen_promotion_kitchen_kitchens_id");
+                        .HasConstraintName("fk_area_location_east_id");
 
-                    b.HasOne("MK.Domain.Entity.Promotion", null)
-                        .WithMany()
-                        .HasForeignKey("PromotionsId")
+                    b.HasOne("MK.Domain.Entity.Location", "North")
+                        .WithOne("AreaAsNorth")
+                        .HasForeignKey("MK.Domain.Entity.Area", "NorthId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_kitchen_promotion_promotion_promotions_id");
-                });
+                        .HasConstraintName("fk_area_location_north_id");
 
-            modelBuilder.Entity("MK.Domain.Entity.Conversation", b =>
-                {
-                    b.HasOne("MK.Domain.Entity.Customer", "Customer")
-                        .WithMany("Conversations")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("MK.Domain.Entity.Location", "South")
+                        .WithOne("AreaAsSouth")
+                        .HasForeignKey("MK.Domain.Entity.Area", "SouthId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_conversation_customer_customer_id");
+                        .HasConstraintName("fk_area_location_south_id");
 
-                    b.HasOne("MK.Domain.Entity.Kitchen", "Kitchen")
-                        .WithMany("Conversations")
-                        .HasForeignKey("KitchenId")
+                    b.HasOne("MK.Domain.Entity.Location", "West")
+                        .WithOne("AreaAsWest")
+                        .HasForeignKey("MK.Domain.Entity.Area", "WestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_conversation_kitchen_kitchen_id");
+                        .HasConstraintName("fk_area_location_west_id");
 
-                    b.Navigation("Customer");
+                    b.Navigation("East");
 
-                    b.Navigation("Kitchen");
+                    b.Navigation("North");
+
+                    b.Navigation("South");
+
+                    b.Navigation("West");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Customer", b =>
@@ -1130,16 +988,16 @@ namespace MK.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MK.Domain.Entity.District", b =>
+            modelBuilder.Entity("MK.Domain.Entity.Dish", b =>
                 {
-                    b.HasOne("MK.Domain.Entity.Province", "Province")
-                        .WithMany("Districts")
-                        .HasForeignKey("ProvinceId")
+                    b.HasOne("MK.Domain.Entity.Kitchen", "Kitchen")
+                        .WithMany("Dishes")
+                        .HasForeignKey("KitchenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_district_province_province_id");
+                        .HasConstraintName("fk_dish_kitchen_kitchen_id");
 
-                    b.Navigation("Province");
+                    b.Navigation("Kitchen");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.FavouriteKitchen", b =>
@@ -1170,57 +1028,69 @@ namespace MK.Infrastructure.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_feedbacks_customer_customer_id");
+                        .HasConstraintName("fk_feedback_customer_customer_id");
 
-                    b.HasOne("MK.Domain.Entity.Kitchen", "Kitchen")
-                        .WithMany("Feedbacks")
-                        .HasForeignKey("KitchenId")
+                    b.HasOne("MK.Domain.Entity.Order", "Order")
+                        .WithOne("Feedback")
+                        .HasForeignKey("MK.Domain.Entity.Feedback", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_feedbacks_kitchen_kitchen_id");
+                        .HasConstraintName("fk_feedback_order_order_id");
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Kitchen");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Kitchen", b =>
                 {
-                    b.HasOne("MK.Domain.Entity.District", "District")
+                    b.HasOne("MK.Domain.Entity.Area", "Area")
                         .WithMany("Kitchens")
-                        .HasForeignKey("DistrictId")
+                        .HasForeignKey("AreaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_kitchen_district_district_id");
+                        .HasConstraintName("fk_kitchen_area_area_id");
+
+                    b.HasOne("MK.Domain.Entity.Location", "Location")
+                        .WithOne("Kitchen")
+                        .HasForeignKey("MK.Domain.Entity.Kitchen", "LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_kitchen_location_location_id");
 
                     b.HasOne("MK.Domain.Entity.User", "Owner")
-                        .WithMany("Kitchen")
-                        .HasForeignKey("OwnerId")
+                        .WithOne("Kitchen")
+                        .HasForeignKey("MK.Domain.Entity.Kitchen", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_kitchen_user_owner_id");
 
-                    b.HasOne("MK.Domain.Entity.Province", "Province")
-                        .WithMany("Kitchens")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_kitchen_province_province_id");
+                    b.Navigation("Area");
 
-                    b.HasOne("MK.Domain.Entity.Ward", "Ward")
-                        .WithMany("Kitchens")
-                        .HasForeignKey("WardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_kitchen_ward_ward_id");
-
-                    b.Navigation("District");
+                    b.Navigation("Location");
 
                     b.Navigation("Owner");
+                });
 
-                    b.Navigation("Province");
+            modelBuilder.Entity("MK.Domain.Entity.Meal", b =>
+                {
+                    b.HasOne("MK.Domain.Entity.Kitchen", "Kitchen")
+                        .WithMany("Meals")
+                        .HasForeignKey("KitchenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_meal_kitchen_kitchen_id");
 
-                    b.Navigation("Ward");
+                    b.HasOne("MK.Domain.Entity.Tray", "Tray")
+                        .WithMany("Meals")
+                        .HasForeignKey("TrayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_meal_tray_tray_id");
+
+                    b.Navigation("Kitchen");
+
+                    b.Navigation("Tray");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Notification", b =>
@@ -1244,26 +1114,54 @@ namespace MK.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_order_customer_customer_id");
 
-                    b.HasOne("MK.Domain.Entity.Voucher", "Voucher")
+                    b.HasOne("MK.Domain.Entity.Meal", "Meal")
                         .WithMany("Orders")
-                        .HasForeignKey("VoucherId")
-                        .HasConstraintName("fk_order_voucher_voucher_id");
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_meal_meal_id");
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Voucher");
+                    b.Navigation("Meal");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.OrderPayment", b =>
                 {
                     b.HasOne("MK.Domain.Entity.Order", "Order")
-                        .WithOne("OrderPayment")
-                        .HasForeignKey("MK.Domain.Entity.OrderPayment", "OrderId")
+                        .WithMany("OrderPayments")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_order_payment_order_order_id");
 
+                    b.HasOne("MK.Domain.Entity.PaymentType", "PaymentType")
+                        .WithMany("OrderPayments")
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_payment_payment_type_payment_type_id");
+
                     b.Navigation("Order");
+
+                    b.Navigation("PaymentType");
+                });
+
+            modelBuilder.Entity("MK.Domain.Entity.Tray", b =>
+                {
+                    b.HasOne("MK.Domain.Entity.Kitchen", "Kitchen")
+                        .WithMany("Trays")
+                        .HasForeignKey("KitchenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_tray_kitchen_kitchen_id");
+
+                    b.HasOne("MK.Domain.Entity.Meal", null)
+                        .WithMany("Trays")
+                        .HasForeignKey("MealId")
+                        .HasConstraintName("fk_tray_meal_meal_id");
+
+                    b.Navigation("Kitchen");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.User", b =>
@@ -1271,48 +1169,20 @@ namespace MK.Infrastructure.Migrations
                     b.HasOne("MK.Domain.Entity.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_user_role_role_id");
 
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("MK.Domain.Entity.Voucher", b =>
+            modelBuilder.Entity("MK.Domain.Entity.Area", b =>
                 {
-                    b.HasOne("MK.Domain.Entity.Promotion", "Promotion")
-                        .WithMany("Vouchers")
-                        .HasForeignKey("PromotionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_voucher_promotion_promotion_id");
-
-                    b.Navigation("Promotion");
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.Ward", b =>
-                {
-                    b.HasOne("MK.Domain.Entity.District", "District")
-                        .WithMany("Wards")
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_ward_district_district_id");
-
-                    b.HasOne("MK.Domain.Entity.Province", "Province")
-                        .WithMany("Wards")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_ward_province_province_id");
-
-                    b.Navigation("District");
-
-                    b.Navigation("Province");
+                    b.Navigation("Kitchens");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Customer", b =>
                 {
-                    b.Navigation("Conversations");
-
                     b.Navigation("FavouriteKitchens");
 
                     b.Navigation("Feedbacks");
@@ -1320,44 +1190,57 @@ namespace MK.Infrastructure.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("MK.Domain.Entity.District", b =>
-                {
-                    b.Navigation("Kitchens");
-
-                    b.Navigation("Wards");
-                });
-
             modelBuilder.Entity("MK.Domain.Entity.Kitchen", b =>
                 {
-                    b.Navigation("Conversations");
+                    b.Navigation("Dishes");
 
                     b.Navigation("FavoriteKitchens");
 
-                    b.Navigation("Feedbacks");
+                    b.Navigation("Meals");
+
+                    b.Navigation("Trays");
+                });
+
+            modelBuilder.Entity("MK.Domain.Entity.Location", b =>
+                {
+                    b.Navigation("AreaAsEast");
+
+                    b.Navigation("AreaAsNorth");
+
+                    b.Navigation("AreaAsSouth");
+
+                    b.Navigation("AreaAsWest");
+
+                    b.Navigation("Kitchen");
+                });
+
+            modelBuilder.Entity("MK.Domain.Entity.Meal", b =>
+                {
+                    b.Navigation("Orders");
+
+                    b.Navigation("Trays");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Order", b =>
                 {
-                    b.Navigation("OrderPayment");
+                    b.Navigation("Feedback");
+
+                    b.Navigation("OrderPayments");
                 });
 
-            modelBuilder.Entity("MK.Domain.Entity.Promotion", b =>
+            modelBuilder.Entity("MK.Domain.Entity.PaymentType", b =>
                 {
-                    b.Navigation("Vouchers");
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.Province", b =>
-                {
-                    b.Navigation("Districts");
-
-                    b.Navigation("Kitchens");
-
-                    b.Navigation("Wards");
+                    b.Navigation("OrderPayments");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("MK.Domain.Entity.Tray", b =>
+                {
+                    b.Navigation("Meals");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.User", b =>
@@ -1367,16 +1250,6 @@ namespace MK.Infrastructure.Migrations
                     b.Navigation("Kitchen");
 
                     b.Navigation("Notifications");
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.Voucher", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("MK.Domain.Entity.Ward", b =>
-                {
-                    b.Navigation("Kitchens");
                 });
 #pragma warning restore 612, 618
         }
