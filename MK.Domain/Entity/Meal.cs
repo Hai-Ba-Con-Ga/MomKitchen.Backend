@@ -16,7 +16,7 @@ namespace MK.Domain.Entity
         public string Name { get; set; } = null!;
 
         [Column("price")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [Column("service_from")]
         public DateTime ServiceFrom { get; set; }
@@ -24,17 +24,21 @@ namespace MK.Domain.Entity
         [Column("service_to")]
         public DateTime ServiceTo { get; set; }
 
-        //many to many with area
-        [InverseProperty("Meals")]
-        public virtual ICollection<Area> Areas { get; set; } = new List<Area>();
+        [Column("service_quantity")]
+        [Range(1, int.MaxValue)]
+        public int ServiceQuantity { get; set; }
 
-        //many to many with dish
-        [InverseProperty("Meals")]
-        public virtual ICollection<Dish> Dishes { get; set; } = new List<Dish>();
+        [Required]
+        public Guid TrayId { get; set; }
+        public Tray Tray { get; set; } = null!;
 
-        //many to one with kitchen
-        [ForeignKey("KitchenId")]
-        [InverseProperty("Meals")]
+        [Required]
+        public Guid KitchenId { get; set; }
         public Kitchen Kitchen { get; set; } = null!;
+
+        public virtual ICollection<Tray> Trays { get; set; } = new List<Tray>();
+
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+       
     }
 }

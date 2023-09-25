@@ -11,11 +11,8 @@ namespace MK.Domain.Entity
     [Table("role")]
     public class Role : BaseEntity
     {
-        [Column("name")]
-        [StringLength(10)]
         public string Name { get; set; } = null!;
 
-        [InverseProperty("Role")]
         public virtual ICollection<User> Users { get; set; } = new List<User>();
     }
 }

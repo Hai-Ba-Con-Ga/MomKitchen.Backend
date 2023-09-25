@@ -15,14 +15,18 @@ namespace MK.Domain.Entity
         [Column("email")]
         public string Email { get; set; } = null!;
 
+        [Required]
         [StringLength(20)]
         [Column("password")]
         public string Password { get; set; } = null!;
 
+        [DataType(DataType.Text)]
+        public string Credential { get; set; } = null!;
+
+        [Required]
         [StringLength(20)]
         public string Phone { get; set; } = null!;
 
-        [DataType(DataType.DateTime)]
         [Column("birthday")]
         public DateTime? Birthday { get; set; }
 
@@ -31,21 +35,17 @@ namespace MK.Domain.Entity
         public string? AvatarUrl { get; set; }
 
         [MaxLength(50)]
-        [Column("full_name")]
+        [Column("fullname")]
         public string FullName { get; set; } = null!;
 
-        [ForeignKey("RoleId")]
-        [InverseProperty("Users")]
+        public Guid RoleId { get; set; }
         public virtual Role? Role { get; set; } = null!;
 
-        [InverseProperty("Receiver")]
         public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
-        [InverseProperty("User")]
         public virtual Customer? Customer { get; set; }
 
-        [InverseProperty("Owner")]
-        public virtual ICollection<Kitchen> Kitchen { get; set; } = new List<Kitchen>();
+        public virtual Kitchen? Kitchen { get; set; }
 
     }
 }

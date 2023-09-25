@@ -8,22 +8,23 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Entity
 {
+    [Table("feedback")]
     public class Feedback : BaseEntity
     {
-        [ForeignKey("CustomerId")]
-        [InverseProperty("Feedbacks")]
-        public virtual Customer Customer { get; set; } = null!;
-
-        [ForeignKey("KitchenId")]
-        [InverseProperty("Feedbacks")]
-        public virtual Kitchen Kitchen { get; set; } = null!;
-
         [Column("content")]
-        [StringLength(500)]
+        [DataType(DataType.Text)]
         public string Content { get; set; } = null!;
 
         [Column("rating")]
         public int Rating { get; set; }
+
+        [Required]
+        public Guid CustomerId { get; set; }
+        public virtual Customer Customer { get; set; } = null!;
+
+        [Required]
+        public Guid OrderId { get; set; }
+        public virtual Order Order { get; set; } = null!;
 
     }
 }

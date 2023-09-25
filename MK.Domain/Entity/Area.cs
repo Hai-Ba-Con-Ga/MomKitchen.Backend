@@ -12,13 +12,26 @@ namespace MK.Domain.Entity
     public partial class Area : BaseEntity
     {
         [Column("name")]
-        [StringLength(50)]
+        [StringLength(150)]
+        [Required]
         public string Name { get; set; } = null!;
 
-        //many to many with meal
+        [Required]
+        public Guid NorthId { get; set; }
+        public Location North { get; set; } = null!;
 
-        [InverseProperty("Areas")]
-        public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
+        [Required]
+        public Guid SouthId { get; set; }
+        public Location South { get; set; } = null!;
 
+        [Required]
+        public Guid EastId { get; set; }
+        public Location East { get; set; } = null!;
+
+        [Required]
+        public Guid WestId { get; set; }
+        public Location West { get; set; } = null!;
+
+        public virtual ICollection<Kitchen> Kitchens { get; set; } = new List<Kitchen>();
     }
 }

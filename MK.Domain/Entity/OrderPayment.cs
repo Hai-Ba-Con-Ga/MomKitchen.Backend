@@ -12,14 +12,17 @@ namespace MK.Domain.Entity
     [Table("order_payment")]
     public partial class OrderPayment : BaseEntity
     {
-        [Column("name")]
-        [StringLength(10)]
-        public string Name { get; set; } = null!;
-
-        [ForeignKey("OrderId")]
-        [InverseProperty("OrderPayment")]
-        public Order Order { get; set; } = null!;
 
         public PaymentStatus Status { get; set; }
+        [Required]
+        public decimal amount { get; set; }
+
+        [Required]
+        public Guid OrderId { get; set; }
+        public Order Order { get; set; } = null!;
+
+        [Required]
+        public Guid PaymentTypeId { get; set; }
+        public PaymentType PaymentType { get; set; } = null!;
     }
 }

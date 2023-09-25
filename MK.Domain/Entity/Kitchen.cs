@@ -12,44 +12,31 @@ namespace MK.Domain.Entity
     [Table("kitchen")]
     public partial class Kitchen : BaseEntity
     {
-
-        [Column("name")]
-        [StringLength(50)]
+        [StringLength(150)]
+        [Required]
         public string Name { get; set; } = null!;
+
+        [StringLength(255)]
+        [Required]
+        public string Address { get; set; } = null!;
 
         public KitchenStatus Status { get; set; }
 
-        [ForeignKey("OwnerId")]
-        [InverseProperty("Kitchen")]
+        [Required]
+        public Guid LocationId { get; set; }
+        public Location Location { get; set; } = null!;
+
+        [Required]
+        public Guid OwnerId { get; set; }
         public User Owner { get; set; } = null!;
 
-        [ForeignKey("ProvinceId")]
-        [InverseProperty("Kitchens")]
-        public virtual Province Province { get; set; } = null!;
+        [Required]
+        public Guid AreaId { get; set; }
+        public Area Area { get; set; } = null!;
 
-        [ForeignKey("DistrictId")]
-        [InverseProperty("Kitchens")]
-        public virtual District District { get; set; } = null!;
-
-        [ForeignKey("WardId")]
-        [InverseProperty("Kitchens")]
-        public virtual Ward Ward { get; set; } = null!;
-
-        [InverseProperty("Kitchen")]
         public virtual ICollection<FavouriteKitchen> FavoriteKitchens { get; set; } = new List<FavouriteKitchen>();
-
-        [InverseProperty("Kitchen")]
-        public virtual ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
-
-        [InverseProperty("Kitchen")]
-        public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
-
-        [InverseProperty("Kitchens")]
-        public virtual ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
-
-        [InverseProperty("Kitchen")]
+        public virtual ICollection<Dish> Dishes { get; set; } = new List<Dish>();
+        public virtual ICollection<Tray> Trays { get; set; } = new List<Tray>();
         public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
-
-
     }
 }

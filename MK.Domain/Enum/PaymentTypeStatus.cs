@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Enum
 {
-    public enum VoucherStatus
+    public enum PaymentTypeStatus
     {
         Active = 1,
         Inactive = 0

@@ -16,21 +16,19 @@ namespace MK.Domain.Entity
         [StringLength(50)]
         public string Name { get; set; } = null!;
 
-        [Column("price")]
-        public double Price { get; set; }
-
         [Column("image_url")]
         [MaxLength(255)]
         public string ImageUrl { get; set; } = null!;
 
         [Column("description")]
-        [MaxLength(500)]
         public string? Description { get; set; }
 
         public DishStatus Status { get; set; }
 
-        //many to many with meal
-        [InverseProperty("Dishes")]
-        public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
+        [Required]
+        public Guid KitchenId { get; set; }
+        public Kitchen Kitchen { get; set; } = null!;
+
+        public virtual ICollection<Tray> Trays { get; set; } = new List<Tray>();
     }
 }
