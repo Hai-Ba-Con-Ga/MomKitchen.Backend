@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MK.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDb : Migration
+    public partial class _20230927InitDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -313,7 +313,8 @@ namespace MK.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     content = table.Column<string>(type: "text", nullable: false),
-                    rating = table.Column<int>(type: "integer", nullable: false),
+                    rating = table.Column<float>(type: "real", nullable: false),
+                    img_url = table.Column<string>(type: "text", nullable: false),
                     customer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     order_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -343,6 +344,7 @@ namespace MK.Infrastructure.Migrations
                     service_from = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     service_to = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     service_quantity = table.Column<int>(type: "integer", nullable: false),
+                    close_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     tray_id = table.Column<Guid>(type: "uuid", nullable: false),
                     kitchen_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

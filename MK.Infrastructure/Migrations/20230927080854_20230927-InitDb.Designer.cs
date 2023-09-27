@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MK.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230925155126_InitDb")]
-    partial class InitDb
+    [Migration("20230927080854_20230927-InitDb")]
+    partial class _20230927InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -301,8 +301,8 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("order_id");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer")
+                    b.Property<float>("Rating")
+                        .HasColumnType("real")
                         .HasColumnName("rating");
 
                     b.Property<string>("UpdatedBy")
@@ -312,6 +312,11 @@ namespace MK.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
+
+                    b.Property<string>("img_url")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("img_url");
 
                     b.HasKey("Id")
                         .HasName("pk_feedback");
@@ -495,6 +500,10 @@ namespace MK.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
+
+                    b.Property<DateTime>("close_time")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("close_time");
 
                     b.HasKey("Id")
                         .HasName("pk_meal");
