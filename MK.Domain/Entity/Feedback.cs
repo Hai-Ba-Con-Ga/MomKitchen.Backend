@@ -16,7 +16,11 @@ namespace MK.Domain.Entity
         public string Content { get; set; } = null!;
 
         [Column("rating")]
-        public int Rating { get; set; }
+        [Range(1, 5)]
+        public float Rating { get; set; }
+
+        [DataType(DataType.Text)]
+        public string img_url { get; set; } = null!;
 
         [Required]
         public Guid CustomerId { get; set; }

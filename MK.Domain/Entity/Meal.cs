@@ -28,6 +28,8 @@ namespace MK.Domain.Entity
         [Range(1, int.MaxValue)]
         public int ServiceQuantity { get; set; }
 
+        public DateTime close_time { get; set; }
+
         [Required]
         public Guid TrayId { get; set; }
         public Tray Tray { get; set; } = null!;

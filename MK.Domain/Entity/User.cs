@@ -13,6 +13,7 @@ namespace MK.Domain.Entity
     {
         [MaxLength(50)]
         [Column("email")]
+        [EmailAddress]
         public string Email { get; set; } = null!;
 
         [Required]
@@ -25,6 +26,7 @@ namespace MK.Domain.Entity
 
         [Required]
         [StringLength(20)]
+        [Phone]
         public string Phone { get; set; } = null!;
 
         [Column("birthday")]
