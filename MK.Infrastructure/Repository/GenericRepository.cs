@@ -1,5 +1,9 @@
 ﻿
 
+using MK.Domain.Common;
+using System;
+using System.Linq.Expressions;
+
 namespace MK.Infrastructure.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
@@ -39,7 +43,7 @@ namespace MK.Infrastructure.Repository
                 await SaveChangesAsync().ConfigureAwait(false);
             }
         }
-        #endregion
+        #endregion Create
 
         #region Delete
         /// <summary>
@@ -132,6 +136,7 @@ namespace MK.Infrastructure.Repository
                             .SingleOrDefaultAsync();
             }
         }
+
         /// <summary>
         /// Get all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
@@ -163,37 +168,6 @@ namespace MK.Infrastructure.Repository
                             .Select(selector);
             }
         }
-
-        public async Task<PagedList<T>> GetWithPaging(IQueryable<T> dataQuery, QueryParameters pagingParams)
-        {
-            PagedList<T> pagedRequests = new PagedList<T>();
-            if (pagingParams.PageSize <= 0 || pagingParams.PageNumber <= 0)
-            {
-                throw new ArgumentException("Page number or page size must be greater than 0");
-            }
-            else
-            {
-                await pagedRequests.LoadData(dataQuery.Where(c => c.IsDeleted == false).OrderByDescending(c => c.CreatedDate), pagingParams.PageNumber, pagingParams.PageSize);
-            }
-
-            return pagedRequests;
-
-        }
-
-        public async Task<PagedList<T>> GetWithPaging(IQueryable<T> dataQuery, QueryParameters pagingParams, Expression<Func<T, bool>> predicate)
-        {
-            PagedList<T> pagedRequests = new PagedList<T>();
-
-            if (pagingParams.PageSize <= 0 || pagingParams.PageNumber <= 0)
-            {
-                throw new ArgumentException("Page number or page size must be greater than 0");
-            }
-            else
-            {
-                await pagedRequests.LoadData(dataQuery.Where(c => c.IsDeleted == false).OrderByDescending(c => c.CreatedDate), pagingParams.PageNumber, pagingParams.PageSize, predicate);
-            }
-            return pagedRequests;
-        }
         #endregion Retrieve
 
         /// <summary>
@@ -205,16 +179,48 @@ namespace MK.Infrastructure.Repository
             return await dbContext.SaveChangesAsync();
         }
 
-        //public async Task<IList<T>> WhereAsync(Expression<Func<T, bool>> predicate, params string[] navigationProperties)
-        //{
-        //    List<T> list;
-        //    var query = dbSet.AsQueryable();
-        //    foreach (var property in navigationProperties)
-        //    {
-        //        query = query.Include(property);
-        //    }
-        //    list = await query.Where(predicate).AsNoTracking().ToListAsync();
-        //    return list;
+        #region Retrieve Version 2.0
+        /// <summary>
+        /// Get entity by id and other conditions
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<T?> GetById(Guid id, QueryHelper<T> queryHelper, bool isAsNoTracking = true)
+        {
+            var query = dbSet.ApplyConditions(queryHelper, id, isAsNoTracking);
+
+            return await query.SingleOrDefaultAsync().ConfigureAwait(false);
+        }
+        /// <summary>
+        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// </summary>
+        /// <param name="queryHelper"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> Get(QueryHelper<T> queryHelper, bool isAsNoTracking = true)
+        {
+            var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
+
+            return await query.ToListAsync().ConfigureAwait(false);
+        }
+        /// <summary>
+        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// </summary>
+        /// <param name="queryHelper"></param>
+        /// <returns>
+        ///  PagedList is a class derived from List<T> and it is used to represent pagination of a list of objects.
+        /// </returns>
+        public async Task<PagedList<T>> GetWithPagination(QueryHelper<T> queryHelper, bool isAsNoTracking = true)
+        {
+            var pagedList = new PagedList<T>();
+
+            var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
+
+            await pagedList.LoadData(query, queryHelper.PaginationParams).ConfigureAwait(false);
+
+            return pagedList;
+        }
+        #endregion Retrieve Version 2.0
 
         #region Dispose
         private bool disposed = false;
@@ -238,7 +244,6 @@ namespace MK.Infrastructure.Repository
         {
             Dispose(false);
         }
-
         #endregion Dispose
     }
 }

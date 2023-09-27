@@ -25,7 +25,14 @@ namespace MK.Domain.Common
 
             this.AddRange(items);
         }
-
+        /// <summary>
+        /// Excute query with pagination
+        /// </summary>
+        /// <param name="queryList"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public async Task LoadData(IQueryable<T> queryList, int pageNumber, int pageSize)
         {
             if (pageNumber < 0 || pageSize < 0)
@@ -36,7 +43,8 @@ namespace MK.Domain.Common
             var items = await queryList
                                 .Skip((pageNumber - 1) * pageSize)
                                 .Take(pageSize)
-                                .ToListAsync();
+                                .ToListAsync()
+                                .ConfigureAwait(false);
 
             this.TotalCount = items.Count();
             this.PageSize = pageSize;
@@ -45,34 +53,20 @@ namespace MK.Domain.Common
 
             this.AddRange(items);
         }
-        /// <summary>
-        /// Load with condition predicate
-        /// </summary>
-        /// <param name="queryList"></param>
-        /// <param name="pageNumber"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public async Task LoadData(IQueryable<T> queryList, int pageNumber, int pageSize, Expression<Func<T, bool>> predicate)
-        {
-            var items = new List<T>();
 
-            if (pageNumber < 0 || pageSize < 0)
+        public async Task LoadData(IQueryable<T> queryList, PaginationParameters paginationParams)
+        {
+            if (paginationParams == null)
+            {
+                throw new ArgumentNullException(nameof(paginationParams));
+            }
+
+            if (paginationParams.PageSize <= 0 || paginationParams.PageNumber <= 0)
             {
                 throw new ArgumentException("Page number or page size must be greater than 0");
             }
 
-            items = await queryList.Where(predicate)
-                            .Skip((pageNumber - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToListAsync();
-
-            this.PageSize = pageSize;
-            this.CurrentPage = pageNumber;
-            this.TotalCount = items.Count();
-            this.TotalPages = (int)Math.Ceiling(items.Count() / (double)pageSize);
-            this.AddRange(items);
+            await this.LoadData(queryList, paginationParams.PageNumber, paginationParams.PageSize);
         }
-
     }
 }

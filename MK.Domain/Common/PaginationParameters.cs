@@ -1,6 +1,6 @@
 ﻿namespace MK.Domain.Common
 {
-    public class QueryParameters
+    public class PaginationParameters
     {
         const int maxPageSize = 50;
         private int _pageSize = 0;
