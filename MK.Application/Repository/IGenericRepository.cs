@@ -99,5 +99,9 @@ namespace MK.API.Application.Repository
         /// <exception cref="ArgumentNullException"></exception>
         Task<int> UpdateAsync<TDto>(Expression<Func<T, bool>> predicate, TDto req) where TDto : class, new();
         #endregion Version 2.0
+        Task<PagedList<T>> GetWithPaging(IQueryable<T> dataQuery, QueryParameters pagingParams);
+        Task<PagedList<T>> GetWithPaging(IQueryable<T> dataQuery, QueryParameters pagingParams, Expression<Func<T, bool>> predicate);
+        Task<int> SaveChangesAsync();
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
     }
 }

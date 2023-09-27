@@ -192,6 +192,42 @@ namespace MK.Infrastructure.Repository
                             .Select(selector);
             }
         }
+
+        public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return dbSet.AsQueryable().AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<PagedList<T>> GetWithPaging(IQueryable<T> dataQuery, QueryParameters pagingParams)
+        {
+            PagedList<T> pagedRequests = new PagedList<T>();
+            if (pagingParams.PageSize <= 0 || pagingParams.PageNumber <= 0)
+            {
+                throw new ArgumentException("Page number or page size must be greater than 0");
+            }
+            else
+            {
+                await pagedRequests.LoadData(dataQuery.Where(c => c.IsDeleted == false).OrderByDescending(c => c.CreatedDate), pagingParams.PageNumber, pagingParams.PageSize);
+            }
+
+            return pagedRequests;
+
+        }
+
+        public async Task<PagedList<T>> GetWithPaging(IQueryable<T> dataQuery, QueryParameters pagingParams, Expression<Func<T, bool>> predicate)
+        {
+            PagedList<T> pagedRequests = new PagedList<T>();
+
+            if (pagingParams.PageSize <= 0 || pagingParams.PageNumber <= 0)
+            {
+                throw new ArgumentException("Page number or page size must be greater than 0");
+            }
+            else
+            {
+                await pagedRequests.LoadData(dataQuery.Where(c => c.IsDeleted == false).OrderByDescending(c => c.CreatedDate), pagingParams.PageNumber, pagingParams.PageSize, predicate);
+            }
+            return pagedRequests;
+        }
         #endregion Retrieve
 
         /// <summary>
