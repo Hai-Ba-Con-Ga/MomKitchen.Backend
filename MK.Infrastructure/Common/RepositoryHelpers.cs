@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Common
+namespace MK.Infrastructure.Common
 {
     public static class RepositoryHelpers
     {
