@@ -9,7 +9,7 @@ namespace MK.API
             builder.WebHost.ConfigureKestrel((context, serverOptions) =>
             {
                 var kestrelSection = context.Configuration.GetSection("Kestrel");
-                    
+
                 serverOptions.Configure(kestrelSection);
             });
 
@@ -22,7 +22,7 @@ namespace MK.API
             builder.Services.AddDbContexts();
 
             builder.Services.AddControllers();
-       
+
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen(o => o.AddSwaggerDocumentation());
@@ -31,12 +31,14 @@ namespace MK.API
 
             // Configure the HTTP request pipeline.
             app.UseSwagger();
+
             app.UseSwaggerUI();
+
+            app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
