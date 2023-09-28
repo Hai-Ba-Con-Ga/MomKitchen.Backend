@@ -20,20 +20,37 @@ namespace MK.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-            //Demo for Singleton pattern in UnitOfWork
-            //IGenericRepository<Account> _accountRepository;
-            //    public IGenericRepository<Account> AcccountRepository
-            //    {
-            //        get
-            //        {
-            //            if (_accountRepository == null)
-            //            {
-            //                _accountRepository = new GenericRepository<Account>(_dbContext);
-            //            }
-            //            return _accountRepository;
-            //        }
-            //    }
-        
+        #region Repository 
+        //Demo for Singleton pattern in UnitOfWork
+        //IGenericRepository<Account> _accountRepository;
+        //    public IGenericRepository<Account> AcccountRepository
+        //    {
+        //        get
+        //        {
+        //            if (_accountRepository == null)
+        //            {
+        //                _accountRepository = new GenericRepository<Account>(_dbContext);
+        //            }
+        //            return _accountRepository;
+        //        }
+        //    }
+
+
+        private IGenericRepository<Location> _locationRepository;
+        public IGenericRepository<Location> Location
+        {
+            get
+            {
+                if (_locationRepository == null)
+                {
+                    _locationRepository = new GenericRepository<Location>(_dbContext);
+                }
+                return _locationRepository;
+            }
+        }
+        #endregion Repository
+
+
         public async Task BeginTransactionAsync()
         {
             if (_transaction == null)

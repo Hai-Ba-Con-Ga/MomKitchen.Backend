@@ -9,6 +9,8 @@ namespace MK.Application.Repository
 {
     public interface IUnitOfWork : IDisposable
     {
+        IGenericRepository<Location> Location { get; }
+
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
