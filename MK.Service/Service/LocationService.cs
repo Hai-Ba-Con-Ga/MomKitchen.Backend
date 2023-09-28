@@ -15,7 +15,7 @@ namespace MK.Service.Service
         {
         }
 
-        public async Task<IEnumerable<LocationRes>> GetAll()
+        public async Task<ResponseObject<IEnumerable<LocationRes>>> GetAll()
         {
             try
             {
@@ -24,9 +24,9 @@ namespace MK.Service.Service
                     SelectedFields = new string[] { "Lat" }
                 };
 
-                var result = _unitOfWork.Location.Get(query);
+                var result = await _unitOfWork.Location.Get(query);
 
-                return await Task.FromResult<IEnumerable<LocationRes>>(new List<LocationRes>());
+                return Success(_mapper.Map<IEnumerable<LocationRes>>(result));
             }
             catch (Exception ex)
             {

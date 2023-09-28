@@ -9,6 +9,6 @@ namespace MK.Application.Service
 {
     public interface ILocationService
     {
-        Task<IEnumerable<LocationRes>> GetAll();
+        Task<ResponseObject<IEnumerable<LocationRes>>> GetAll();
     }
 }
