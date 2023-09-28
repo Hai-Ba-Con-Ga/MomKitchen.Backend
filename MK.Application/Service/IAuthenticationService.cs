@@ -1,4 +1,6 @@
 ﻿using FirebaseAdmin.Auth;
+using MK.Domain.Dto.Request;
+using MK.Domain.Dto.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +12,9 @@ namespace MK.Application.Service
     public interface IAuthenticationService 
     {
         string GenerateToken(User user);
-        Task<ResponseObject<User>> GetUserByFirebaseTokenAsync(string token);
+        Task<LoginResponse> GetUserByFirebaseTokenAsync(LoginRequest loginRequest);
 
         Task<FirebaseToken> GetFirebaseTokenAsync(string token);
+        Task<Boolean> Logout(Guid userId, string fcmToken);
     }
 }

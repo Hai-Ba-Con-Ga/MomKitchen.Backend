@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace MK.API
 {
     public class Program
@@ -21,6 +23,10 @@ namespace MK.API
 
             builder.Services.AddFirebase();
 
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
             // Add services to the container.
             builder.ConfigureAutofacContainer();
 
@@ -34,6 +40,8 @@ namespace MK.API
 
             builder.Services.AddSwaggerGen(o => o.AddSwaggerDocumentation());
 
+            builder.Services.AddJwtService();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -44,6 +52,8 @@ namespace MK.API
             app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
             app.UseHttpsRedirection();
+
+            //app.UseAuthentication();
 
             app.UseAuthorization();
 

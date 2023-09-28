@@ -25,7 +25,8 @@ namespace MK.Service.Service
         {
             var claims = new[] {
                 new Claim("id", user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
+
             };
             return new JwtSecurityTokenHandler().WriteToken(GenerateTokenByClaims(claims, DateTime.Now.AddMinutes(120)));
         }

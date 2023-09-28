@@ -192,7 +192,13 @@ namespace MK.Infrastructure.Repository
                             .Select(selector);
             }
         }
-                 
+
+        // get first or default
+        public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return dbSet.AsQueryable().AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
         #endregion Retrieve
 
         /// <summary>

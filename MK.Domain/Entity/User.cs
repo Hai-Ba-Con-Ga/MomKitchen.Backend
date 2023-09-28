@@ -16,10 +16,13 @@ namespace MK.Domain.Entity
         [EmailAddress]
         public string Email { get; set; } = null!;
 
-        [Required]
         [StringLength(20)]
         [Phone]
-        public string Phone { get; set; } = null!;
+        public string? Phone { get; set; }
+
+        [Required]
+        [Column("fcm_token")]
+        public List<String> FcmToken { get; set; } = new List<string>();
 
         [Column("birthday")]
         public DateTime? Birthday { get; set; }
@@ -30,10 +33,10 @@ namespace MK.Domain.Entity
 
         [MaxLength(50)]
         [Column("fullname")]
-        public string FullName { get; set; } = null!;
+        public string? FullName { get; set; }
 
         public Guid RoleId { get; set; }
-        public virtual Role? Role { get; set; } = null!;
+        public virtual Role Role { get; set; }
 
         public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 

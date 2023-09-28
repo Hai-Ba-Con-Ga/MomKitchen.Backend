@@ -27,6 +27,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
 		<PackageReference Include="FirebaseAdmin" Version="2.4.0" />
 		<PackageReference Include="Google.Apis.Auth" Version="1.62.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.11" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
