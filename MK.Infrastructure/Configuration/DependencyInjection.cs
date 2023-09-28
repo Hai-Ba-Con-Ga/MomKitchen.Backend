@@ -19,6 +19,8 @@ namespace MK.Infrastructure.Configuration
 
             builder.RegisterGeneric(typeof(GenericRepository<>))
                     .As(typeof(IGenericRepository<>)).InstancePerDependency();
+
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
         }
     }
 }
