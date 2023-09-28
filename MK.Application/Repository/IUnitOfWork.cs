@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MK.Application.Repository
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();

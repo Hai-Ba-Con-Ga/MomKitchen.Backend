@@ -74,33 +74,5 @@ namespace MK.Infrastructure.Repository
         {
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        #region Dispose
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    _dbContext.Dispose();
-                }
-                //_accountRepository = null;
-                disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~UnitOfWork()
-        {
-            Dispose(false);
-        }
-        #endregion Dispose
     }
 }
