@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Common
 {
+    /// <summary>
+    /// This is a helper class for query, it's properties will be used for query and these are optional
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class QueryHelper<T> where T : class
     {
+        /// <summary>
+        /// Helper for pagination - LIMIT, OFFSET command
+        /// </summary>
         public PaginationParameters? PaginationParams { get; set; } = null;
         /// <summary>
         /// Helper for select field from entity - SELECT command
@@ -21,5 +28,9 @@ namespace MK.Domain.Common
         /// Helper for include entity - JOIN command
         /// </summary>
         public Expression<Func<T, object>>[]? Includes { get; set; } = null;
+        /// <summary>
+        /// Helper for select field from entity - SELECT command
+        /// </summary>
+        public string[] SelectedFields { get; set; } = null!;
     }
 }

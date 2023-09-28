@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace MK.Infrastructure.Common
 {
+    /// <summary>
+    /// There are some helper methods for generic repository 
+    /// </summary>
     public static class RepositoryHelpers
     {
         /// <summary>
@@ -75,6 +78,26 @@ namespace MK.Infrastructure.Common
             return query;
         }
         /// <summary>
+        /// Add select field for query by selected selectedFields
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="selectedFields"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IQueryable<T> SelectField<T>(this IQueryable<T> query, string[] selectedFields) where T : BaseEntity
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+
+            if (selectedFields.Length > 0)
+            {
+                query.Select(CreateProjection<T>(selectedFields));
+            }
+
+            return query;
+        }
+        /// <summary>
         /// Add condition IsDeleted = false for query
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -123,9 +146,37 @@ namespace MK.Infrastructure.Common
 
             query.Includes(queryHelper.Includes)
             .WhereCondition(queryHelper.Filter)
-            .SelectField(queryHelper.Selector);
+            .SelectField(queryHelper.Selector)
+            .SelectField(queryHelper.SelectedFields);
 
             return query;
         }
+
+        #region Dynamic query 
+        static Func<T, T> CreateProjection<T>(string[] selectedFields)
+        {
+            return entity => CreateProjectedInstance(entity, selectedFields);
+        }
+
+        static T CreateProjectedInstance<T>(T source, string[] selectedFields)
+        {
+            var projectedInstance = Activator.CreateInstance<T>();
+
+            var properties = typeof(T).GetProperties();
+
+            foreach (var field in selectedFields)
+            {
+                var property = properties.FirstOrDefault(p => p.Name == field);
+
+                if (property != null)
+                {
+                    var value = property.GetValue(source);
+                    property.SetValue(projectedInstance, value);
+                }
+            }
+
+            return projectedInstance;
+        }
+        #endregion Dynamic query
     }
 }
