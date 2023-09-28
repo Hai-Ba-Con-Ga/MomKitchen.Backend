@@ -13,12 +13,5 @@ namespace MK.API.Controllers
         public LocationController()
         {
         }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, typeof(IEnumerable<LocationRes>))]
-        public Task<IActionResult> GetAll()
-        {
-
-        }
     }
 }

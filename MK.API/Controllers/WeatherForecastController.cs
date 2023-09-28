@@ -21,7 +21,7 @@ namespace BBS.API.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IActionResult Get()
         {
-            throw new Exception("Test exception");
+            //throw new Exception("Test exception");
            return Ok(_weatherForecastService.GetWeatherForecast());
         }
     }
