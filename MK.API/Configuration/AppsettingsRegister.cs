@@ -11,6 +11,8 @@
             while (AppConfig.ConnectionStrings == null);
 
             configuration.Bind("ConnectionStrings", AppConfig.ConnectionStrings);
+            configuration.Bind("FirebaseConfigPath", AppConfig.FirebaseConfigPath);
+            configuration.Bind("JwtSetting", AppConfig.JwtSetting);
         }
 
     }

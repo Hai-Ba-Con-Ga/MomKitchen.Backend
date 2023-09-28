@@ -19,6 +19,7 @@ namespace MK.API
             //Binding appsettings.json to AppConfig
             builder.Configuration.SettingsBinding();
 
+            builder.Services.AddFirebase();
 
             // Add services to the container.
             builder.ConfigureAutofacContainer();

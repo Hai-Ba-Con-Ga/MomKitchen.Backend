@@ -6,6 +6,7 @@ using MK.Domain.Constant;
 using MK.Domain.Dto.Request;
 using MK.Domain.Dto.Response;
 using MK.Domain.Entity;
+using System.Net;
 using System.Reflection.Metadata;
 
 namespace MK.API.Controllers
@@ -22,6 +23,12 @@ namespace MK.API.Controllers
             this._userService = userService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(string token)
         {
@@ -34,13 +41,17 @@ namespace MK.API.Controllers
             else
             {
                 loginResponse.IsFirstTime = false;
-                loginResponse.Token = _authenticationService.GenerateToken(user);
+                loginResponse.Token = _authenticationService.GenerateToken(user.Data);
                 SetCookie(AppConstant.COOKIE_NAME, loginResponse.Token);
             }
-            return Ok(loginResponse);
+            return Ok(new ResponseObject<string>
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Message = "Email is null"
+            });
         }
 
-        [HttpPost("log-out")]
+        [HttpPost("logout")]
         public IActionResult Logout()
         {
             RemoveCookie(AppConstant.COOKIE_NAME);
@@ -60,17 +71,25 @@ namespace MK.API.Controllers
             var email = firebaseToken.Claims.GetValueOrDefault("email");
             if (email is null)
             {
-                throw new Exception($"This account cannot use to log-in, please try another account!");
+                return Ok(
+                    new ResponseObject<string>
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        Message = "Email is null"
+                    });
             }
-            User userEntity = new User();
-            userEntity.Email = email.ToString();
-            userEntity = await _userService.SignUpUserAsync(userEntity);
+
+            User userEntity = await _userService.SignUpUserAsync(loginRequest);
 
             LoginResponse loginResponse = new();
             loginResponse.Token = _authenticationService.GenerateToken(userEntity);
             loginResponse.IsFirstTime = true;
             SetCookie(AppConstant.COOKIE_NAME, loginResponse.Token);
-            return Ok(loginResponse);
+            return Ok(new ResponseObject<string>
+            {
+                StatusCode = HttpStatusCode.OK,
+                Data = loginResponse.Token
+            });
         }
 
 

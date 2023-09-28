@@ -1,12 +1,8 @@
 ﻿using FirebaseAdmin.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MK.API.Application.Repository;
+using MK.Domain.Common;
 
-
-namespace MK.Application.Service
+namespace MK.Service.Service
 {
     public class AuthenticationService : IAuthenticationService
     {
@@ -30,18 +26,32 @@ namespace MK.Application.Service
         }
 
 
-        public async Task<User> GetUserByFirebaseTokenAsync(string token)
+        public async Task<ResponseObject<User>> GetUserByFirebaseTokenAsync(string token)
         {
             FirebaseToken firebaseToken = await GetFirebaseTokenAsync(token);
             var email = firebaseToken.Claims.GetValueOrDefault("email");
             var name = firebaseToken.Claims.GetValueOrDefault("name");
             if (email is null)
             {
-                throw new Exception("Email is null");
+                return new ResponseObject<User>()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Email is null"
+                };
             }
+            var query = new QueryHelper<User>()
+            {
+                Filter = x => x.Email == email
+            };
+            
+            var userEntity = (await _userRepository.Get(query)).FirstOrDefault();
 
-            User userEntity = await _userRepository.FirstOrDefaultAsync(x => x.Email == email);
-            return userEntity;
+
+            return new ResponseObject<User>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Data = userEntity
+            };
         }
     }
 }

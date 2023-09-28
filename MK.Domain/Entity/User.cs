@@ -18,14 +18,6 @@ namespace MK.Domain.Entity
 
         [Required]
         [StringLength(20)]
-        [Column("password")]
-        public string Password { get; set; } = null!;
-
-        [DataType(DataType.Text)]
-        public string Credential { get; set; } = null!;
-
-        [Required]
-        [StringLength(20)]
         [Phone]
         public string Phone { get; set; } = null!;
 
