@@ -1,4 +1,5 @@
-﻿using MK.Domain.Dto.Response;
+﻿using MK.Domain.Dto.Request.Location;
+using MK.Domain.Dto.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace MK.Application.Service
 {
     public interface ILocationService
     {
-        Task<ResponseObject<IEnumerable<LocationRes>>> GetAll();
+        Task<PaginationResponse<LocationRes>> GetAll(PaginationParameters pagingParam = null);
+
+        Task<ResponseObject<Guid>> Create(CreateLocationReq req);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MK.Domain.Dto.Response;
+using MK.Domain.Dto.Request.Location;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace MK.API.Controllers
 {
@@ -20,14 +22,29 @@ namespace MK.API.Controllers
         /// <summary>
         /// Function to get all location with paging and filter
         /// </summary>
-        /// <returns></returns>
+        /// <param name="pageNumer">Not Require</param>
+        /// <param name="pageSize">Not Require</param>
+        /// <returns>Paging list of location</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<LocationRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll(string[] fields, [FromQuery] PaginationParameters pParam)
+        public async Task<IActionResult> GetAll(int? pageNumer = null, int? pageSize = null)
         {
-            var result = await _locationService.GetAll();
-            return Ok(result);
+            var result = await _locationService.GetAll(new PaginationParameters
+            {
+                PageNumber = pageNumer ?? 1,
+                PageSize = pageSize ?? 10
+            });
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create([Required] CreateLocationReq req)
+        {
+            var result = await _locationService.Create(req);
+            return StatusCode((int)result.StatusCode, result);
         }
     }
 }

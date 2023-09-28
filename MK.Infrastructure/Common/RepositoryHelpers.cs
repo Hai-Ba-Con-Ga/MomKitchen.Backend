@@ -90,7 +90,7 @@ namespace MK.Infrastructure.Common
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
-            if (selectedFields.Length > 0)
+            if (selectedFields != null && selectedFields.Length > 0)
             {
                 query.Select(CreateProjection<T>(selectedFields));
             }

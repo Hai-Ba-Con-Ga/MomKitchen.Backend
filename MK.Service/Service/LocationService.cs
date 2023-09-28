@@ -1,6 +1,9 @@
 ﻿using MK.Application.Repository;
 using MK.Domain.Common;
+using MK.Domain.Dto.Request.Location;
 using MK.Domain.Dto.Response;
+using MK.Infrastructure.Repository;
+using MK.Service.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,22 +18,43 @@ namespace MK.Service.Service
         {
         }
 
-        public async Task<ResponseObject<IEnumerable<LocationRes>>> GetAll()
+        public async Task<ResponseObject<Guid>> Create(CreateLocationReq req)
+        {
+            try
+            {
+                var result = await _unitOfWork.Location.CreateAsync(_mapper.Map<Location>(req), isSaveChange: true);
+
+                return Success(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<Guid>(ex.Message);
+            }
+        }
+
+        public async Task<PaginationResponse<LocationRes>> GetAll(PaginationParameters pagingParam = null)
         {
             try
             {
                 var query = new QueryHelper<Location>()
                 {
-                    SelectedFields = new string[] { "Lat" }
+                    Selector = t => new Location()
+                    {
+                        Lat = t.Lat,
+                        Lng = t.Lng,
+                    },
+                    PaginationParams = pagingParam ??= new PaginationParameters(),
                 };
 
-                var result = await _unitOfWork.Location.Get(query);
+                var resultQuery = await _unitOfWork.Location.GetWithPagination(query);
 
-                return Success(_mapper.Map<IEnumerable<LocationRes>>(result));
+                var result = resultQuery.PagedListAdapt<Location, LocationRes>();
+
+                return Success(result);
             }
             catch (Exception ex)
             {
-                return null;
+                return BadRequests<LocationRes>(ex.Message);
             }
         }
     }

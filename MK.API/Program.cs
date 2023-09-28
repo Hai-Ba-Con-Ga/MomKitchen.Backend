@@ -13,6 +13,9 @@ namespace MK.API
                 serverOptions.Configure(kestrelSection);
             });
 
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
             //Binding appsettings.json to AppConfig
             builder.Configuration.SettingsBinding();
 

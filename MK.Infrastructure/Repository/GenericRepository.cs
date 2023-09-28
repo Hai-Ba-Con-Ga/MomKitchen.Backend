@@ -22,26 +22,28 @@ namespace MK.Infrastructure.Repository
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task CreateAsync(T entity, bool isSaveChange = false)
+        public async Task<Guid> CreateAsync(T entity, bool isSaveChange = false)
         {
             await dbSet.AddAsync(entity);
             if (isSaveChange)
             {
                 await SaveChangesAsync().ConfigureAwait(false);
             }
+            return entity.Id;
         }
         /// <summary>
         /// Add a list of entities to DbSet, need to call SaveChanges to save to database
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
-        public async Task CreateAsync(IEnumerable<T> entities, bool isSaveChange = false)
+        public async Task<IEnumerable<Guid>> CreateAsync(IEnumerable<T> entities, bool isSaveChange = false)
         {
             await dbSet.AddRangeAsync(entities);
             if (isSaveChange)
             {
                 await SaveChangesAsync().ConfigureAwait(false);
             }
+            return entities.Select(e => e.Id);
         }
         #endregion Create
 

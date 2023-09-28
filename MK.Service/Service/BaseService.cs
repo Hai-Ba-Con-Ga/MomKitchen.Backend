@@ -32,9 +32,27 @@ namespace MK.Service.Service
             };
         }
 
-        protected ResponseObject<T> Bad<T>(string message)
+        protected PaginationResponse<T> Success<T>(PagedList<T> data) 
+        {
+            return new PaginationResponse<T>(data)
+            {
+                Data = data,
+                StatusCode = HttpStatusCode.OK,
+            };
+        }
+
+        protected ResponseObject<T> BadRequest<T>(string message)
         {
             return new ResponseObject<T>
+            {
+                Message = message,
+                StatusCode = HttpStatusCode.BadRequest,
+            };
+        }
+
+        protected PaginationResponse<T> BadRequests<T>(string message)
+        {
+            return new PaginationResponse<T>
             {
                 Message = message,
                 StatusCode = HttpStatusCode.BadRequest,
@@ -44,6 +62,15 @@ namespace MK.Service.Service
         protected ResponseObject<T> NotFound<T>(string message)
         {
             return new ResponseObject<T>
+            {
+                Message = message,
+                StatusCode = HttpStatusCode.NotFound,
+            };
+        }
+
+        protected PaginationResponse<T> NotFounds<T>(string message)
+        {
+            return new PaginationResponse<T>
             {
                 Message = message,
                 StatusCode = HttpStatusCode.NotFound,
