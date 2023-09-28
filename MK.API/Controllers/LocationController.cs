@@ -10,8 +10,11 @@ namespace MK.API.Controllers
     public class LocationController : ControllerBase
     {
 
-        public LocationController()
+        private readonly ILocationService _locationService;
+
+        public LocationController(ILocationService locationService)
         {
+            _locationService = locationService;
         }
 
         /// <summary>
@@ -21,9 +24,10 @@ namespace MK.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<LocationRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> GetAll(string[] fields, [FromQuery] PaginationParameters pParam)
+        public async Task<IActionResult> GetAll(string[] fields, [FromQuery] PaginationParameters pParam)
         {
-
+            var result = await _locationService.GetAll();
+            return Ok(result);
         }
     }
 }

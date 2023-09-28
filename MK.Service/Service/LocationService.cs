@@ -21,10 +21,10 @@ namespace MK.Service.Service
             {
                 var query = new QueryHelper<Location>()
                 {
-
+                    SelectedFields = new string[] { "Lat" }
                 };
 
-                //var result = _unitOfWork.Location.Get()
+                var result = _unitOfWork.Location.Get(query);
 
                 return await Task.FromResult<IEnumerable<LocationRes>>(new List<LocationRes>());
             }

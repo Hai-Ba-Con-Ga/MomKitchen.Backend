@@ -16,10 +16,13 @@ namespace MK.API
             //Binding appsettings.json to AppConfig
             builder.Configuration.SettingsBinding();
 
+
             // Add services to the container.
             builder.ConfigureAutofacContainer();
 
             builder.Services.AddDbContexts();
+
+            builder.Services.AddApiVersion();
 
             builder.Services.AddControllers();
 
