@@ -13,5 +13,6 @@ namespace MK.Application.Service
         Task<PaginationResponse<LocationRes>> GetAll(PaginationParameters pagingParam = null);
 
         Task<ResponseObject<Guid>> Create(CreateLocationReq req);
+        Task<ResponseObject<LocationRes>> GetById(Guid locationId);
     }
 }

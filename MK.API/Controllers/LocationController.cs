@@ -38,6 +38,20 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
+        [HttpGet("{locationId}")]
+        [ProducesResponseType(typeof(LocationRes), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetById(Guid locationId)
+        {
+            var result = await _locationService.GetById(locationId);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Function to create new location 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns>Guid of object have been created successfully</returns>
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

@@ -1,5 +1,6 @@
 ﻿
 
+using Mapster;
 using MK.Domain.Common;
 using System;
 using System.Linq.Expressions;
@@ -195,6 +196,19 @@ namespace MK.Infrastructure.Repository
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
         }
         /// <summary>
+        /// Get entity by id and other conditions
+        /// This function will return mapping dto object map from entity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<TResult?> GetById<TResult>(Guid id, QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class
+        {
+            var query = dbSet.ApplyConditions(queryHelper, id, isAsNoTracking);
+
+            return await query.SingleOrDefaultAsync().ConfigureAwait(false);
+        }
+        /// <summary>
         /// Get all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="queryHelper"></param>
@@ -210,7 +224,7 @@ namespace MK.Infrastructure.Repository
         /// </summary>
         /// <param name="queryHelper"></param>
         /// <returns>
-        ///  PagedList is a class derived from List<T> and it is used to represent pagination of a list of objects.
+        ///  PagedList is a class derived from List<TSource> and it is used to represent pagination of a list of objects.
         /// </returns>
         public async Task<PagedList<T>> GetWithPagination(QueryHelper<T> queryHelper, bool isAsNoTracking = true)
         {

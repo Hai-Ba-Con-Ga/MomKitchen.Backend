@@ -4,7 +4,7 @@ namespace MK.API.Application.Repository
     public interface IGenericRepository<T> : IDisposable where T : BaseEntity, new()
     {
         Task<int> SaveChangesAsync();
-     
+
         Task<Guid> CreateAsync(T entity, bool isSaveChange = false);
         Task<IEnumerable<Guid>> CreateAsync(IEnumerable<T> entities, bool isSaveChange = false);
 
@@ -25,6 +25,14 @@ namespace MK.API.Application.Repository
         /// <param name="query"></param>
         /// <returns></returns>
         Task<T?> GetById(Guid id, QueryHelper<T> query, bool isAsNoTracking = true);
+        /// <summary>
+        /// Get entity by id and other conditions
+        /// This function will return mapping dto object map from entity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        Task<TResult?> GetById<TResult>(Guid id, QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
         /// <summary>
         /// Get all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>

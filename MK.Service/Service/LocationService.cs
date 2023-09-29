@@ -57,5 +57,21 @@ namespace MK.Service.Service
                 return BadRequests<LocationRes>(ex.Message);
             }
         }
+
+        public async Task<ResponseObject<LocationRes>> GetById(Guid locationId)
+        {
+            try
+            {
+                var query = new QueryHelper<Location, LocationRes>();
+
+                var result = await _unitOfWork.Location.GetById<LocationRes>(locationId, query);
+
+                return Success(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<LocationRes>(ex.Message);
+            }
+        }
     }
 }

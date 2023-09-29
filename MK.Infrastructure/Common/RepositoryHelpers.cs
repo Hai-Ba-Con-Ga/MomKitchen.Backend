@@ -52,7 +52,7 @@ namespace MK.Infrastructure.Common
 
             if (whereCondition != null)
             {
-                query.Where(whereCondition);
+                query = query.Where(whereCondition);
             }
 
             return query;
@@ -65,17 +65,12 @@ namespace MK.Infrastructure.Common
         /// <param name="selector"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<T> SelectField<T>(this IQueryable<T> query, Expression<Func<T, T>> selector) where T : BaseEntity
+        public static IQueryable<TResult> SelectField<TSource, TResult>(this IQueryable<TSource> query) where TSource : BaseEntity where TResult : class
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
-            if (selector != null)
-            {
-                query.Select(selector);
-            }
-
-            return query;
+            return query.Select(CreateProjection<TSource, TResult>());
         }
         /// <summary>
         /// Add select field for query by selected selectedFields
@@ -92,11 +87,13 @@ namespace MK.Infrastructure.Common
 
             if (selectedFields != null && selectedFields.Length > 0)
             {
-                query.Select(CreateProjection<T>(selectedFields));
+                //query.Select(CreateProjection<T>(selectedFields));
             }
 
             return query;
         }
+
+
         /// <summary>
         /// Add condition IsDeleted = false for query
         /// </summary>
@@ -120,15 +117,15 @@ namespace MK.Infrastructure.Common
         }
         /// <summary>
         /// Apply conditions for query helper (AsNoTracking)
-        /// AddExistCondition -> Includes -> WhereCondition -> SelectField
+        /// AddExistCondition -> Includes -> WhereCondition
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
         /// <param name="dbSet"></param>
         /// <param name="queryHelper"></param>
         /// <returns></returns>
-        public static IQueryable<T> ApplyConditions<T>(this DbSet<T> dbSet, QueryHelper<T> queryHelper, Guid? id = null, bool isAsNoTracking = true) where T : BaseEntity
+        public static IQueryable<TSource> ApplyConditions<TSource>(this DbSet<TSource> dbSet, QueryHelper<TSource> queryHelper, Guid? id = null, bool isAsNoTracking = true) where TSource : BaseEntity
         {
-            Expression<Func<T, bool>> isNotDeleteCondition = p => p.Id == id;
+            Expression<Func<TSource, bool>> isNotDeleteCondition = p => p.Id == id;
 
             queryHelper.Filter = queryHelper.Filter.AddExistCondition();
 
@@ -137,7 +134,7 @@ namespace MK.Infrastructure.Common
                 queryHelper.Filter = PredicateBuilder.And(queryHelper.Filter, isNotDeleteCondition);
             }
 
-            IQueryable<T> query = dbSet;
+            IQueryable<TSource> query = dbSet;
 
             if (isAsNoTracking)
             {
@@ -145,17 +142,78 @@ namespace MK.Infrastructure.Common
             }
 
             query.Includes(queryHelper.Includes)
-            .WhereCondition(queryHelper.Filter)
-            .SelectField(queryHelper.Selector)
-            .SelectField(queryHelper.SelectedFields);
+            .WhereCondition(queryHelper.Filter);
 
             return query;
         }
 
-        #region Dynamic query 
-        static Func<T, T> CreateProjection<T>(string[] selectedFields)
+        /// <summary>
+        /// Apply conditions for query helper (AsNoTracking)
+        /// AddExistCondition -> Includes -> WhereCondition -> SelectField
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="dbSet"></param>
+        /// <param name="queryHelper"></param>
+        /// <returns></returns>
+        public static IQueryable<TResult> ApplyConditions<TSource, TResult>(this DbSet<TSource> dbSet, QueryHelper<TSource, TResult> queryHelper, Guid? id = null, bool isAsNoTracking = true) where TSource : BaseEntity where TResult : class
         {
-            return entity => CreateProjectedInstance(entity, selectedFields);
+            queryHelper.Filter = queryHelper.Filter.AddExistCondition();
+
+            if (id != null)
+            {
+                queryHelper.Filter = PredicateBuilder.And(queryHelper.Filter, t => t.Id.Equals(id));
+            }
+
+            IQueryable<TSource> query = dbSet;
+
+            if (isAsNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            query = query.Includes(queryHelper.Includes)
+                        .WhereCondition(queryHelper.Filter);
+
+            var resulQuery = query.SelectField<TSource, TResult>();
+
+            return resulQuery;
+        }
+
+        #region Dynamic query 
+        static Expression<Func<TSource, TResult>> CreateProjection<TSource, TResult>() where TSource : BaseEntity where TResult : class
+        {
+            var properties = typeof(TResult).GetProperties();
+            return entity => CreateProjectedInstance<TSource, TResult>(entity, properties);
+        }
+
+        static TResult CreateProjectedInstance<TSource, TResult>(TSource source, PropertyInfo[]? resultProperties)
+        {
+            if (resultProperties == null)
+            {
+                throw new ArgumentNullException(nameof(resultProperties));
+            }
+
+            var resultInstance = Activator.CreateInstance<TResult>();
+
+            var sourceProperties = typeof(TSource).GetProperties();
+
+            foreach (var resultProperty in resultProperties)
+            {
+                if (resultProperty == null)
+                {
+                    continue;
+                }
+
+                var sourceProperty = sourceProperties.FirstOrDefault(p => p.Name == resultProperty.Name);
+
+                if (sourceProperty != null)
+                {
+                    var sourceValue = sourceProperty.GetValue(source);
+                    resultProperty.SetValue(resultInstance, sourceValue);
+                }
+            }
+
+            return resultInstance;
         }
 
         static T CreateProjectedInstance<T>(T source, string[] selectedFields)
