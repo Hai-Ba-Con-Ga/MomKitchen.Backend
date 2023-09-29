@@ -1,4 +1,5 @@
 ﻿using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MK.Application.Service;
@@ -23,11 +24,6 @@ namespace MK.API.Controllers
             _authenticationService = authenticationService;
         }
 
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok("Hello");
-        }
 
         [HttpPost]
         [Route("login")]
@@ -42,7 +38,8 @@ namespace MK.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpDelete]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("logout")]
         public IActionResult Logout([FromBody] LogoutRequest logoutRequest)
         {

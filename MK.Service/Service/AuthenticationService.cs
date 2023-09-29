@@ -27,7 +27,7 @@ namespace MK.Service.Service
             _mapper = mapper;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateToken(UserResponse user)
         {
             return _tokenService.GetToken(user);
         }
@@ -86,22 +86,41 @@ namespace MK.Service.Service
                     Role = role,
                     FcmToken = new List<string>() { loginRequest.FcmToken },
                 };
-                await _userRepository.CreateAsync(newUser);
-                loginResponse.User = _mapper.Map<UserResponse>(newUser);
+                await _userRepository.CreateAsync(newUser, true);
+                UserResponse userResponse = new UserResponse()
+                {
+                    Id = newUser.Id,
+                    Email = newUser.Email,
+                    Phone = newUser.Phone,
+                    AvatarUrl = newUser.AvatarUrl,
+                    FullName = newUser.FullName,
+                    RoleName = newUser.Role.Name,
+                };
+                loginResponse.User = userResponse;
                 //generate token
-                loginResponse.Token = GenerateToken(newUser);
+                loginResponse.Token = GenerateToken(userResponse);
 
             }
             else
             {
                 loginResponse.IsFirstTime = false;
-                loginResponse.User = _mapper.Map<UserResponse>(user);
+                var role = await _roleRepository.GetById(user.RoleId, new QueryHelper<Role>());
+                UserResponse userResponse = new UserResponse()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    AvatarUrl = user.AvatarUrl,
+                    FullName = user.FullName,
+                    RoleName = role.Name,
+                };
+
                 
                 //update fcm token
                 user.FcmToken.Add(loginRequest.FcmToken);
                 await _userRepository.SaveChangesAsync();
 
-                loginResponse.Token = GenerateToken(user);
+                loginResponse.Token = GenerateToken(userResponse);
             }
             
             return loginResponse;

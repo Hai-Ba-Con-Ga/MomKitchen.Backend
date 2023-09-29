@@ -9,7 +9,7 @@ namespace MK.API.Configuration
         {
             FirebaseApp.Create(new AppOptions
             {
-                Credential = GoogleCredential.FromFile("../momkitchen-41f2b-firebase-adminsdk.json")
+                Credential = GoogleCredential.FromFile(AppConfig.FirebaseConfig.Path)
             });
         }
     }

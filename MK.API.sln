@@ -11,9 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Note", "Note", "{9AECEE2E-5
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FEF7752F-C569-4025-853E-BEEB7CF0C4C2}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Downloads\momkitchen-41f2b-firebase-adminsdk.json = ..\..\..\..\Downloads\momkitchen-41f2b-firebase-adminsdk.json
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK.API", "MK.API\MK.API.csproj", "{B4A4D6D6-82F2-4FC1-BBA4-4B269764C533}"
 EndProject

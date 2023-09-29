@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MK.Domain.Common;
+using MK.Domain.Dto.Response;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,12 +22,11 @@ namespace MK.Service.Service
             _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppConfig.JwtSetting.IssuerSigningKey));
             _credentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
         }
-        public string GetToken(User user)
+        public string GetToken(UserResponse user)
         {
             var claims = new[] {
                 new Claim("id", user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-
+                new Claim("role", user.RoleName)
             };
             return new JwtSecurityTokenHandler().WriteToken(GenerateTokenByClaims(claims, DateTime.Now.AddMinutes(120)));
         }

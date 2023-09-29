@@ -9,7 +9,7 @@ namespace MK.Domain.Dto.Response
 {
     public class UserResponse
     {
-        public string? Id { get; set; }
+        public Guid Id { get; set; }
         public string? FcmToken { get; set; }
         public string? Email { get; set; }
         public string? FullName { get; set; }
@@ -18,6 +18,6 @@ namespace MK.Domain.Dto.Response
 
         public DateTime? Birthday {  get; set; }
 
-        public Role? Role { get; set; }
+        public string RoleName { get; set; }
     }
 }

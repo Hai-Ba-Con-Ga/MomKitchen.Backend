@@ -11,7 +11,7 @@ namespace MK.Application.Service
 {
     public interface IAuthenticationService 
     {
-        string GenerateToken(User user);
+        string GenerateToken(UserResponse user);
         Task<LoginResponse> GetUserByFirebaseTokenAsync(LoginRequest loginRequest);
 
         Task<FirebaseToken> GetFirebaseTokenAsync(string token);

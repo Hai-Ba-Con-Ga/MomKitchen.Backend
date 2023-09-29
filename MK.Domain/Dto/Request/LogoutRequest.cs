@@ -8,6 +8,6 @@ namespace MK.Domain.Dto.Request
 {
     public class LogoutRequest
     {
-        public string? FcmToken { get; set; }
+        public string FcmToken { get; set; }
     }
 }

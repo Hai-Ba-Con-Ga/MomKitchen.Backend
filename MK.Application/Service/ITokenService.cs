@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MK.Domain.Dto.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -9,7 +10,7 @@ namespace MK.Application.Service
 {
     public interface ITokenService
     {
-        string GetToken(User user);
+        string GetToken(UserResponse user);
         IEnumerable<Claim> DecodeAndValidateToken(string token);
     }
 }

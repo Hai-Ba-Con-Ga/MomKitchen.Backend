@@ -9,8 +9,12 @@ namespace MK.Domain.Common
     public class AppConfig
     {
         public static ConnectionStrings ConnectionStrings { get; set; }
-        public static string FirebaseConfigPath { get; set; }
+        public static FirebaseConfig FirebaseConfig { get; set; }
         public static JwtSetting JwtSetting { get; set; }
+    }
+    public class FirebaseConfig
+    {
+        public string Path { get; set; }
     }
 
     public class ConnectionStrings
