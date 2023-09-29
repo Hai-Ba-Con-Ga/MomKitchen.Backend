@@ -1,4 +1,6 @@
 ﻿
+using MK.Domain.Dto.Request.Location;
+
 namespace MK.API.Application.Repository
 {
     public interface IGenericRepository<T> : IDisposable where T : BaseEntity, new()
@@ -7,12 +9,32 @@ namespace MK.API.Application.Repository
 
         Task<Guid> CreateAsync(T entity, bool isSaveChange = false);
         Task<IEnumerable<Guid>> CreateAsync(IEnumerable<T> entities, bool isSaveChange = false);
-
+        /// <summary>
+        /// Hard delete
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         Task<int> DeleteAsync(Expression<Func<T, bool>> filter);
+        /// <summary>
+        /// Update IsDeleted = true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         Task<int> SoftDeleteAsync(Expression<Func<T, bool>> filter);
-
-        void Update(T entity, bool isSaveChange = false);
-        Task<int> Update(Expression<Func<T, bool>>? predicate, Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls);
+        /// <summary>
+        /// Update traditional
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="isSaveChange"></param>
+        /// <returns></returns>
+        Task<int> UpdateAsync(T entity, bool isSaveChange = false);
+        /// <summary>
+        /// Update without SaveChanges
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <param name="setPropertyCalls"></param>
+        /// <returns></returns>
+        Task<int> UpdateAsync(Expression<Func<T, bool>>? predicate, Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls);
 
         Task<T?> GetById(Guid id, Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
         Task<IEnumerable<T>> GetWithCondition(Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
@@ -31,7 +53,9 @@ namespace MK.API.Application.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <param name="query"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// Null - if entity not found
+        /// </returns>
         Task<TResult?> GetById<TResult>(Guid id, QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
         /// <summary>
         /// Get all entities are active and match condition predicate, this function is AsNoTracking
@@ -41,12 +65,39 @@ namespace MK.API.Application.Repository
         Task<IEnumerable<T>> Get(QueryHelper<T> queryHelper, bool isAsNoTracking = true);
         /// <summary>
         /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// 
+        /// This function will return list of mapping dto object map from list of entity
+        /// </summary>
+        /// <param name="queryHelper"></param>
+        /// <returns></returns>
+        Task<IEnumerable<TResult>> Get<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
+        /// <summary>
+        /// Get all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="queryHelper"></param>
         /// <returns>
         ///  PagedList is a class derived from List<T> and it is used to represent pagination of a list of objects.
         /// </returns>
         Task<PagedList<T>> GetWithPagination(QueryHelper<T> queryHelper, bool isAsNoTracking = true);
+        /// <summary>
+        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// 
+        /// This function will return PagedList of mapping dto object map from list of entity
+        /// </summary>
+        /// <param name="queryHelper"></param>
+        /// <returns>
+        ///  PagedList is a class derived from List<TSource> and it is used to represent pagination of a list of objects.
+        /// </returns>
+        Task<PagedList<TResult>> GetWithPagination<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
+        /// <summary>
+        /// Update entity by id and other conditions with DTO object
+        /// </summary>
+        /// <typeparam name="TDto"></typeparam>
+        /// <param name="predicate"></param>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        Task<int> UpdateAsync<TDto>(Expression<Func<T, bool>> predicate, TDto req) where TDto : class, new();
         #endregion Version 2.0
     }
 }

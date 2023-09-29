@@ -11,8 +11,9 @@ namespace MK.Application.Service
     public interface ILocationService
     {
         Task<PaginationResponse<LocationRes>> GetAll(PaginationParameters pagingParam = null);
-
         Task<ResponseObject<Guid>> Create(CreateLocationReq req);
         Task<ResponseObject<LocationRes>> GetById(Guid locationId);
+        Task<ResponseObject<bool>> Delete(Guid locationId);
+        Task<ResponseObject<bool>> Update(Guid locationId, UpdateLocationReq req);
     }
 }

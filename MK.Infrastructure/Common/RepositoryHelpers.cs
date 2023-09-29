@@ -1,8 +1,10 @@
 ﻿using LinqKit;
+using Microsoft.EntityFrameworkCore.Query;
 using MK.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,12 +67,15 @@ namespace MK.Infrastructure.Common
         /// <param name="selector"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<TResult> SelectField<TSource, TResult>(this IQueryable<TSource> query) where TSource : BaseEntity where TResult : class
+        public static IQueryable<TResult> SelectField<TSource, TResult>(this IQueryable<TSource> query, Expression<Func<TSource, TResult>> selector) where TSource : BaseEntity where TResult : class
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
-            return query.Select(CreateProjection<TSource, TResult>());
+            if (selector == null)
+                return query.Select(CreateProjection<TSource, TResult>());
+
+            return query.Select(selector);
         }
         /// <summary>
         /// Add select field for query by selected selectedFields
@@ -80,27 +85,25 @@ namespace MK.Infrastructure.Common
         /// <param name="selectedFields"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<T> SelectField<T>(this IQueryable<T> query, string[] selectedFields) where T : BaseEntity
+        private static IQueryable<T> SelectField<T>(this IQueryable<T> query, string[] selectedFields) where T : BaseEntity
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
             if (selectedFields != null && selectedFields.Length > 0)
             {
-                //query.Select(CreateProjection<T>(selectedFields));
+                query.Select(CreateProjection<T>(selectedFields));
             }
 
             return query;
         }
-
-
         /// <summary>
         /// Add condition IsDeleted = false for query
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="filter"></param>
         /// <returns></returns>
-        private static Expression<Func<T, bool>> AddExistCondition<T>(this Expression<Func<T, bool>>? filter) where T : BaseEntity
+        public static Expression<Func<T, bool>> AddExistCondition<T>(this Expression<Func<T, bool>>? filter) where T : BaseEntity
         {
             Expression<Func<T, bool>> isNotDeleteCondition = p => p.IsDeleted == false;
 
@@ -116,8 +119,11 @@ namespace MK.Infrastructure.Common
             return filter;
         }
         /// <summary>
-        /// Apply conditions for query helper (AsNoTracking)
-        /// AddExistCondition -> Includes -> WhereCondition
+        /// Require: QueryHelper<TSource> queryHelper
+        /// 
+        /// Apply conditions for query helper (AsNoTracking) 
+        /// 
+        /// AddExistCondition -> Includes -> WhereCondition -> SelectField
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
         /// <param name="dbSet"></param>
@@ -125,13 +131,13 @@ namespace MK.Infrastructure.Common
         /// <returns></returns>
         public static IQueryable<TSource> ApplyConditions<TSource>(this DbSet<TSource> dbSet, QueryHelper<TSource> queryHelper, Guid? id = null, bool isAsNoTracking = true) where TSource : BaseEntity
         {
-            Expression<Func<TSource, bool>> isNotDeleteCondition = p => p.Id == id;
+            Expression<Func<TSource, bool>> matchWithId = p => p.Id == id;
 
             queryHelper.Filter = queryHelper.Filter.AddExistCondition();
 
             if (id != null)
             {
-                queryHelper.Filter = PredicateBuilder.And(queryHelper.Filter, isNotDeleteCondition);
+                queryHelper.Filter = PredicateBuilder.And(queryHelper.Filter, matchWithId);
             }
 
             IQueryable<TSource> query = dbSet;
@@ -141,14 +147,15 @@ namespace MK.Infrastructure.Common
                 query = query.AsNoTracking();
             }
 
-            query.Includes(queryHelper.Includes)
-            .WhereCondition(queryHelper.Filter);
-
-            return query;
+            return query.Includes(queryHelper.Includes)
+                     .WhereCondition(queryHelper.Filter)
+                     .SelectField(queryHelper.SelectedFields);
         }
-
         /// <summary>
+        /// Require: QueryHelper<TSource, TResult> queryHelper
+        /// 
         /// Apply conditions for query helper (AsNoTracking)
+        /// 
         /// AddExistCondition -> Includes -> WhereCondition -> SelectField
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
@@ -171,15 +178,28 @@ namespace MK.Infrastructure.Common
                 query = query.AsNoTracking();
             }
 
-            query = query.Includes(queryHelper.Includes)
-                        .WhereCondition(queryHelper.Filter);
-
-            var resulQuery = query.SelectField<TSource, TResult>();
-
-            return resulQuery;
+            return query.Includes(queryHelper.Includes)
+                        .WhereCondition(queryHelper.Filter)
+                        .SelectField<TSource, TResult>(queryHelper.Selector);
         }
 
-        #region Dynamic query 
+        #region Dynamic query extension
+        /// <summary>
+        /// Function create expression for select field
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="selectedFields"></param>
+        /// <returns>Expression of enity, but just get fields in selectedFields</returns>
+        static Expression<Func<T, T>> CreateProjection<T>(string[] selectedFields)
+        {
+            return entity => CreateProjectedInstance(entity, selectedFields);
+        }
+        /// <summary>
+        /// Function create expression for select field
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns>Expression of mapping between TSource and TResult (Enity - DTO)</returns>
         static Expression<Func<TSource, TResult>> CreateProjection<TSource, TResult>() where TSource : BaseEntity where TResult : class
         {
             var properties = typeof(TResult).GetProperties();
@@ -235,6 +255,45 @@ namespace MK.Infrastructure.Common
 
             return projectedInstance;
         }
-        #endregion Dynamic query
+        #endregion Dynamic query extension
+
+        #region Update extension
+        public static Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> GetSetPropertyCalls<TEntity, TDto>(this TDto dto) where TEntity : BaseEntity where TDto : class
+        {
+            var dtoProperties = typeof(TDto).GetProperties();
+            var entityProperties = typeof(TEntity).GetProperties();
+
+            //Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setter = calls => calls;
+
+
+            foreach (var dtoProperty in dtoProperties)
+            {
+                if (dtoProperty is null)
+                {
+                    continue;
+                }
+
+                var nameProperty = entityProperties.FirstOrDefault(p => p.Name == dtoProperty.Name)?.Name;
+
+                if (nameProperty is not null)
+                {
+                    Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> expression = setter => setter.SetProperty(t => t.GetType().GetProperty(nameProperty), dto.GetType().GetProperty(nameProperty));
+                    return expression;
+                }
+            }
+
+            return null;
+        }
+
+        public static Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> AppendSetProperty<TEntity>(
+            Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> left,
+            Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> right)
+        {
+            var replace = new ReplacingExpressionVisitor(right.Parameters, new[] { left.Body });
+            var combined = replace.Visit(right.Body);
+            return Expression.Lambda<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>(combined, left.Parameters);
+        }
+
+        #endregion Update extension
     }
 }

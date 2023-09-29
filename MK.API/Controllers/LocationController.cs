@@ -20,6 +20,47 @@ namespace MK.API.Controllers
         }
 
         /// <summary>
+        /// Function to create new location 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns>Guid of object have been created successfully</returns>
+        [HttpPost]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create([Required] CreateLocationReq req)
+        {
+            var result = await _locationService.Create(req);
+            return StatusCode((int)result.StatusCode, result);
+        }
+        /// <summary>
+        /// Function to soft delete location
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <returns></returns>
+        [HttpDelete("{locationId}")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(Guid locationId)
+        {
+            var result = await _locationService.Delete(locationId);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Function to update location
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <returns></returns>
+        [HttpPut("{locationId}")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(Guid locationId, UpdateLocationReq req)
+        {
+            var result = await _locationService.Update(locationId, req);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        /// <summary>
         /// Function to get all location with paging and filter
         /// </summary>
         /// <param name="pageNumer">Not Require</param>
@@ -38,6 +79,11 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
+        /// <summary>
+        /// Get location by id
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <returns></returns>
         [HttpGet("{locationId}")]
         [ProducesResponseType(typeof(LocationRes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -47,18 +93,5 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-        /// <summary>
-        /// Function to create new location 
-        /// </summary>
-        /// <param name="req"></param>
-        /// <returns>Guid of object have been created successfully</returns>
-        [HttpPost]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([Required] CreateLocationReq req)
-        {
-            var result = await _locationService.Create(req);
-            return StatusCode((int)result.StatusCode, result);
-        }
     }
 }

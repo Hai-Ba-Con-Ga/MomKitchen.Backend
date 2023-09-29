@@ -18,10 +18,6 @@ namespace MK.Domain.Common
         /// </summary>
         public PaginationParameters? PaginationParams { get; set; } = null;
         /// <summary>
-        /// Helper for select field from entity - SELECT command
-        /// </summary>
-        public Expression<Func<T, T>> Selector { get; set; } = null!;
-        /// <summary>
         /// Helper for filter entity with condition - WHERE command
         /// </summary>
         public Expression<Func<T, bool>>? Filter { get; set; } = null;
@@ -34,10 +30,17 @@ namespace MK.Domain.Common
         /// </summary>
         public string[] SelectedFields { get; set; } = null!;
     }
-
+    /// <summary>
+    /// QueryHelper<TSource, TResult> TSource is an entity, TResult is a dto object
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
     public class QueryHelper<TSource, TResult> : QueryHelper<TSource> where TSource : BaseEntity where TResult : class
     {
-        public new Expression<Func<TSource, TResult>> Selector { get; set; } = null!;
+        /// <summary>
+        /// Helper for select field from entity - SELECT command
+        /// </summary>
+        public Expression<Func<TSource, TResult>> Selector { get; set; } = null!;
     }
 
 }
