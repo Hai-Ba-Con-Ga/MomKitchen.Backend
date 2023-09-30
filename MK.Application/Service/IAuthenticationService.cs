@@ -12,9 +12,9 @@ namespace MK.Application.Service
     public interface IAuthenticationService 
     {
         string GenerateToken(UserResponse user);
-        Task<LoginResponse> GetUserByFirebaseTokenAsync(LoginRequest loginRequest);
+        Task<ResponseObject<LoginResponse>> GetUserByFirebaseTokenAsync(LoginRequest loginRequest);
 
         Task<FirebaseToken> GetFirebaseTokenAsync(string token);
-        Task<Boolean> Logout(Guid userId, string fcmToken);
+        Task<ResponseObject<bool>> Logout(Guid userId, string fcmToken);
     }
 }

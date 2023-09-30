@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MK.Domain.Dto.Response
@@ -10,14 +11,28 @@ namespace MK.Domain.Dto.Response
     public class UserResponse
     {
         public Guid Id { get; set; }
-        public string? FcmToken { get; set; }
+        public List<String> FcmToken { get; set; }
         public string? Email { get; set; }
         public string? FullName { get; set; }
         public string? AvatarUrl { get; set; }
         public string? Phone { get; set; }
 
-        public DateTime? Birthday {  get; set; }
+        public DateTime? Birthday { get; set; }
 
-        public string RoleName { get; set; }
+        private string? _roleName;
+        public Role Role
+        {
+            set
+            {
+                _roleName = value.Name;
+            }
+        }
+        public string RoleName
+        {
+            get
+            {
+                return _roleName;
+            }
+        }
     }
 }

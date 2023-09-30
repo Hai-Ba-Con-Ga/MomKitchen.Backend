@@ -364,3 +364,4 @@ MigrationBackup/
 out/
 
 momkitchen-41f2b-firebase-adminsdk.json
+/MK.API/firebase.json

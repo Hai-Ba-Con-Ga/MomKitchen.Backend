@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MK.Application.Service;
 using MK.Domain.Constant;
 using MK.Domain.Dto.Request;
@@ -13,7 +14,8 @@ using System.Security.Claims;
 
 namespace MK.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -23,39 +25,51 @@ namespace MK.API.Controllers
         {
             _authenticationService = authenticationService;
         }
-
+        /// <summary>
+        /// Funtion to register new user or login if user already exists
+        /// </summary>
+        /// <param name="loginRequest"></param>
+        /// <returns></returns>
 
         [HttpPost]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var result = await _authenticationService.GetUserByFirebaseTokenAsync(loginRequest);
-            if (result == null)
+            if (result.StatusCode == HttpStatusCode.OK)
             {
-                return BadRequest(new { message = "Username or password is incorrect" });
+                SetCookie(AppConstant.COOKIE_NAME, result.Data.Token);
             }
-            SetCookie(AppConstant.COOKIE_NAME, result.Token);
-            return Ok(result);
+            
+            return StatusCode((int)result.StatusCode, result);
         }
 
+        /// <summary>
+        /// Function to logout
+        /// </summary>
+        /// 
+
         [HttpDelete]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("logout")]
-        public IActionResult Logout([FromBody] LogoutRequest logoutRequest)
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest logoutRequest)
         {
             RemoveCookie(AppConstant.COOKIE_NAME);
-            string rawUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (rawUserId == null)
+            string rawUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+            if (rawUserId.IsNullOrEmpty())
             {
-                return BadRequest(new { message = "User is not logged in" });
+                return StatusCode((int)HttpStatusCode.OK, new { message = "Invalid token" });
             }
             else
             {
                 Guid userId = Guid.Parse(rawUserId);
-                _authenticationService.Logout(userId, logoutRequest.FcmToken);
+                var result = await _authenticationService.Logout(userId, logoutRequest.FcmToken);
+                return StatusCode((int)result.StatusCode, result);
             }
-
-            return Ok();
         }
 
         private void SetCookie(string key, string value)

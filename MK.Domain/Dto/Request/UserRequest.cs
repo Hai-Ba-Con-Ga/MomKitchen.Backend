@@ -15,9 +15,9 @@ namespace MK.Domain.Dto.Request
         public string? FullName { get; set; }
         public string? AvatarUrl { get; set; }
         public string? Phone { get; set; }
-
+        public string RoleName { get; set; } = "Customer";
         public DateTime? Birthday {  get; set; }
 
-        public Role? Role { get; set; }
+
     }
 }

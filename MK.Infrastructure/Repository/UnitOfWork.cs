@@ -48,6 +48,36 @@ namespace MK.Infrastructure.Repository
                 return _locationRepository;
             }
         }
+
+
+
+        private IGenericRepository<User> _userRepository;
+        public IGenericRepository<User> User
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new GenericRepository<User>(_dbContext);
+                }
+                return _userRepository;
+            }
+        }
+
+        private IGenericRepository<Role> _roleRepository;
+        public IGenericRepository<Role> Role
+        {
+            get
+            {
+                if (_roleRepository == null)
+                {
+                    _roleRepository = new GenericRepository<Role>(_dbContext);
+                }
+                return _roleRepository;
+            }
+        }
+
+        
         #endregion Repository
 
 

@@ -1,6 +1,8 @@
 ﻿using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.HttpResults;
 using MK.API.Application.Repository;
+using MK.Application.Repository;
 using MK.Domain.Common;
 using MK.Domain.Dto.Request;
 using MK.Domain.Dto.Response;
@@ -9,23 +11,19 @@ using System.ComponentModel;
 
 namespace MK.Service.Service
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : BaseService, IAuthenticationService
     {
-        private readonly IGenericRepository<User> _userRepository;
-        private readonly IGenericRepository<Role> _roleRepository;
+        
         private readonly ITokenService _tokenService;
-        private readonly IMapper _mapper;
 
-        public AuthenticationService(IGenericRepository<User> userRepository,
-                       IGenericRepository<Role> roleRepository,
-                                  ITokenService tokenService,
-                                             IMapper mapper)
+
+        public AuthenticationService (IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService) : base(unitOfWork, mapper)
         {
-            _userRepository = userRepository;
-            _roleRepository = roleRepository;
+
             _tokenService = tokenService;
-            _mapper = mapper;
+
         }
+        
 
         public string GenerateToken(UserResponse user)
         {
@@ -38,7 +36,7 @@ namespace MK.Service.Service
         }
 
 
-        public async Task<LoginResponse?> GetUserByFirebaseTokenAsync(LoginRequest loginRequest)
+        public async Task<ResponseObject<LoginResponse>> GetUserByFirebaseTokenAsync(LoginRequest loginRequest)
         {
             FirebaseToken firebaseToken = await GetFirebaseTokenAsync(loginRequest.IdToken);
             //get info from firebase token
@@ -48,34 +46,27 @@ namespace MK.Service.Service
             var avatar = firebaseToken.Claims.GetValueOrDefault("picture")?.ToString();
             var name = firebaseToken.Claims.GetValueOrDefault("name")?.ToString();
 
+            var role = await _unitOfWork.Role.FirstOrDefaultAsync(x => x.Name.Equals(loginRequest.RoleName));
+
 
             LoginResponse loginResponse = new();
             if (email is null && phone is null)
             {
-                return null;
+                return BadRequest<LoginResponse>("Invalid token");
             }
 
             var query = new QueryHelper<User>()
             {
-                Filter = x => x.Email == email || x.Phone == phone
+                Filter = x =>( x.Email == email || x.Phone == phone),
+                Includes = new Expression<Func<User, object>>[] { x => x.Role },
             };
 
-            var user =  (await _userRepository.Get(query)).FirstOrDefault();
+            var user =  (await _unitOfWork.User.Get(query)).FirstOrDefault();
             
             //check user exist
             if (user is null)
             {
                 loginResponse.IsFirstTime = true;
-                var role = await _roleRepository.FirstOrDefaultAsync(x => x.Name == "Customer");
-                if (role is null)
-                {
-                    role = new Role
-                    {
-                        Name = "Customer"
-                    };
-                    await _roleRepository.CreateAsync(role);
-
-                }
                 //create new user
                 User newUser = new()
                 {
@@ -86,16 +77,10 @@ namespace MK.Service.Service
                     Role = role,
                     FcmToken = new List<string>() { loginRequest.FcmToken },
                 };
-                await _userRepository.CreateAsync(newUser, true);
-                UserResponse userResponse = new UserResponse()
-                {
-                    Id = newUser.Id,
-                    Email = newUser.Email,
-                    Phone = newUser.Phone,
-                    AvatarUrl = newUser.AvatarUrl,
-                    FullName = newUser.FullName,
-                    RoleName = newUser.Role.Name,
-                };
+                await _unitOfWork.User.CreateAsync(newUser, true);
+                UserResponse userResponse = _mapper.Map<UserResponse>(newUser);
+                userResponse.Role = newUser.Role;
+                
                 loginResponse.User = userResponse;
                 //generate token
                 loginResponse.Token = GenerateToken(userResponse);
@@ -104,38 +89,29 @@ namespace MK.Service.Service
             else
             {
                 loginResponse.IsFirstTime = false;
-                var role = await _roleRepository.GetById(user.RoleId, new QueryHelper<Role>());
-                UserResponse userResponse = new UserResponse()
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Phone = user.Phone,
-                    AvatarUrl = user.AvatarUrl,
-                    FullName = user.FullName,
-                    RoleName = role.Name,
-                };
-
+                UserResponse userResponse = _mapper.Map<UserResponse>(user);
+                userResponse.Role = user.Role;
                 
                 //update fcm token
                 user.FcmToken.Add(loginRequest.FcmToken);
-                await _userRepository.SaveChangesAsync();
+                await _unitOfWork.User.SaveChangesAsync();
 
                 loginResponse.Token = GenerateToken(userResponse);
             }
             
-            return loginResponse;
+            return Success(loginResponse);
         }
 
-        public async Task<Boolean> Logout(Guid userId, string fcmToken)
+        public async Task<ResponseObject<bool>> Logout(Guid userId, string fcmToken)
         {
-            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await _unitOfWork.User.FirstOrDefaultAsync(x => x.Id == userId);
             if (user is null)
             {
-                return false;
+                return Success(false);
             }
             user.FcmToken.Remove(fcmToken);
-            await _userRepository.SaveChangesAsync();
-            return true;
+            await _unitOfWork.User.SaveChangesAsync();
+            return Success(true);
         }
     }
 }

@@ -92,7 +92,7 @@ namespace MK.Infrastructure.Common
 
             if (selectedFields != null && selectedFields.Length > 0)
             {
-                query.Select(CreateProjection<T>(selectedFields));
+                query = query.Select(CreateProjection<T>(selectedFields));
             }
 
             return query;
