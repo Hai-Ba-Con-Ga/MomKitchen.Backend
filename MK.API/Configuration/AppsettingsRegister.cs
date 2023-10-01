@@ -7,10 +7,14 @@
             do
             {
                 AppConfig.ConnectionStrings = new ConnectionStrings();
+                AppConfig.FirebaseConfig = new FirebaseConfig();
+                AppConfig.JwtSetting = new JwtSetting();
             }
             while (AppConfig.ConnectionStrings == null);
 
             configuration.Bind("ConnectionStrings", AppConfig.ConnectionStrings);
+            configuration.Bind("FirebaseConfig", AppConfig.FirebaseConfig);
+            configuration.Bind("JwtSetting", AppConfig.JwtSetting);
         }
 
     }

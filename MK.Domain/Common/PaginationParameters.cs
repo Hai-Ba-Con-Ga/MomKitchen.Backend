@@ -18,5 +18,17 @@
             }
         }
 
+        public PaginationParameters()
+        {
+            PageNumber = 1;
+            PageSize = 10;
+        }
+
+        public PaginationParameters(int? pageNumer, int? pageSize)
+        {
+            PageNumber = pageNumer ?? 1;
+            PageSize = pageSize ?? 10;
+        }
+
     }
 }

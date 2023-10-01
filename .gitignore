@@ -362,3 +362,6 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 out/
+
+momkitchen-41f2b-firebase-adminsdk.json
+/MK.API/firebase.json

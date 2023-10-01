@@ -20,20 +20,93 @@ namespace MK.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-            //Demo for Singleton pattern in UnitOfWork
-            //IGenericRepository<Account> _accountRepository;
-            //    public IGenericRepository<Account> AcccountRepository
-            //    {
-            //        get
-            //        {
-            //            if (_accountRepository == null)
-            //            {
-            //                _accountRepository = new GenericRepository<Account>(_dbContext);
-            //            }
-            //            return _accountRepository;
-            //        }
-            //    }
-        
+        #region Repository 
+        //Demo for Singleton pattern in UnitOfWork
+        //IGenericRepository<Account> _accountRepository;
+        //    public IGenericRepository<Account> AcccountRepository
+        //    {
+        //        get
+        //        {
+        //            if (_accountRepository == null)
+        //            {
+        //                _accountRepository = new GenericRepository<Account>(_dbContext);
+        //            }
+        //            return _accountRepository;
+        //        }
+        //    }
+
+
+        private IGenericRepository<Location> _locationRepository;
+        public IGenericRepository<Location> Location
+        {
+            get
+            {
+                if (_locationRepository == null)
+                {
+                    _locationRepository = new GenericRepository<Location>(_dbContext);
+                }
+                return _locationRepository;
+            }
+        }
+
+
+
+        private IGenericRepository<User> _userRepository;
+        public IGenericRepository<User> User
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new GenericRepository<User>(_dbContext);
+                }
+                return _userRepository;
+            }
+        }
+
+        private IGenericRepository<Role> _roleRepository;
+        public IGenericRepository<Role> Role
+        {
+            get
+            {
+                if (_roleRepository == null)
+                {
+                    _roleRepository = new GenericRepository<Role>(_dbContext);
+                }
+                return _roleRepository;
+            }
+        }
+
+        private IGenericRepository<Customer> _customerRepository;
+        public IGenericRepository<Customer> Customer
+        {
+            get
+            {
+                if (_customerRepository == null)
+                {
+                    _customerRepository = new GenericRepository<Customer>(_dbContext);
+                }
+                return _customerRepository;
+            }
+        }
+
+        private IGenericRepository<Notification> _notificationRepository;
+        public IGenericRepository<Notification> Notification
+        {
+            get
+            {
+                if (_notificationRepository == null)
+                {
+                    _notificationRepository = new GenericRepository<Notification>(_dbContext);
+                }
+                return _notificationRepository;
+            }
+        }
+
+
+        #endregion Repository
+
+
         public async Task BeginTransactionAsync()
         {
             if (_transaction == null)
@@ -74,33 +147,5 @@ namespace MK.Infrastructure.Repository
         {
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        #region Dispose
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    _dbContext.Dispose();
-                }
-                //_accountRepository = null;
-                disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~UnitOfWork()
-        {
-            Dispose(false);
-        }
-        #endregion Dispose
     }
 }

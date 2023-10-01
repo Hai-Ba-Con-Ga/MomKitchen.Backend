@@ -17,5 +17,6 @@ global using MK.Infrastructure.DBContext;
 global using MK.Infrastructure.Configuration;
 
 global using MK.Domain.Common;
+global using MK.Domain.Dto.Response;
 
 
