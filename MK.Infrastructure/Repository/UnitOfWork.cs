@@ -77,7 +77,20 @@ namespace MK.Infrastructure.Repository
             }
         }
 
-        
+        private IGenericRepository<Customer> _customerRepository;
+        public IGenericRepository<Customer> Customer
+        {
+            get
+            {
+                if (_customerRepository == null)
+                {
+                    _customerRepository = new GenericRepository<Customer>(_dbContext);
+                }
+                return _customerRepository;
+            }
+        }
+
+
         #endregion Repository
 
 

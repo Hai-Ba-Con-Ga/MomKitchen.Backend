@@ -6,12 +6,11 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Dto.Response
+namespace MK.Domain.Dto.Response.User
 {
     public class UserResponse
     {
         public Guid Id { get; set; }
-        public List<String> FcmToken { get; set; }
         public string? Email { get; set; }
         public string? FullName { get; set; }
         public string? AvatarUrl { get; set; }

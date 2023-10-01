@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MK.Domain.Dto.Request;
+using MK.Domain.Dto.Request.User;
 
 namespace MK.API.Controllers
 {
@@ -21,7 +21,7 @@ namespace MK.API.Controllers
         /// <param name="userRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UserRequest userRequest)
+        public async Task<IActionResult> Create([FromBody] CreateUserRequest userRequest)
         {
             var result = await _userService.Create(userRequest);
             return StatusCode((int)result.StatusCode, result);
@@ -35,7 +35,7 @@ namespace MK.API.Controllers
         /// <returns></returns>
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UserRequest userRequest)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest userRequest)
         {
             var result = await _userService.Update(id, userRequest);
             return StatusCode((int)result.StatusCode, result);
@@ -83,6 +83,14 @@ namespace MK.API.Controllers
                     PageNumber = pageNumber ?? 1,
                     PageSize = pageSize ?? 10
                 });
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+
+        [HttpPut("{id}/role")]
+        public async Task<IActionResult> UpdateRole(Guid id, [FromBody] string roleName)
+        {
+            var result = await _userService.UpdateRole(id, roleName);
             return StatusCode((int)result.StatusCode, result);
         }
     }

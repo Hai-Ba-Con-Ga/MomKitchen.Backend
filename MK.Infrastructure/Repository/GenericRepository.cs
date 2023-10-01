@@ -219,6 +219,10 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<T?> GetById(Guid id, QueryHelper<T> queryHelper, bool isAsNoTracking = true)
         {
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T>();
+            }
             var query = dbSet.ApplyConditions(queryHelper, id, isAsNoTracking);
 
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
@@ -233,6 +237,10 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<TResult?> GetById<TResult>(Guid id, QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class
         {
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T, TResult>();
+            }
             var query = dbSet.ApplyConditions(queryHelper, id, isAsNoTracking);
 
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
@@ -244,6 +252,10 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<IEnumerable<T>> Get(QueryHelper<T> queryHelper, bool isAsNoTracking = true)
         {
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T>();
+            }
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 
             return await query.ToListAsync().ConfigureAwait(false);
@@ -257,6 +269,10 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<IEnumerable<TResult>> Get<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class
         {
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T, TResult>();
+            }
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 
             return await query.ToListAsync().ConfigureAwait(false);
@@ -270,6 +286,10 @@ namespace MK.Infrastructure.Repository
         /// </returns>
         public async Task<PagedList<T>> GetWithPagination(QueryHelper<T> queryHelper, bool isAsNoTracking = true)
         {
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T>();
+            }
             var pagedList = new PagedList<T>();
 
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
@@ -290,6 +310,10 @@ namespace MK.Infrastructure.Repository
         public async Task<PagedList<TResult>> GetWithPagination<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class
         {
             var pagedList = new PagedList<TResult>();
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T, TResult>();
+            }
 
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 

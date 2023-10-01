@@ -1,6 +1,6 @@
 ﻿using FirebaseAdmin.Auth;
-using MK.Domain.Dto.Request;
-using MK.Domain.Dto.Response;
+using MK.Domain.Dto.Request.User;
+using MK.Domain.Dto.Response.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +16,8 @@ namespace MK.Application.Service
 
         Task<FirebaseToken> GetFirebaseTokenAsync(string token);
         Task<ResponseObject<bool>> Logout(Guid userId, string fcmToken);
+
+        Task<ResponseObject<UserResponse>> Get(Guid userId);
+        Task<ResponseObject<UserResponse>> Update(Guid userId, UpdateUserRequest userRequest);
     }
 }

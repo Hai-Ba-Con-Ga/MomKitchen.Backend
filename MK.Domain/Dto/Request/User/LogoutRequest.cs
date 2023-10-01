@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Dto.Request
+namespace MK.Domain.Dto.Request.User
 {
-    public class LoginRequest
+    public class LogoutRequest
     {
-        public string IdToken { get; set; }
         public string FcmToken { get; set; }
-        public string RoleName { get; set; } = "Customer";
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace MK.API.Configuration
@@ -7,21 +8,21 @@ namespace MK.API.Configuration
     {
         public static IServiceCollection AddJwtService(this IServiceCollection services)
         {
-
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
 
             {
+                option.SaveToken = true;
+                option.RequireHttpsMetadata = false;
                 option.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    ValidateIssuerSigningKey = AppConfig.JwtSetting.ValidateIssuerSigningKey,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = AppConfig.JwtSetting.ValidAudience,
+                    ValidIssuer = AppConfig.JwtSetting.ValidIssuer,
+                    ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(AppConfig.JwtSetting.IssuerSigningKey)),
-                    ValidateIssuer = AppConfig.JwtSetting.ValidateIssuer,
-                    ValidateAudience = AppConfig.JwtSetting.ValidateAudience,
                 };
-            }
-            );
-
+            });
             return services;
         }
     }

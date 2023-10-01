@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Dto.Response
+namespace MK.Domain.Dto.Response.User
 {
     public class LoginResponse
     {

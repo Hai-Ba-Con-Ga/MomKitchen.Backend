@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MK.Domain.Common;
-using MK.Domain.Dto.Response;
+using MK.Domain.Dto.Response.User;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,14 +8,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MK.Service.Service
 {
     public class JwtService : ITokenService
     {
-        private SigningCredentials _credentials;
-        private SymmetricSecurityKey _securityKey;
+        private SigningCredentials? _credentials;
+        private SymmetricSecurityKey? _securityKey;
 
         private void SetupCredentials()
         {
@@ -24,11 +23,25 @@ namespace MK.Service.Service
         }
         public string GetToken(UserResponse user)
         {
-            var claims = new[] {
-                new Claim("id", user.Id.ToString()),
-                new Claim("role", user.RoleName)
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppConfig.JwtSetting.IssuerSigningKey));
+            var _TokenExpiryTimeInHour = Convert.ToInt64(AppConfig.JwtSetting.ValidateLifetime);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = AppConfig.JwtSetting.ValidIssuer,
+                Audience = AppConfig.JwtSetting.ValidAudience,
+                //Expires = DateTime.UtcNow.AddHours(_TokenExpiryTimeInHour),
+                Expires = DateTime.UtcNow.AddMinutes(1),
+                SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256),
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.RoleName),
+                })
             };
-            return new JwtSecurityTokenHandler().WriteToken(GenerateTokenByClaims(claims, DateTime.Now.AddMinutes(120)));
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
         private JwtSecurityToken GenerateTokenByClaims(IEnumerable<Claim> claims, DateTime expires)
         {

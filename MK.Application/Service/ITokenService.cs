@@ -1,4 +1,4 @@
-﻿using MK.Domain.Dto.Response;
+﻿using MK.Domain.Dto.Response.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
