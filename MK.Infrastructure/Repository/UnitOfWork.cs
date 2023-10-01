@@ -90,6 +90,19 @@ namespace MK.Infrastructure.Repository
             }
         }
 
+        private IGenericRepository<Notification> _notificationRepository;
+        public IGenericRepository<Notification> Notification
+        {
+            get
+            {
+                if (_notificationRepository == null)
+                {
+                    _notificationRepository = new GenericRepository<Notification>(_dbContext);
+                }
+                return _notificationRepository;
+            }
+        }
+
 
         #endregion Repository
 

@@ -75,9 +75,10 @@ namespace MK.API.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll(int? pageNumber = null, int? pageSize = null)
+        public async Task<IActionResult> GetAll(string? roleName = "Customer", int? pageNumber = null, int? pageSize = null)
         {
             var result = await _userService.GetAll(
+                roleName,
                 new PaginationParameters
                 {
                     PageNumber = pageNumber ?? 1,
