@@ -15,7 +15,7 @@ namespace MK.Application.Service
         Task<ResponseObject<bool>> Delete(Guid id);
         Task<ResponseObject<UserResponse>> GetById(Guid id);
 
-        Task<PaginationResponse<UserResponse>> GetAll(PaginationParameters paginationparam = null);
+        Task<PaginationResponse<UserResponse>> GetAll(string roleName, PaginationParameters paginationparam = null);
         Task<ResponseObject<bool>> UpdateRole(Guid userId, string roleName);
     }
 }

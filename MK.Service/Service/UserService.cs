@@ -138,12 +138,13 @@ namespace MK.Application.Service
         }
 
 
-        public async Task<PaginationResponse<UserResponse>> GetAll(PaginationParameters paginationparam = null)
+        public async Task<PaginationResponse<UserResponse>> GetAll(string roleName, PaginationParameters paginationparam = null)
         {
             try
             {
                 var query = new QueryHelper<User, UserResponse>()
                 {
+                    Filter = x => x.Role.Name.Equals(roleName),
                     PaginationParams = paginationparam ??= new PaginationParameters(),
                     Includes = new Expression<Func<User, object>>[] { x => x.Role },
                 };

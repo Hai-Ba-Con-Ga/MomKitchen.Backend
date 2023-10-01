@@ -13,6 +13,7 @@ namespace MK.Application.Repository
         IGenericRepository<User> User { get; }
         IGenericRepository<Role> Role { get; }
         IGenericRepository<Customer> Customer { get; }
+        IGenericRepository<Notification> Notification { get; }
 
 
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
