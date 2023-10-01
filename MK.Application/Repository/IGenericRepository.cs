@@ -38,7 +38,7 @@ namespace MK.API.Application.Repository
 
         Task<T?> GetById(Guid id, Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
         Task<IEnumerable<T>> GetWithCondition(Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
-
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         #region Version 2.0
         /// <summary>
         /// Get entity by id and other conditions
@@ -99,5 +99,6 @@ namespace MK.API.Application.Repository
         /// <exception cref="ArgumentNullException"></exception>
         Task<int> UpdateAsync<TDto>(Expression<Func<T, bool>> predicate, TDto req) where TDto : class, new();
         #endregion Version 2.0
+ 
     }
 }

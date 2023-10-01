@@ -10,6 +10,10 @@ namespace MK.Application.Repository
     public interface IUnitOfWork
     {
         IGenericRepository<Location> Location { get; }
+        IGenericRepository<User> User { get; }
+        IGenericRepository<Role> Role { get; }
+        IGenericRepository<Customer> Customer { get; }
+
 
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();

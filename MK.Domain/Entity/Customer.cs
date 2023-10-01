@@ -14,7 +14,7 @@ namespace MK.Domain.Entity
         public Guid UserId { get; set; }
         public virtual User User { get; set; } = null!;
 
-        public CustomerStatus Status { get; set; }
+        public CustomerStatus Status { get; set; } = CustomerStatus.ACTIVE;
 
         [InverseProperty("Customer")]
         public virtual ICollection<FavouriteKitchen> FavouriteKitchens { get; set; } = new List<FavouriteKitchen>();

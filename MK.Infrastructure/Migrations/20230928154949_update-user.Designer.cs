@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using MK.Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MK.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230928154949_update-user")]
+    partial class updateuser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<Guid>("EastId")
@@ -84,7 +87,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.Property<Guid>("WestId")
@@ -125,7 +128,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<bool>("IsDeleted")
@@ -142,7 +145,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.Property<Guid>("UserId")
@@ -171,7 +174,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
@@ -208,7 +211,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -232,7 +235,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<Guid>("CustomerId")
@@ -252,7 +255,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -284,7 +287,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<Guid>("CustomerId")
@@ -308,7 +311,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.Property<string>("img_url")
@@ -351,7 +354,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<bool>("IsDeleted")
@@ -381,7 +384,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -413,7 +416,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<bool>("IsDeleted")
@@ -433,7 +436,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -454,7 +457,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<bool>("IsDeleted")
@@ -476,7 +479,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("price");
 
                     b.Property<DateTime>("ServiceFrom")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("service_from");
 
                     b.Property<int>("ServiceQuantity")
@@ -484,7 +487,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("service_quantity");
 
                     b.Property<DateTime>("ServiceTo")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("service_to");
 
                     b.Property<Guid>("TrayId")
@@ -496,11 +499,11 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.Property<DateTime>("close_time")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("close_time");
 
                     b.HasKey("Id")
@@ -532,7 +535,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<bool>("IsDeleted")
@@ -549,7 +552,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("receiver_id");
 
                     b.Property<DateTime>("SentTime")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("sent_time");
 
                     b.Property<string>("Title")
@@ -563,7 +566,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -587,7 +590,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<Guid>("CustomerId")
@@ -623,7 +626,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -650,7 +653,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<bool>("IsDeleted")
@@ -675,7 +678,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.Property<decimal>("amount")
@@ -706,7 +709,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
@@ -739,7 +742,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -760,7 +763,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<bool>("IsDeleted")
@@ -777,7 +780,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -798,7 +801,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
@@ -839,7 +842,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
@@ -867,7 +870,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("avatar_url");
 
                     b.Property<DateTime?>("Birthday")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("birthday");
 
                     b.Property<string>("CreatedBy")
@@ -875,7 +878,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Email")
@@ -890,6 +893,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("fcm_token");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("fullname");
@@ -899,6 +903,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("is_deleted");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone");
@@ -912,7 +917,7 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
