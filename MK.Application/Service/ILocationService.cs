@@ -1,4 +1,4 @@
-﻿using MK.Domain.Dto.Request.Location;
+﻿
 using MK.Domain.Dto.Response;
 using System;
 using System.Collections.Generic;

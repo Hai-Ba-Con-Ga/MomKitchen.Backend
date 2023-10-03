@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MK.Domain.Dto.Request.Location;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 

@@ -1,5 +1,4 @@
 ﻿
-using MK.Domain.Dto.Request.Location;
 
 namespace MK.API.Application.Repository
 {

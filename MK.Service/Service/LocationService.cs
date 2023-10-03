@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
 using MK.Application.Repository;
 using MK.Domain.Common;
-using MK.Domain.Dto.Request.Location;
 using MK.Domain.Dto.Response;
 using MK.Infrastructure.Common;
 using MK.Infrastructure.Repository;

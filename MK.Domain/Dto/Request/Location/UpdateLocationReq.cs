@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Dto.Request.Location
+namespace MK.Domain.Dto.Request
 {
     public class UpdateLocationReq
     {

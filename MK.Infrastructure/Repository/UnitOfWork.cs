@@ -48,6 +48,19 @@ namespace MK.Infrastructure.Repository
                 return _locationRepository;
             }
         }
+
+        private IGenericRepository<Area> _areaRepository;
+        public IGenericRepository<Area> Area
+        {
+            get
+            {
+                if (_areaRepository == null)
+                {
+                    _areaRepository = new GenericRepository<Area>(_dbContext);
+                }
+                return _areaRepository;
+            }
+        }
         #endregion Repository
 
 

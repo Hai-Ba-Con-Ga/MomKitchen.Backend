@@ -9,3 +9,4 @@ global using System.Net;
 global using MK.Application.Service;
 global using MK.Domain.Entity;
 global using MK.Domain.Dto.Response;
+global using MK.Domain.Dto.Request;
