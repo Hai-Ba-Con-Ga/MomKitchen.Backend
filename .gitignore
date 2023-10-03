@@ -43,6 +43,7 @@ bld/
 ./[Ll]og/
 
 ./appsettings.json
+././appsettings.json
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -365,3 +366,5 @@ out/
 
 momkitchen-41f2b-firebase-adminsdk.json
 /MK.API/firebase.json
+
+MK.API/appsettings.json
