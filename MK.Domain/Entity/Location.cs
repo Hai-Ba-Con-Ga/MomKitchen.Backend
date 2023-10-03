@@ -17,10 +17,5 @@ namespace MK.Domain.Entity
         public double Lng { get; set; }
 
         public virtual Kitchen? Kitchen { get; set; }
-
-        public virtual Area? AreaAsNorth { get; set; }
-        public virtual Area? AreaAsSouth { get; set; }
-        public virtual Area? AreaAsWest { get; set; }
-        public virtual Area? AreaAsEast { get; set; }
     }
 }
