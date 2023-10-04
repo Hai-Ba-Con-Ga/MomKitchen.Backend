@@ -20,8 +20,15 @@ namespace MK.Domain.Dto.Request
     {
         public CreateLocationReqValidator()
         {
-            RuleFor(x => x.Lat).NotEqual(0).WithMessage("Lat is required");
-            RuleFor(x => x.Lng).NotEqual(0).WithMessage("Lng is required");
+            RuleFor(location => location.Lat)
+                .NotEmpty()
+                .InclusiveBetween(-90, 90) // Latitude range is -90 to 90 degrees
+                .WithMessage("Latitude must be between -90 and 90 degrees.");
+
+            RuleFor(location => location.Lng)
+                .NotEmpty()
+                .InclusiveBetween(-180, 180) // Longitude range is -180 to 180 degrees
+                .WithMessage("Longitude must be between -180 and 180 degrees.");
         }
     }
 }

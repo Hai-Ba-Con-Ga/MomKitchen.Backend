@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using MK.API.Configuration;
 using MK.Domain.Configuration;
 using Newtonsoft.Json;
 using System.Reflection;
@@ -25,7 +26,6 @@ namespace MK.API
             //Binding appsettings.json to AppConfig
             builder.Configuration.SettingsBinding();
 
-
             // Add services to the container.
             builder.ConfigureAutofacContainer();
 
@@ -33,24 +33,7 @@ namespace MK.API
 
             builder.Services.AddApiVersion();
 
-            builder.Services.AddControllers()
-                            .ConfigureApiBehaviorOptions(options =>
-            { // handle validation response 
-                options.InvalidModelStateResponseFactory = context =>
-                {
-                    var errors = context.ModelState.Values
-                        .SelectMany(v => v.Errors)
-                        .Select(e => e.ErrorMessage);
-
-                    var response = new ResponseObject<string>
-                    {
-                        StatusCode = HttpStatusCode.BadRequest,
-                        Message = JsonConvert.SerializeObject(errors)
-                    };
-
-                    return new BadRequestObjectResult(response);
-                };
-            });
+            builder.Services.AddControllers().AddConfigApiBehaviorOptions();
 
             builder.Services.AddFluentValidationSetting();
 

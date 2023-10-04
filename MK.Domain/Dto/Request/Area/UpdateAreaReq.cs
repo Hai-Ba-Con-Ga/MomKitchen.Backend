@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Dto.Request.Area
+namespace MK.Domain.Dto.Request
 {
     public class UpdateAreaReq
     {
-        public UpdateLocationReq North { get; set; }
-        public UpdateLocationReq South { get; set; }
-        public UpdateLocationReq West { get; set; }
-        public UpdateLocationReq East { get; set; }
-
+        [Required]
+        public string Name { get; set; } = null!;
+        [Required]
+        public Dictionary<Guid, UpdateLocationReq> UpdateData { get; set; } = null!;
     }
 }

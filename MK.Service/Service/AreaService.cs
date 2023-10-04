@@ -1,10 +1,9 @@
-﻿using MK.Application.Repository;
-using MK.Domain.Common;
-using MK.Domain.Dto.Request;
+﻿using MK.Domain.Dto.Response.Area;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MK.Service.Service
@@ -19,25 +18,55 @@ namespace MK.Service.Service
         {
             try
             {
-                var result = await _unitOfWork.Area.CreateAsync(_mapper.Map<Area>(req), true);
+                await _unitOfWork.BeginTransactionAsync();
+
+                var locations = _mapper.Map<IEnumerable<Location>>(req.Boundaries);
+
+                await _unitOfWork.Location.CreateAsync(locations, true);
+
+                var area = new Area()
+                {
+                    Name = req.Name,
+                    Boundaries = locations.Select(l => l.Id).ToArray()
+                };
+
+                var result = await _unitOfWork.Area.CreateAsync(area, true);
+
+                await _unitOfWork.CommitTransactionAsync();
+
                 return Success(result);
             }
             catch (Exception ex)
             {
+                await _unitOfWork.RolebackTransactionAsync();
                 return BadRequest<Guid>(ex.Message);
             }
         }
 
-        //public async Task<ResponseObject<bool>> Update(UpdateAreaReq res)
-        //{
-        //    try
-        //    {
+        public async Task<ResponseObject<bool>> Update(Guid areaId, UpdateAreaReq res)
+        {
+            try
+            {
+                var queryHelper = new QueryHelper<Area, AreaQueryResponse>();
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest<bool>(ex.Message);
-        //    }
-        //}
+                var area = await _unitOfWork.Area.GetById(areaId, queryHelper);
+
+                if (area == null)
+                {
+                    return BadRequest<bool>("Area not found");
+                }
+
+                var queryLocation = new QueryHelper<Location, LocationRes>()
+                {
+                    Filter = l => area.Boundaries.Contains(l.Id)
+                };
+
+                var locations = await _unitOfWork.Location.Get(queryLocation);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<bool>(ex.Message);
+            }
+        }
     }
 }

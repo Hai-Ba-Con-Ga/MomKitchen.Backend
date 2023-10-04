@@ -12,14 +12,7 @@ namespace MK.Domain.Dto.Request
     {
         [Required]
         public string Name { get; set; } = null!;
-        [Required]
-        public CreateLocationReq North { get; set; } = null!;
-        [Required]
-        public CreateLocationReq South { get; set; } = null!;
-        [Required]
-        public CreateLocationReq East { get; set; } = null!;
-        [Required]
-        public CreateLocationReq West { get; set; } = null!;
+        public IEnumerable<CreateLocationReq> Boundaries { get; set; } = null!;
     }
 
     public class CreateAreaReqValidator : AbstractValidator<CreateAreaReq>
@@ -30,17 +23,9 @@ namespace MK.Domain.Dto.Request
                 .NotEmpty()
                 .WithMessage("Name is required.");
 
-            RuleFor(area => area.North)
-                .SetValidator(new CreateLocationReqValidator()).WithMessage("North is invalid");
-
-            RuleFor(area => area.South)
-                .SetValidator(new CreateLocationReqValidator()).WithMessage("South is invalid");
-
-            RuleFor(area => area.East)
-                .SetValidator(new CreateLocationReqValidator()).WithMessage("East is invalid");
-
-            RuleFor(area => area.West)
-                .SetValidator(new CreateLocationReqValidator()).WithMessage("West is invalid");
+            RuleForEach(area => area.Boundaries)
+                .SetValidator(new CreateLocationReqValidator())
+                .WithMessage("Locations are invalid");
         }
     }
 }
