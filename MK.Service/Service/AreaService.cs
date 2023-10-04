@@ -43,7 +43,7 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<ResponseObject<bool>> Update(Guid areaId, UpdateAreaReq res)
+        public async Task<ResponseObject<bool>> Update(Guid areaId, UpdateAreaReq req)
         {
             try
             {
@@ -56,12 +56,40 @@ namespace MK.Service.Service
                     return BadRequest<bool>("Area not found");
                 }
 
-                var queryLocation = new QueryHelper<Location, LocationRes>()
+                var queryLocation = new QueryHelper<Location>()
                 {
                     Filter = l => area.Boundaries.Contains(l.Id)
                 };
 
-                var locations = await _unitOfWork.Location.Get(queryLocation);
+                var locations = (await _unitOfWork.Location.Get(queryLocation, false)).ToList();
+
+                var updateLocationIds = req.UpdateData.Keys.ToList();
+
+                locations.RemoveAll(l => updateLocationIds.Contains(l.Id) == false);
+
+                foreach (var updateLocationId in updateLocationIds)
+                {
+                    var index = locations.FindIndex(0, l => l.Id == updateLocationId);
+
+                    if (index != -1)
+                    {
+                        locations.Add(new Location()
+                        {
+                            Id = updateLocationId,
+                            Lat = req.UpdateData[updateLocationId].Lat,
+                            Lng = req.UpdateData[updateLocationId].Lng
+                        });
+                    }
+                    else
+                    {
+                        locations[index].Lat = req.UpdateData[updateLocationId].Lat;
+                        locations[index].Lng = req.UpdateData[updateLocationId].Lng;
+                    }
+                }
+
+                var resultUpdate = await _unitOfWork.SaveChangeAsync();
+
+                return Success(resultUpdate > 0);
             }
             catch (Exception ex)
             {

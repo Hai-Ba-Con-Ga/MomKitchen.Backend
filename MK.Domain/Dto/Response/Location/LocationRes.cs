@@ -10,6 +10,7 @@ namespace MK.Domain.Dto.Response
 {
     public class LocationRes
     {
+        public Guid Id { get; set; }
         public double? Lat { get; set; }
         public double? Lng { get; set; }
     }
