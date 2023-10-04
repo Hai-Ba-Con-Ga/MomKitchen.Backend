@@ -5,23 +5,33 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
+	
 	<Choose>
-		<When Condition="'$(Configuration)' == 'Release'">
-			<ItemGroup>
-				<None Include="appsettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
-				<Content Remove="appsettings.*.json;appsettings.json" />
-			</ItemGroup>
-		</When>
+		<When Condition="'$(Configuration)' == 'Release'" />
 		<Otherwise>
 			<ItemGroup>
 				<None Include="appsettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
+	
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
 		<NoWarn>1701;1702;1591</NoWarn>
 	</PropertyGroup>
+	
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+	</PropertyGroup>
+	
+	<ItemGroup>
+	  <Content Include="appsettings.Development.json" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />

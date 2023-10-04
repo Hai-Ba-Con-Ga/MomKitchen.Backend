@@ -18,6 +18,7 @@ namespace MK.API.Configuration
         {
             return service.AddSwaggerGen(c =>
                {
+                   c.AddSwaggerDocumentation();
                    c.SwaggerDoc("v1", new OpenApiInfo
                    {
                        Title = "MK API",
@@ -36,7 +37,6 @@ namespace MK.API.Configuration
                        Name = "Authorization",
                        Type = SecuritySchemeType.ApiKey
                    });
-                   c.AddSwaggerDocumentation();
                });
         }
     }
