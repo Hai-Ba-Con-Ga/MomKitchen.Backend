@@ -51,30 +51,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "MK API",
-        Version = "v1",
-        Description = "API for Mom Kitchen Project",
-        Contact = new OpenApiContact
-        {
-            Name = "Contact Developers",
-            Url = new Uri("https://github.com/Hai-Ba-Con-Ga")
-        }
-    });
-    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Description = "Standard Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-    c.OperationFilter<SecurityRequirementsOperationFilter>();
-});
+builder.Services.AddSwaggerGenOption();
 
 
 var app = builder.Build();
