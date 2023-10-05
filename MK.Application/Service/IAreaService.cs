@@ -8,6 +8,10 @@ namespace MK.Application.Service
 {
     public interface IAreaService
     {
-        public Task<ResponseObject<Guid>> Create(CreateAreaReq req);
+        Task<ResponseObject<Guid>> Create(CreateAreaReq req);
+        Task<ResponseObject<bool>> Update(Guid areaId, UpdateAreaReq req);
+        Task<ResponseObject<bool>> Delete(Guid areaId);
+        Task<ResponseObject<GetAreaRes>> GetById(Guid areaId);
+        Task<ResponseObject<IEnumerable<GetAreaRes>>> GetAll();
     }
 }

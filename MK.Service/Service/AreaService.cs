@@ -22,12 +22,12 @@ namespace MK.Service.Service
 
                 var locations = _mapper.Map<IEnumerable<Location>>(req.Boundaries);
 
-                await _unitOfWork.Location.CreateAsync(locations, true);
+                var createLocatinResults = await _unitOfWork.Location.CreateAsync(locations, true);
 
                 var area = new Area()
                 {
                     Name = req.Name,
-                    Boundaries = locations.Select(l => l.Id).ToArray()
+                    Boundaries = createLocatinResults.ToArray()
                 };
 
                 var result = await _unitOfWork.Area.CreateAsync(area, true);
@@ -47,53 +47,139 @@ namespace MK.Service.Service
         {
             try
             {
-                var queryHelper = new QueryHelper<Area, AreaQueryResponse>();
+                var queryHelper = new QueryHelper<Area>()
+                {
+                    Selector = i => new Area()
+                    {
+                        Id = i.Id,
+                        Boundaries = i.Boundaries
+                    }
+                };
 
-                var area = await _unitOfWork.Area.GetById(areaId, queryHelper);
+                var area = await _unitOfWork.Area.GetById(areaId, queryHelper, false);
 
                 if (area == null)
                 {
                     return BadRequest<bool>("Area not found");
                 }
 
-                var queryLocation = new QueryHelper<Location>()
+                var boundaries = area.Boundaries.ToList();
+
+                boundaries.RemoveAll(i =>
                 {
-                    Filter = l => area.Boundaries.Contains(l.Id)
-                };
-
-                var locations = (await _unitOfWork.Location.Get(queryLocation, false)).ToList();
-
-                var updateLocationIds = req.UpdateData.Keys.ToList();
-
-                locations.RemoveAll(l => updateLocationIds.Contains(l.Id) == false);
-
-                foreach (var updateLocationId in updateLocationIds)
-                {
-                    var index = locations.FindIndex(0, l => l.Id == updateLocationId);
-
-                    if (index != -1)
+                    if (req.UpdateData.ContainsKey(i))
                     {
-                        locations.Add(new Location()
-                        {
-                            Id = updateLocationId,
-                            Lat = req.UpdateData[updateLocationId].Lat,
-                            Lng = req.UpdateData[updateLocationId].Lng
-                        });
+                        req.UpdateData.Remove(i);
+                        return false;
                     }
                     else
                     {
-                        locations[index].Lat = req.UpdateData[updateLocationId].Lat;
-                        locations[index].Lng = req.UpdateData[updateLocationId].Lng;
+                        return true; // return true to remove item
                     }
-                }
+                });
 
-                var resultUpdate = await _unitOfWork.SaveChangeAsync();
+                var newLocations = req.UpdateData.Select(i => new Location()
+                {
+                    Id = i.Key,
+                    Lat = i.Value.Lat,
+                    Lng = i.Value.Lng
+                });
 
-                return Success(resultUpdate > 0);
+                var newLocationIds = await _unitOfWork.Location.CreateAsync(newLocations, isSaveChange: true);
+
+                boundaries.AddRange(newLocationIds);
+
+                area.Boundaries = boundaries.ToArray();
+
+                var updateAreaResult = await _unitOfWork.Area.UpdateAsync(area, isSaveChange: true);
+
+                return Success(updateAreaResult > 0);
             }
             catch (Exception ex)
             {
                 return BadRequest<bool>(ex.Message);
+            }
+        }
+
+        public async Task<ResponseObject<bool>> Delete(Guid areaId)
+        {
+            try
+            {
+                var delete = await _unitOfWork.Area.SoftDeleteAsync(a => a.Id == areaId);
+
+                return Success(delete > 0);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<bool>(ex.Message);
+            }
+        }
+
+        public async Task<ResponseObject<GetAreaRes>> GetById(Guid areaId)
+        {
+            try
+            {
+                var area = await _unitOfWork.Area.GetById(areaId, new QueryHelper<Area>());
+
+                if (area == null)
+                {
+                    return BadRequest<GetAreaRes>("Can not get area with id : " + areaId);
+                }
+
+                var locations = await _unitOfWork.Location.Get(new QueryHelper<Location, LocationRes>()
+                {
+                    Filter = i => area.Boundaries.Contains(i.Id),
+                });
+
+                return Success(new GetAreaRes()
+                {
+                    Name = area.Name,
+                    Boundaries = locations
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<GetAreaRes>(ex.Message);
+            }
+        }
+
+        public async Task<ResponseObject<IEnumerable<GetAreaRes>>> GetAll()
+        {
+            try
+            {
+                var areas = await _unitOfWork.Area.Get(new QueryHelper<Area>());
+
+                if (areas == null)
+                {
+                    return BadRequest<IEnumerable<GetAreaRes>>("Can not get areas");
+                }
+
+                var result = new List<GetAreaRes>();
+
+                foreach (var area in areas)
+                {
+                    var locations = await _unitOfWork.Location.Get(new QueryHelper<Location, LocationRes>()
+                    {
+                        Filter = i => area.Boundaries.Contains(i.Id),
+                    });
+
+                    if (locations == null)
+                    {
+                        return BadRequest<IEnumerable<GetAreaRes>>("Can not get locations for area : " + area.Id);
+                    }
+
+                    result.Add(new GetAreaRes()
+                    {
+                        Boundaries = locations,
+                        Name = area.Name
+                    });
+                }
+
+                return Success(result.AsEnumerable());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<IEnumerable<GetAreaRes>>(ex.Message);
             }
         }
     }

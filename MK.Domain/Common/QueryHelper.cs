@@ -28,6 +28,10 @@ namespace MK.Domain.Common
         /// <summary>
         /// Helper for select field from entity - SELECT command
         /// </summary>
+        public Expression<Func<T, T>> Selector { get; set; } = null!;
+        /// <summary>
+        /// Helper for select field from entity - SELECT command
+        /// </summary>
         public string[] SelectedFields { get; set; } = null!;
     }
     /// <summary>
@@ -40,7 +44,7 @@ namespace MK.Domain.Common
         /// <summary>
         /// Helper for select field from entity - SELECT command
         /// </summary>
-        public Expression<Func<TSource, TResult>> Selector { get; set; } = null!;
+        public new Expression<Func<TSource, TResult>> Selector { get; set; } = null!;
     }
 
 }

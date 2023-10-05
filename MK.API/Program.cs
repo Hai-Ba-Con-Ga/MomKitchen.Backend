@@ -33,7 +33,8 @@ namespace MK.API
 
             builder.Services.AddApiVersion();
 
-            builder.Services.AddControllers().AddConfigApiBehaviorOptions();
+            builder.Services.AddControllers()
+                .AddConfigApiBehaviorOptions();
 
             builder.Services.AddFluentValidationSetting();
 

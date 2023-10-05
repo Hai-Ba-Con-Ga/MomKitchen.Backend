@@ -31,33 +31,34 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-        ///// <summary>
-        ///// Function to soft delete location
-        ///// </summary>
-        ///// <param name="locationId"></param>
-        ///// <returns></returns>
-        //[HttpDelete("{locationId}")]
-        //[ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> Delete(Guid locationId)
-        //{
-        //    var result = await _locationService.Delete(locationId);
-        //    return StatusCode((int)result.StatusCode, result);
-        //}
+        /// <summary>
+        /// Function to soft delete location
+        /// </summary>
+        /// <param name="areaId"></param>
+        /// <returns></returns>
+        [HttpDelete("{areaId}")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(Guid areaId)
+        {
+            var result = await _areaService.Delete(areaId);
+            return StatusCode((int)result.StatusCode, result);
+        }
 
-        ///// <summary>
-        ///// Function to update location
-        ///// </summary>
-        ///// <param name="locationId"></param>
-        ///// <returns></returns>
-        //[HttpPut("{locationId}")]
-        //[ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> Delete(Guid locationId, UpdateLocationReq req)
-        //{
-        //    var result = await _locationService.Update(locationId, req);
-        //    return StatusCode((int)result.StatusCode, result);
-        //}
+        /// <summary>
+        /// Function to update area 
+        /// </summary>
+        /// <param name="areaId"></param>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPut("{areaId}")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(Guid areaId, UpdateAreaReq req)
+        {
+            var result = await _areaService.Update(areaId, req);
+            return StatusCode((int)result.StatusCode, result);
+        }
 
         ///// <summary>
         ///// Function to get all location with paging and filter
@@ -65,31 +66,23 @@ namespace MK.API.Controllers
         ///// <param name="pageNumer">Not Require</param>
         ///// <param name="pageSize">Not Require</param>
         ///// <returns>Paging list of location</returns>
-        //[HttpGet]
-        //[ProducesResponseType(typeof(IEnumerable<LocationRes>), StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> GetAll(int? pageNumer = null, int? pageSize = null)
-        //{
-        //    var result = await _locationService.GetAll(new PaginationParameters
-        //    {
-        //        PageNumber = pageNumer ?? 1,
-        //        PageSize = pageSize ?? 10
-        //    });
-        //    return StatusCode((int)result.StatusCode, result);
-        //}
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<LocationRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _areaService.GetAll();
+            return StatusCode((int)result.StatusCode, result);
+        }
 
-        ///// <summary>
-        ///// Get location by id
-        ///// </summary>
-        ///// <param name="locationId"></param>
-        ///// <returns></returns>
-        //[HttpGet("{locationId}")]
-        //[ProducesResponseType(typeof(LocationRes), StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> GetById(Guid locationId)
-        //{
-        //    var result = await _locationService.GetById(locationId);
-        //    return StatusCode((int)result.StatusCode, result);
-        //}
+
+        [HttpGet("{areaId}")]
+        [ProducesResponseType(typeof(GetAreaRes), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetById(Guid areaId)
+        {
+            var result = await _areaService.GetById(areaId);
+            return StatusCode((int)result.StatusCode, result);
+        }
     }
 }
