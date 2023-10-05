@@ -43,6 +43,7 @@ bld/
 ./[Ll]og/
 
 ./appsettings.json
+././appsettings.json
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -362,4 +363,8 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 out/
+
+momkitchen-41f2b-firebase-adminsdk.json
 /MK.API/firebase.json
+
+MK.API/appsettings.json

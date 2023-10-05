@@ -10,6 +10,11 @@ namespace MK.Application.Repository
     public interface IUnitOfWork
     {
         IGenericRepository<Location> Location { get; }
+        IGenericRepository<User> User { get; }
+        IGenericRepository<Role> Role { get; }
+        IGenericRepository<Customer> Customer { get; }
+        IGenericRepository<Notification> Notification { get; }
+
 
         IGenericRepository<Area> Area { get; }
 

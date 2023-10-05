@@ -49,6 +49,62 @@ namespace MK.Infrastructure.Repository
             }
         }
 
+
+
+        private IGenericRepository<User> _userRepository;
+        public IGenericRepository<User> User
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new GenericRepository<User>(_dbContext);
+                }
+                return _userRepository;
+            }
+        }
+
+        private IGenericRepository<Role> _roleRepository;
+        public IGenericRepository<Role> Role
+        {
+            get
+            {
+                if (_roleRepository == null)
+                {
+                    _roleRepository = new GenericRepository<Role>(_dbContext);
+                }
+                return _roleRepository;
+            }
+        }
+
+        private IGenericRepository<Customer> _customerRepository;
+        public IGenericRepository<Customer> Customer
+        {
+            get
+            {
+                if (_customerRepository == null)
+                {
+                    _customerRepository = new GenericRepository<Customer>(_dbContext);
+                }
+                return _customerRepository;
+            }
+        }
+
+        private IGenericRepository<Notification> _notificationRepository;
+        public IGenericRepository<Notification> Notification
+        {
+            get
+            {
+                if (_notificationRepository == null)
+                {
+                    _notificationRepository = new GenericRepository<Notification>(_dbContext);
+                }
+                return _notificationRepository;
+            }
+        }
+
+
+
         private IGenericRepository<Area> _areaRepository;
         public IGenericRepository<Area> Area
         {

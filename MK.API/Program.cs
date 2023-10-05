@@ -1,63 +1,88 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using MK.API.Configuration;
 using MK.Domain.Configuration;
 using Newtonsoft.Json;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace MK.API
+namespace MK.API;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var kestrelSection = context.Configuration.GetSection("Kestrel");
 
-            builder.WebHost.ConfigureKestrel((context, serverOptions) =>
-            {
-                var kestrelSection = context.Configuration.GetSection("Kestrel");
+            serverOptions.Configure(kestrelSection);
+        });
 
-                serverOptions.Configure(kestrelSection);
-            });
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+        //Binding appsettings.json to AppConfig
+        builder.Configuration.SettingsBinding();
 
-            //Binding appsettings.json to AppConfig
-            builder.Configuration.SettingsBinding();
+        builder.Services.AddFirebase();
 
-            // Add services to the container.
-            builder.ConfigureAutofacContainer();
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
 
-            builder.Services.AddDbContexts();
+        builder.Services.AddJwtService();
 
-            builder.Services.AddApiVersion();
+        builder.Services.AddControllers().AddJsonOptions(x =>
+        {
+            x.JsonSerializerOptions.ReferenceHandler = null;
+            x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
-            builder.Services.AddControllers()
-                .AddConfigApiBehaviorOptions();
+        // Add services to the container.
+        builder.ConfigureAutofacContainer();
 
-            builder.Services.AddFluentValidationSetting();
+        builder.Services.AddDbContexts();
 
-            builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddApiVersion();
 
-            builder.Services.AddSwaggerGen(o => o.AddSwaggerDocumentation());
+        builder.Services.AddControllers()
+            .AddConfigApiBehaviorOptions();
 
-            var app = builder.Build();
+        builder.Services.AddFluentValidationSetting();
 
-            // Configure the HTTP request pipeline.
-            app.UseSwagger();
+        builder.Services.AddEndpointsApiExplorer();
 
-            app.UseSwaggerUI();
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
 
-            app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
+        builder.Services.AddSwaggerGenOption();
 
-            app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+        var app = builder.Build();
 
-            app.MapControllers();
+        // Configure the HTTP request pipeline.
+        app.UseSwagger();
 
-            app.Run();
-        }
+        app.UseSwaggerUI(option => option.EnablePersistAuthorization());
+
+        app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
+
+        builder.Services.SeedData().GetAwaiter().GetResult();
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
     }
 }

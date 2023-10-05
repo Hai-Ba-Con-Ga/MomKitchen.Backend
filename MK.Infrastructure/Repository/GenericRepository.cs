@@ -229,6 +229,13 @@ namespace MK.Infrastructure.Repository
                             .Select(selector);
             }
         }
+
+        // get first or default
+        public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return dbSet.AsQueryable().AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
         #endregion Retrieve
 
         /// <summary>
@@ -251,9 +258,8 @@ namespace MK.Infrastructure.Repository
         {
             if (queryHelper == null)
             {
-                queryHelper = new();
+                queryHelper = new QueryHelper<T>();
             }
-
             var query = dbSet.ApplyConditions(queryHelper, id, isAsNoTracking);
 
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
@@ -270,9 +276,8 @@ namespace MK.Infrastructure.Repository
         {
             if (queryHelper == null)
             {
-                queryHelper = new();
+                queryHelper = new QueryHelper<T, TResult>();
             }
-
             var query = dbSet.ApplyConditions(queryHelper, id, isAsNoTracking);
 
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
@@ -286,9 +291,8 @@ namespace MK.Infrastructure.Repository
         {
             if (queryHelper == null)
             {
-                queryHelper = new();
+                queryHelper = new QueryHelper<T>();
             }
-
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 
             return await query.ToListAsync().ConfigureAwait(false);
@@ -304,9 +308,8 @@ namespace MK.Infrastructure.Repository
         {
             if (queryHelper == null)
             {
-                queryHelper = new();
+                queryHelper = new QueryHelper<T, TResult>();
             }
-
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 
             return await query.ToListAsync().ConfigureAwait(false);
@@ -322,9 +325,8 @@ namespace MK.Infrastructure.Repository
         {
             if (queryHelper == null)
             {
-                queryHelper = new();
+                queryHelper = new QueryHelper<T>();
             }
-
             var pagedList = new PagedList<T>();
 
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
@@ -350,6 +352,10 @@ namespace MK.Infrastructure.Repository
             }
 
             var pagedList = new PagedList<TResult>();
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T, TResult>();
+            }
 
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 
