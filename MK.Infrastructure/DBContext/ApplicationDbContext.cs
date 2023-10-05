@@ -121,30 +121,11 @@ namespace MK.Infrastructure.DBContext
                 .HasForeignKey<Kitchen>(r => r.LocationId)
                 .IsRequired();
 
-            //config one to one for Area and Location
+            //config data type for Boundaries
             modelBuilder.Entity<Area>()
-                .HasOne(x => x.North)
-                .WithOne(r => r.AreaAsNorth)
-                .HasForeignKey<Area>(r => r.NorthId)
+                .Property(x => x.Boundaries)
+                .HasColumnType("uuid[]")
                 .IsRequired();
-
-            modelBuilder.Entity<Area>()
-                .HasOne(x => x.East)
-                .WithOne(r => r.AreaAsEast)
-                .HasForeignKey<Area>(r => r.EastId)
-                .IsRequired();
-
-            modelBuilder.Entity<Area>()
-                .HasOne(x => x.South)
-                .WithOne(r => r.AreaAsSouth)
-                .HasForeignKey<Area>(r => r.SouthId)
-                .IsRequired();
-
-            modelBuilder.Entity<Area>()
-               .HasOne(x => x.West)
-               .WithOne(r => r.AreaAsWest)
-               .HasForeignKey<Area>(r => r.WestId)
-               .IsRequired();
 
             //config one to many for Kitchen and Dish
             modelBuilder.Entity<Kitchen>()

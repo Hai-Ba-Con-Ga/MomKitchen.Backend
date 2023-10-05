@@ -13,5 +13,31 @@ namespace MK.API.Configuration
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             options.IncludeXmlComments(xmlPath);
         }
+
+        public static IServiceCollection AddSwaggerGenOption(this IServiceCollection service)
+        {
+            return service.AddSwaggerGen(c =>
+               {
+                   c.AddSwaggerDocumentation();
+                   c.SwaggerDoc("v1", new OpenApiInfo
+                   {
+                       Title = "MK API",
+                       Version = "v1",
+                       Description = "API for Mom Kitchen Project",
+                       Contact = new OpenApiContact
+                       {
+                           Name = "Contact Developers",
+                           Url = new Uri("https://github.com/Hai-Ba-Con-Ga")
+                       }
+                   });
+                   c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                   {
+                       Description = "Standard Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+                       In = ParameterLocation.Header,
+                       Name = "Authorization",
+                       Type = SecuritySchemeType.ApiKey
+                   });
+               });
+        }
     }
 }

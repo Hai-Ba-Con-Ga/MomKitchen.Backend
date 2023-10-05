@@ -16,6 +16,8 @@ namespace MK.Application.Repository
         IGenericRepository<Notification> Notification { get; }
 
 
+        IGenericRepository<Area> Area { get; }
+
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
