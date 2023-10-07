@@ -65,7 +65,7 @@ workflows:
     jobs:
       - scan
       - build_deploy:
-          requires: [lint]
+          requires: [scan]
           filters:
               branches:
                 only: /master/
