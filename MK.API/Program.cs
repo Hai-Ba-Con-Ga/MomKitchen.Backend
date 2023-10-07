@@ -1,76 +1,88 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.AspNetCore.Filters;
+using MK.API.Configuration;
+using MK.Domain.Configuration;
+using Newtonsoft.Json;
 using System.Reflection;
-using System.Text;
 using System.Text.Json.Serialization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace MK.API;
 
-builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+public class Program
 {
-    var kestrelSection = context.Configuration.GetSection("Kestrel");
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-    serverOptions.Configure(kestrelSection);
-});
+        builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+        {
+            var kestrelSection = context.Configuration.GetSection("Kestrel");
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+            serverOptions.Configure(kestrelSection);
+        });
 
-//Binding appsettings.json to AppConfig
-builder.Configuration.SettingsBinding();
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
-builder.Services.AddFirebase();
+        //Binding appsettings.json to AppConfig
+        builder.Configuration.SettingsBinding();
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+        builder.Services.AddFirebase();
 
-builder.Services.AddJwtService();
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
 
-builder.Services.AddControllers().AddJsonOptions(x =>
-{
-    x.JsonSerializerOptions.ReferenceHandler = null;
-    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+        builder.Services.AddJwtService();
 
-// Add services to the container.
-builder.ConfigureAutofacContainer();
+        builder.Services.AddControllers().AddJsonOptions(x =>
+        {
+            x.JsonSerializerOptions.ReferenceHandler = null;
+            x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
-builder.Services.AddDbContexts();
+        // Add services to the container.
+        builder.ConfigureAutofacContainer();
 
-builder.Services.AddApiVersion();
+        builder.Services.AddDbContexts();
 
-builder.Services.AddControllers();
+        builder.Services.AddApiVersion();
 
-builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddControllers()
+            .AddConfigApiBehaviorOptions();
 
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.SuppressModelStateInvalidFilter = true;
-});
+        builder.Services.AddFluentValidationSetting();
 
-builder.Services.AddSwaggerGenOption();
+        builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
+
+        builder.Services.AddSwaggerGenOption();
 
 
-var app = builder.Build();
+        var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-app.UseSwagger();
+        // Configure the HTTP request pipeline.
+        app.UseSwagger();
 
-app.UseSwaggerUI(option => option.EnablePersistAuthorization());
+        app.UseSwaggerUI(option => option.EnablePersistAuthorization());
 
-app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
+        app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
-await builder.Services.SeedData();
+        builder.Services.SeedData().GetAwaiter().GetResult();
 
-app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
 
-app.UseAuthentication();
+        app.UseAuthentication();
 
-app.UseAuthorization();
+        app.UseAuthorization();
 
-app.MapControllers();
+        app.MapControllers();
 
-app.Run();
+        app.Run();
+    }
+}

@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Dto.Request
 {
-    public class UpdateLocationReq
+    public class UpdateAreaReq
     {
-        public double Lat { get; set; }
-        public double Lng { get; set; }
+        [Required]
+        public string Name { get; set; } = null!;
+        [Required]
+        public Dictionary<Guid, UpdateLocationReq> UpdateData { get; set; } = null!;
     }
 }

@@ -59,4 +59,8 @@
 		<ProjectReference Include="..\MK.Service\MK.Service.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Middleware\" />
+	</ItemGroup>
+
 </Project>

@@ -27,6 +27,7 @@ namespace MK.Infrastructure.Repository
         public async Task<Guid> CreateAsync(T entity, bool isSaveChange = false)
         {
             await dbSet.AddAsync(entity);
+
             if (isSaveChange)
             {
                 await SaveChangesAsync().ConfigureAwait(false);
@@ -40,12 +41,15 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<IEnumerable<Guid>> CreateAsync(IEnumerable<T> entities, bool isSaveChange = false)
         {
-            await dbSet.AddRangeAsync(entities);
+            List<T> values = entities.ToList();
+
+            await dbSet.AddRangeAsync(values);
+
             if (isSaveChange)
             {
                 await SaveChangesAsync().ConfigureAwait(false);
             }
-            return entities.Select(e => e.Id);
+            return values.Select(e => e.Id);
         }
         #endregion Create
 
@@ -57,6 +61,17 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<int> DeleteAsync(Expression<Func<T, bool>> predicate)
         {
+            Expression<Func<T, bool>> isDeleted = p => p.IsDeleted == false;
+
+            if (predicate == null)
+            {
+                predicate = isDeleted;
+            }
+            else
+            {
+                predicate = PredicateBuilder.And(isDeleted, predicate);
+            }
+
             return await dbSet.Where(predicate)
                                 .ExecuteDeleteAsync()
                                 .ConfigureAwait(false);
@@ -68,6 +83,17 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<int> SoftDeleteAsync(Expression<Func<T, bool>> predicate)
         {
+            Expression<Func<T, bool>> isDeleted = p => p.IsDeleted == false;
+
+            if (predicate == null)
+            {
+                predicate = isDeleted;
+            }
+            else
+            {
+                predicate = PredicateBuilder.And(isDeleted, predicate);
+            }
+
             return await dbSet.Where(predicate)
                                 .ExecuteUpdateAsync(setter => setter.SetProperty(e => e.IsDeleted, true))
                                 .ConfigureAwait(false);
@@ -96,6 +122,17 @@ namespace MK.Infrastructure.Repository
         /// <returns></returns>
         public async Task<int> UpdateAsync(Expression<Func<T, bool>>? predicate, Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls)
         {
+            Expression<Func<T, bool>> isDeleted = p => p.IsDeleted == false;
+
+            if (predicate == null)
+            {
+                predicate = isDeleted;
+            }
+            else
+            {
+                predicate = PredicateBuilder.And(isDeleted, predicate);
+            }
+
             var query = dbSet.AsQueryable();
 
             if (predicate != null)
@@ -106,7 +143,7 @@ namespace MK.Infrastructure.Repository
             return await query.ExecuteUpdateAsync(setPropertyCalls);
         }
         /// <summary>
-        /// Update entity by id and other conditions with DTO object
+        /// Update entity by id and other conditions with DTO object - Hàng lỗi nha đừng có đụng vào 
         /// </summary>
         /// <typeparam name="TDto"></typeparam>
         /// <param name="predicate"></param>
@@ -309,6 +346,11 @@ namespace MK.Infrastructure.Repository
         /// </returns>
         public async Task<PagedList<TResult>> GetWithPagination<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class
         {
+            if (queryHelper == null)
+            {
+                queryHelper = new();
+            }
+
             var pagedList = new PagedList<TResult>();
             if (queryHelper == null)
             {

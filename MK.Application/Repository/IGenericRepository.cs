@@ -1,5 +1,4 @@
 ﻿
-using MK.Domain.Dto.Request.Location;
 
 namespace MK.API.Application.Repository
 {
@@ -89,8 +88,12 @@ namespace MK.API.Application.Repository
         ///  PagedList is a class derived from List<TSource> and it is used to represent pagination of a list of objects.
         /// </returns>
         Task<PagedList<TResult>> GetWithPagination<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
+
+        #endregion Version 2.0
+
+        #region Comming soon  - Địt chưa làm đc đừng có sài
         /// <summary>
-        /// Update entity by id and other conditions with DTO object
+        /// Update entity by id and other conditions with DTO object - Hàng lỗi nha đừng có sài 
         /// </summary>
         /// <typeparam name="TDto"></typeparam>
         /// <param name="predicate"></param>
@@ -98,7 +101,6 @@ namespace MK.API.Application.Repository
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         Task<int> UpdateAsync<TDto>(Expression<Func<T, bool>> predicate, TDto req) where TDto : class, new();
-        #endregion Version 2.0
- 
+        #endregion Comming soon 
     }
 }
