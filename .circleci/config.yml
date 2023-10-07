@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            IFS='/' read -ra PARTS <<< "$CIRCLE_BRANCH"  # Split branch name by '/'
+            IFS='/' read -ra PARTS \<<< "$CIRCLE_BRANCH"  # Split branch name by '/'
             BRANCH_NAME="${PARTS[1]}"  # Get the second part of the split
             docker build -t $DOCKER_IMAGE_NAME:$BRANCH_NAME .
       - run:
