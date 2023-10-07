@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -t $DOCKER_IMAGE_NAME .
+            docker build -t $DOCKER_IMAGE_NAME:$CIRCLE_TAG .
       - run:
           name: Push Docker image to Docker Hub
           command: |
@@ -72,5 +72,5 @@ workflows:
       - build_deploy:
           requires: [scan]
           filters:
-              branches:
-                only: /master/
+              tags:
+                only: /^v\d+\.\d+\.\d+$/
