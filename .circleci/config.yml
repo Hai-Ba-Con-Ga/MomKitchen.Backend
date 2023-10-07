@@ -31,6 +31,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Init settings"
+          command: |
+            echo $FIREBASE_SETTING >> $MAIN_PROJECT_PATH/firebase.json
+            echo $APP_SETTING >> $MAIN_PROJECT_PATH/appsettings.json
+      - run:
           name: Install Docker
           command: |
             sudo apt-get update && sudo apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release
