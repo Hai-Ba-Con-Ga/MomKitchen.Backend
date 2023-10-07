@@ -71,7 +71,7 @@ workflows:
   build-and-deploy:
     jobs:
       - scan
-      - build_deploy:
+      - build_deploy_dev:
           requires: [scan]
           filters:
               branches:
