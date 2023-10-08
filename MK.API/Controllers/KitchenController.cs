@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using MK.Domain.Dto.Request.Kitchen;
 using System.ComponentModel.DataAnnotations;
 
 namespace MK.API.Controllers
@@ -8,15 +8,14 @@ namespace MK.API.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AreaController : ControllerBase
+    public class KitchenController : ControllerBase
     {
-        private readonly IAreaService _areaService;
+        private readonly IKitchenService _kitchenService;
 
-        public AreaController(IAreaService areaService)
+        public KitchenController(IKitchenService kitchenService)
         {
-            _areaService = areaService;
+            _kitchenService = kitchenService;
         }
-
 
         /// <summary>
         /// Function to create new location 
@@ -26,66 +25,61 @@ namespace MK.API.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([Required] CreateAreaReq req)
+        public async Task<IActionResult> Create([Required] CreateKitchenReq req)
         {
-            var result = await _areaService.Create(req);
+            var result = await _kitchenService.Create(req);
             return StatusCode((int)result.StatusCode, result);
         }
 
-        /// <summary>
-        /// Function to soft delete location
-        /// </summary>
-        /// <param name="areaId"></param>
-        /// <returns></returns>
-        [HttpDelete("{areaId}")]
+
+        [HttpDelete("{kitchenId}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(Guid areaId)
+        public async Task<IActionResult> Delete(Guid kitchenId)
         {
-            var result = await _areaService.Delete(areaId);
+            var result = await _kitchenService.Delete(kitchenId);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+
+        [HttpPut("{kitchenId}")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(Guid kitchenId, UpdateKitchenReq req)
+        {
+            var result = await _kitchenService.Update(kitchenId, req);
             return StatusCode((int)result.StatusCode, result);
         }
 
         /// <summary>
-        /// Function to update area 
+        /// Function to get all Location with paging
         /// </summary>
-        /// <param name="areaId"></param>
         /// <param name="req"></param>
-        /// <returns></returns>
-        [HttpPut("{areaId}")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(Guid areaId, UpdateAreaReq req)
-        {
-            var result = await _areaService.Update(areaId, req);
-            return StatusCode((int)result.StatusCode, result);
-        }
-
-        /// <summary>
-        /// Function to get all location with paging and filter
-        /// </summary>
-        /// <returns>Paging list of location</returns>
+        /// <returns>
+        /// Paging List of Location response
+        /// </returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<LocationRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<LocationRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PaginationParameters req)
         {
-            var result = await _areaService.GetAll();
+            var result = await _kitchenService.GetAll(req);
             return StatusCode((int)result.StatusCode, result);
         }
 
         /// <summary>
-        /// Function to get area by id
+        /// Function to get Kitchen by Id
         /// </summary>
         /// <param name="areaId"></param>
         /// <returns></returns>
         [HttpGet("{areaId}")]
-        [ProducesResponseType(typeof(GetAreaRes), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetById(Guid areaId)
         {
-            var result = await _areaService.GetById(areaId);
+            var result = await _kitchenService.GetById(areaId);
             return StatusCode((int)result.StatusCode, result);
         }
+
     }
 }

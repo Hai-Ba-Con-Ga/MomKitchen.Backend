@@ -64,7 +64,6 @@ namespace MK.Service.Service
                 }
 
                 var boundaries = area.Boundaries.ToList();
-
                 boundaries.RemoveAll(i =>
                 {
                     if (req.UpdateData.ContainsKey(i))
@@ -78,18 +77,19 @@ namespace MK.Service.Service
                     }
                 });
 
+                //create new location and add to boundaries
                 var newLocations = req.UpdateData.Select(i => new Location()
                 {
                     Id = i.Key,
                     Lat = i.Value.Lat,
                     Lng = i.Value.Lng
                 });
-
                 var newLocationIds = await _unitOfWork.Location.CreateAsync(newLocations, isSaveChange: true);
-
                 boundaries.AddRange(newLocationIds);
 
+                //mapping data to update
                 area.Boundaries = boundaries.ToArray();
+                area.Name = req.Name;
 
                 var updateAreaResult = await _unitOfWork.Area.UpdateAsync(area, isSaveChange: true);
 
