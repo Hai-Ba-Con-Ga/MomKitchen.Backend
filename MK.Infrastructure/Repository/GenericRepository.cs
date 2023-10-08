@@ -165,7 +165,7 @@ namespace MK.Infrastructure.Repository
 
         #region Retrieve
         /// <summary>
-        /// Get an entity is active by id and match orther condition predicate, this function is AsNoTracking 
+        /// GetAll an entity is active by id and match orther condition predicate, this function is AsNoTracking 
         /// </summary>
         /// <param name="id"></param>
         /// <param name="predicate">can null</param>
@@ -199,7 +199,7 @@ namespace MK.Infrastructure.Repository
         }
 
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="predicate"></param>
         /// <param name="includes"></param>
@@ -249,7 +249,7 @@ namespace MK.Infrastructure.Repository
 
         #region Retrieve Version 2.0
         /// <summary>
-        /// Get entity by id and other conditions
+        /// GetAll entity by id and other conditions
         /// </summary>
         /// <param name="id"></param>
         /// <param name="query"></param>
@@ -265,7 +265,7 @@ namespace MK.Infrastructure.Repository
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
         }
         /// <summary>
-        /// Get entity by id and other conditions
+        /// GetAll entity by id and other conditions
         /// 
         /// This function will return mapping dto object map from entity
         /// </summary>
@@ -283,7 +283,7 @@ namespace MK.Infrastructure.Repository
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
         }
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="queryHelper"></param>
         /// <returns></returns>
@@ -298,7 +298,7 @@ namespace MK.Infrastructure.Repository
             return await query.ToListAsync().ConfigureAwait(false);
         }
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// 
         /// This function will return list of mapping dto object map from list of entity
         /// </summary>
@@ -315,7 +315,7 @@ namespace MK.Infrastructure.Repository
             return await query.ToListAsync().ConfigureAwait(false);
         }
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="queryHelper"></param>
         /// <returns>
@@ -336,7 +336,7 @@ namespace MK.Infrastructure.Repository
             return pagedList;
         }
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// 
         /// This function will return PagedList of mapping dto object map from list of entity
         /// </summary>

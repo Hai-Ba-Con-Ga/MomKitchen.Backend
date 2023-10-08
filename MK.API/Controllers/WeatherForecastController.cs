@@ -15,7 +15,7 @@ namespace BBS.API.Controllers
             _weatherForecastService = weatherForecastService;
         }
         /// <summary>
-        /// Get Wather forecast
+        /// GetAll Wather forecast
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetWeatherForecast")]

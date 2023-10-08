@@ -40,14 +40,14 @@ namespace MK.API.Application.Repository
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         #region Version 2.0
         /// <summary>
-        /// Get entity by id and other conditions
+        /// GetAll entity by id and other conditions
         /// </summary>
         /// <param name="id"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        Task<T?> GetById(Guid id, QueryHelper<T> query, bool isAsNoTracking = true);
+        Task<T?> GetById(Guid id, QueryHelper<T> query = null, bool isAsNoTracking = true);
         /// <summary>
-        /// Get entity by id and other conditions
+        /// GetAll entity by id and other conditions
         /// This function will return mapping dto object map from entity
         /// </summary>
         /// <param name="id"></param>
@@ -55,31 +55,31 @@ namespace MK.API.Application.Repository
         /// <returns>
         /// Null - if entity not found
         /// </returns>
-        Task<TResult?> GetById<TResult>(Guid id, QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
+        Task<TResult?> GetById<TResult>(Guid id, QueryHelper<T, TResult> queryHelper = null, bool isAsNoTracking = true) where TResult : class;
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="queryHelper"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> Get(QueryHelper<T> queryHelper, bool isAsNoTracking = true);
+        Task<IEnumerable<T>> Get(QueryHelper<T> queryHelper = null, bool isAsNoTracking = true);
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// 
         /// This function will return list of mapping dto object map from list of entity
         /// </summary>
         /// <param name="queryHelper"></param>
         /// <returns></returns>
-        Task<IEnumerable<TResult>> Get<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
+        Task<IEnumerable<TResult>> Get<TResult>(QueryHelper<T, TResult> queryHelper = null, bool isAsNoTracking = true) where TResult : class;
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="queryHelper"></param>
         /// <returns>
         ///  PagedList is a class derived from List<T> and it is used to represent pagination of a list of objects.
         /// </returns>
-        Task<PagedList<T>> GetWithPagination(QueryHelper<T> queryHelper, bool isAsNoTracking = true);
+        Task<PagedList<T>> GetWithPagination(QueryHelper<T> queryHelper = null, bool isAsNoTracking = true);
         /// <summary>
-        /// Get all entities are active and match condition predicate, this function is AsNoTracking
+        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// 
         /// This function will return PagedList of mapping dto object map from list of entity
         /// </summary>
@@ -87,7 +87,7 @@ namespace MK.API.Application.Repository
         /// <returns>
         ///  PagedList is a class derived from List<TSource> and it is used to represent pagination of a list of objects.
         /// </returns>
-        Task<PagedList<TResult>> GetWithPagination<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
+        Task<PagedList<TResult>> GetWithPagination<TResult>(QueryHelper<T, TResult> queryHelper = null, bool isAsNoTracking = true) where TResult : class;
 
         #endregion Version 2.0
 

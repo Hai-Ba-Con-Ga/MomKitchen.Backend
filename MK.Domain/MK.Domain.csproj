@@ -14,8 +14,4 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Dto\Request\Kitchen\" />
-	</ItemGroup>
-
 </Project>
