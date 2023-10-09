@@ -49,8 +49,6 @@ namespace MK.Infrastructure.Repository
             }
         }
 
-
-
         private IGenericRepository<User> _userRepository;
         public IGenericRepository<User> User
         {
@@ -103,7 +101,18 @@ namespace MK.Infrastructure.Repository
             }
         }
 
-
+        private IGenericRepository<Kitchen> _kitchenRepository;
+        public IGenericRepository<Kitchen> Kitchen
+        {
+            get
+            {
+                if (_kitchenRepository == null)
+                {
+                    _kitchenRepository = new GenericRepository<Kitchen>(_dbContext);
+                }
+                return _kitchenRepository;
+            }
+        }
 
         private IGenericRepository<Area> _areaRepository;
         public IGenericRepository<Area> Area

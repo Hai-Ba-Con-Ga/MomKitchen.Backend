@@ -14,6 +14,7 @@ namespace MK.Application.Repository
         IGenericRepository<Role> Role { get; }
         IGenericRepository<Customer> Customer { get; }
         IGenericRepository<Notification> Notification { get; }
+        IGenericRepository<Kitchen> Kitchen { get; }
 
 
         IGenericRepository<Area> Area { get; }

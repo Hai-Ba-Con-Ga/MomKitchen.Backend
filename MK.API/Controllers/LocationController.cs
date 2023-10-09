@@ -79,7 +79,7 @@ namespace MK.API.Controllers
         }
 
         /// <summary>
-        /// Get location by id
+        /// GetAll location by id
         /// </summary>
         /// <param name="locationId"></param>
         /// <returns></returns>
