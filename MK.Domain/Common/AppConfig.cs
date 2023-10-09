@@ -11,6 +11,7 @@ namespace MK.Domain.Common
         public static ConnectionStrings ConnectionStrings { get; set; }
         public static FirebaseConfig FirebaseConfig { get; set; }
         public static JwtSetting JwtSetting { get; set; }
+        public static AwsCredentials AwsCredentials { get; set; }
     }
     public class FirebaseConfig
     {
@@ -63,5 +64,11 @@ namespace MK.Domain.Common
             get;
             set;
         } = true;
+    }
+    public class AwsCredentials
+    {
+        public string AccessKey { get; set; }
+        public string SecretKey { get; set; }
+        public string BucketName { get; set; }
     }
 }

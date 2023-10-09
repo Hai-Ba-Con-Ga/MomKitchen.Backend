@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Autofac" Version="7.1.0" />
+		<PackageReference Include="AWSSDK.S3" Version="3.7.205.9" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 

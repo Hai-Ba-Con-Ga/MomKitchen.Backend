@@ -8,7 +8,7 @@ using MK.Domain.Dto.Response.Customer;
 
 namespace MK.Service.Service
 {
-    public class CustomerService : BaseService
+    public class CustomerService : BaseService, ICustomerService
     {
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

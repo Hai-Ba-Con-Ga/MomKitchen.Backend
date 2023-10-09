@@ -21,9 +21,9 @@ namespace MK.Domain.Dto.Response.Customer
         public int? OrderQuantity { get; set; }
         public int? SpentMoney { get; set; }
         
-        //public virtual ICollection<FavouriteKitchenRes> FavouriteKitchens { get; set; } = new List<FavouriteKitchenRes>();
-        //public virtual ICollection<FeedbackRes> Feedbacks { get; set; } = new List<FeedbackRes>();
-        //public virtual ICollection<OrderRes> Orders { get; set; } = new List<OrderRes>();
+        // public virtual ICollection<FavouriteKitchenRes> FavouriteKitchens { get; set; } = new List<FavouriteKitchenRes>();
+        // public virtual ICollection<FeedbackRes> Feedbacks { get; set; } = new List<FeedbackRes>();
+        // public virtual ICollection<OrderRes> Orders { get; set; } = new List<OrderRes>();
 
     }
 }
