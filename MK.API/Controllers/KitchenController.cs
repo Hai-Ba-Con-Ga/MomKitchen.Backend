@@ -59,7 +59,7 @@ namespace MK.API.Controllers
         /// Paging List of Location response
         /// </returns>
         [HttpGet]
-        [ProducesResponseType(typeof(PaginationResponse<LocationRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationResponse<KitchenRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll([FromQuery] PaginationParameters req)
         {

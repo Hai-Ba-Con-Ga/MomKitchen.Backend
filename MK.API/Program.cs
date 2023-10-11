@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using MK.API.Configuration;
+using MK.Application.Configuration;
 using MK.Domain.Configuration;
 using Newtonsoft.Json;
 using System.Reflection;
@@ -29,6 +30,9 @@ public class Program
         builder.Configuration.SettingsBinding();
 
         builder.Services.AddFirebase();
+
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddCache();
 
         builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()

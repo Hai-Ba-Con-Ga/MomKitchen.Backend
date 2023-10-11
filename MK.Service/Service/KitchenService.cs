@@ -137,7 +137,8 @@ namespace MK.Service.Service
                         },
                         OwnerId = t.OwnerId,
                         OwnerName = t.Owner.FullName,
-                        Status = t.Status
+                        Status = t.Status,
+                        QuantiyDish = t.Dishes.Count,
                     },
                     Includes = new Expression<Func<Kitchen, object>>[]
                     {

@@ -9,13 +9,13 @@
 	<ItemGroup>
 		<Folder Include="Common\" />
 		<Folder Include="ApiHelper\" />
-		<Folder Include="Configuration\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AutoWrapper.Core" Version="4.5.1" />
 		<PackageReference Include="FirebaseAdmin" Version="2.4.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.12" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
 	</ItemGroup>
 

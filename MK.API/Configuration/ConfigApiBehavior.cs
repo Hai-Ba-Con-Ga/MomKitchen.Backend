@@ -2,7 +2,7 @@
 
 namespace MK.API.Configuration
 {
-    public static class ConfigureApiBehavior
+    public static class ConfigApiBehavior
     {
         public static IMvcBuilder AddConfigApiBehaviorOptions(this IMvcBuilder builder)
         {
