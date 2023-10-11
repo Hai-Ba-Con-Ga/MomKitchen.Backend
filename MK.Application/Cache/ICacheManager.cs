@@ -10,10 +10,8 @@ namespace MK.Application.Cache
 {
     public interface ICacheManager
     {
-        Task<T> GetAsync<T>(string key);
-        Task SetAsync(string key, object value, TimeSpan? timeSpan = null, DistributedCacheEntryOptions options = null);
+        Task<(bool, T)> GetAsync<T>(string key);
+        Task SetAsync(string key, object value, DistributedCacheEntryOptions options = null);
         Task RemoveAsync(string key);
-        Task<bool> IsSetAsync(string key);
-        Task ClearAsync();
     }
 }

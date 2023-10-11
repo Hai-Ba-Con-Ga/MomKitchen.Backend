@@ -148,6 +148,7 @@ namespace MK.Service.Service
                     },
                     PaginationParams = pagingParam ??= new PaginationParameters(),
                 };
+             
 
                 var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
 

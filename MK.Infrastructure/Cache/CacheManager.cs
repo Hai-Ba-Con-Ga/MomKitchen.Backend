@@ -20,49 +20,58 @@ namespace MK.Infrastructure.Cache
 
         private IDistributedCache _distributedCache;
 
+
         public CacheManager(IDistributedCache cache)
         {
             _distributedCache = cache;
         }
 
-        public Task ClearAsync()
+        public async Task<(bool, T)> GetAsync<T>(string key)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var rawGetReult = await _distributedCache.GetAsync(key);
+
+                if (rawGetReult == null)
+                {
+                    var getResult = JsonSerializer.Deserialize<T>(rawGetReult, _serializerOptions);
+
+                    return (true, getResult);
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return (false, default(T));
         }
 
-        public Task<T> GetAsync<T>(string key)
+        public async Task RemoveAsync(string key)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _distributedCache.RemoveAsync(key);
+            }
+            catch (Exception)
+            {
+            }
         }
 
-        public Task<bool> IsSetAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetAsync(string key, object value, TimeSpan? timeSpan = null, DistributedCacheEntryOptions options = null)
+        public async Task SetAsync(string key, object value, DistributedCacheEntryOptions options = null)
         {
             if (options == null)
             {
-                options = new DistributedCacheEntryOptions();
+                options = _defaultCacheOptions;
             }
 
-            var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value, _serializerOptions));
-            return _distributedCache.SetAsync(key, bytes, options);
-        }
-
-
-
-        public Task SetAsync<TSource, TResult>(string key, QueryHelper<TSource, TResult> queryHelper, TimeSpan? timeSpan = null)
-            where TSource : BaseEntity
-            where TResult : class
-        {
-            throw new NotImplementedException();
+            try
+            {
+                var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value, _serializerOptions));
+                await _distributedCache.SetAsync(key, bytes, options);
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }
