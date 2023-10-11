@@ -133,6 +133,7 @@ namespace MK.Service.Service
 
                 return Success(new GetAreaRes()
                 {
+                    Id = area.Id,
                     Name = area.Name,
                     Boundaries = locations
                 });
@@ -170,6 +171,7 @@ namespace MK.Service.Service
 
                     result.Add(new GetAreaRes()
                     {
+                        Id = area.Id,
                         Boundaries = locations,
                         Name = area.Name
                     });
