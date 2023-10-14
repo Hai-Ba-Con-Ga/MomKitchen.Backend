@@ -75,6 +75,10 @@ public class Program
 
         builder.Services.AddSwaggerGenOption();
 
+        builder.Services.Configure<RouteOptions>(options =>
+        {
+            options.LowercaseUrls = true;
+        });
 
         var app = builder.Build();
 

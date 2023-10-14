@@ -5,7 +5,7 @@ using MK.Domain.Dto.Response.Storage;
 
 namespace MK.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class StorageController : ControllerBase
