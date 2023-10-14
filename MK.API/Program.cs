@@ -47,6 +47,18 @@ public class Program
 
         builder.Services.AddDbContexts();
 
+        //allow cors
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+        });
+
         builder.Services.AddApiVersion();
 
         builder.Services.AddControllers()
@@ -70,6 +82,7 @@ public class Program
         app.UseSwagger();
 
         app.UseSwaggerUI(option => option.EnablePersistAuthorization());
+
 
         app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
