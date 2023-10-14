@@ -230,10 +230,10 @@ namespace MK.Infrastructure.Repository
             }
         }
 
-        // get first or default
-        public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+
+        public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
-            return dbSet.AsQueryable().AsNoTracking().FirstOrDefaultAsync(predicate);
+            return await dbSet.AsQueryable().AsNoTracking().FirstOrDefaultAsync(predicate).ConfigureAwait(false);
         }
 
         #endregion Retrieve
@@ -281,6 +281,41 @@ namespace MK.Infrastructure.Repository
             var query = dbSet.ApplyConditions(queryHelper, id, isAsNoTracking);
 
             return await query.SingleOrDefaultAsync().ConfigureAwait(false);
+        }
+        /// <summary>
+        /// Get an entity is active and match condition predicate
+        /// </summary>
+        /// <param name="queryHelper"></param>
+        /// <param name="isAsNoTracking"></param>
+        /// <returns></returns>
+        public async Task<T?> GetFirstOrDefault(QueryHelper<T> queryHelper, bool isAsNoTracking = true)
+        {
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T>();
+            }
+
+            var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
+
+            return await query.FirstOrDefaultAsync().ConfigureAwait(false);
+        }
+        /// <summary>
+        /// Get an entity has mapping dto object is active and match condition predicate
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryHelper"></param>
+        /// <param name="isAsNoTracking"></param>
+        /// <returns></returns>
+        public async Task<TResult?> GetFirstOrDefault<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class
+        {
+            if (queryHelper == null)
+            {
+                queryHelper = new QueryHelper<T, TResult>();
+            }
+
+            var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
+
+            return await query.FirstOrDefaultAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// GetAll all entities are active and match condition predicate, this function is AsNoTracking

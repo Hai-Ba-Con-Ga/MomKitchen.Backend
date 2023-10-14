@@ -164,7 +164,7 @@ namespace MK.Application.Service
             {
                 return BadRequest<bool>("User not found");
             }
-            var role = await _unitOfWork.Role.FirstOrDefaultAsync(x => x.Name.Equals(roleName));
+            var role = await _unitOfWork.Role.GetFirstOrDefaultAsync(x => x.Name.Equals(roleName));
             if (role is null)
             {
                 return BadRequest<bool>("Role not found");

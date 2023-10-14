@@ -48,7 +48,7 @@ namespace MK.Service.Service
                 var avatar = firebaseToken.Claims.GetValueOrDefault("picture")?.ToString();
                 var name = firebaseToken.Claims.GetValueOrDefault("name")?.ToString();
 
-                var role = await _unitOfWork.Role.FirstOrDefaultAsync(x => x.Name.Equals(loginRequest.RoleName));
+                var role = await _unitOfWork.Role.GetFirstOrDefaultAsync(x => x.Name.Equals(loginRequest.RoleName));
                 if (role is null)
                 {
                     return BadRequest<LoginResponse>("Invalid role");
