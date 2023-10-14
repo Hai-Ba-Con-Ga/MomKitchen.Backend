@@ -4,7 +4,7 @@ using MK.Domain.Dto.Request.Notification;
 
 namespace MK.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class NotificationController : ControllerBase

@@ -47,6 +47,18 @@ public class Program
 
         builder.Services.AddDbContexts();
 
+        //allow cors
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+        });
+
         builder.Services.AddApiVersion();
 
         builder.Services.AddControllers()
@@ -63,6 +75,10 @@ public class Program
 
         builder.Services.AddSwaggerGenOption();
 
+        builder.Services.Configure<RouteOptions>(options =>
+        {
+            options.LowercaseUrls = true;
+        });
 
         var app = builder.Build();
 
@@ -70,6 +86,7 @@ public class Program
         app.UseSwagger();
 
         app.UseSwaggerUI(option => option.EnablePersistAuthorization());
+
 
         app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
