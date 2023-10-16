@@ -16,7 +16,7 @@ namespace MK.Application.Repository
         IGenericRepository<Notification> Notification { get; }
         IGenericRepository<Kitchen> Kitchen { get; }
 
-
+        IGenericRepository<FavouriteKitchen> FavouriteKitchen { get; }
         IGenericRepository<Area> Area { get; }
 
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);

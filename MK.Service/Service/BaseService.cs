@@ -32,7 +32,7 @@ namespace MK.Service.Service
             };
         }
 
-        protected PaginationResponse<T> Success<T>(PagedList<T> data) 
+        protected PaginationResponse<T> Success<T>(PagedList<T> data)
         {
             return new PaginationResponse<T>(data)
             {

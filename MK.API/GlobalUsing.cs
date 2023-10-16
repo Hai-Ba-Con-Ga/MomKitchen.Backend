@@ -13,6 +13,7 @@ global using MK.API.Configuration;
 global using MK.Application.Service;
 
 global using MK.Service.Configuration;
+global using MK.Service.Service;
 
 global using MK.Infrastructure.DBContext;
 global using MK.Infrastructure.Configuration;
@@ -20,4 +21,6 @@ global using MK.Infrastructure.Configuration;
 global using MK.Domain.Common;
 global using MK.Domain.Dto.Response;
 global using MK.Domain.Dto.Request;
+global using MK.Domain.Dto.Response.FavouriteKitchen;
+
 

@@ -126,6 +126,21 @@ namespace MK.Infrastructure.Repository
                 return _areaRepository;
             }
         }
+
+        public IGenericRepository<FavouriteKitchen> _favouriteKitchen;
+        public IGenericRepository<FavouriteKitchen> FavouriteKitchen
+        {
+            get
+            {
+                if (_favouriteKitchen == null)
+                {
+                    _favouriteKitchen = new GenericRepository<FavouriteKitchen>(_dbContext);
+                }
+                return _favouriteKitchen;
+            }
+        }
+        
+
         #endregion Repository
 
 
