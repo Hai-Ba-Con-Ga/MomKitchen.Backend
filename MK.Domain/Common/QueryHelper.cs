@@ -17,7 +17,7 @@ namespace MK.Domain.Common
         /// <summary>
         /// Helper for pagination - LIMIT, OFFSET command
         /// </summary>
-        public PaginationParameters? PaginationParams { get; set; } = null;
+        public PagingParameters? PagingParams { get; set; } = null;
         /// <summary>
         /// Helper for filter entity with condition - WHERE command
         /// </summary>

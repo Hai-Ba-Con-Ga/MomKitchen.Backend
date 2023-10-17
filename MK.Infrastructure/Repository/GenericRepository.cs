@@ -298,7 +298,7 @@ namespace MK.Infrastructure.Repository
 
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 
-            await pagedList.LoadData(query, queryHelper.PaginationParams).ConfigureAwait(false);
+            await pagedList.LoadData(query, queryHelper.PagingParams).ConfigureAwait(false);
 
             return pagedList;
         }
@@ -326,7 +326,7 @@ namespace MK.Infrastructure.Repository
 
             var query = dbSet.ApplyConditions(queryHelper, isAsNoTracking: isAsNoTracking);
 
-            await pagedList.LoadData(query, queryHelper.PaginationParams).ConfigureAwait(false);
+            await pagedList.LoadData(query, queryHelper.PagingParams).ConfigureAwait(false);
 
             return pagedList;
         }

@@ -48,13 +48,13 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PaginationResponse<FavouriteKitchenRes>> Get(PaginationParameters pagingParam)
+        public async Task<PagingResponse<FavouriteKitchenRes>> Get(PagingParameters pagingParam)
         {
             try
             {
                 var result = await _unitOfWork.FavouriteKitchen.GetWithPagination(new QueryHelper<FavouriteKitchen, FavouriteKitchenRes>()
                 {
-                    PaginationParams = pagingParam,
+                    PagingParams = pagingParam,
                     Include = t => t.Include(x => x.Kitchen),
                     Selector = t => new FavouriteKitchenRes
                     {

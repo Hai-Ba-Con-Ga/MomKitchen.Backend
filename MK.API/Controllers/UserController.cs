@@ -21,7 +21,7 @@ namespace MK.API.Controllers
         /// <param name="userRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateUserRequest userRequest)
+        public async Task<IActionResult> Create([FromBody] CreateUserReq userRequest)
         {
             var result = await _userService.Create(userRequest);
             return StatusCode((int)result.StatusCode, result);
@@ -35,7 +35,7 @@ namespace MK.API.Controllers
         /// <returns></returns>
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest userRequest)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserReq userRequest)
         {
             var result = await _userService.Update(id, userRequest);
             return StatusCode((int)result.StatusCode, result);
@@ -79,7 +79,7 @@ namespace MK.API.Controllers
         {
             var result = await _userService.GetAll(
                 roleName,
-                new PaginationParameters
+                new PagingParameters
                 {
                     PageNumber = pageNumber ?? 1,
                     PageSize = pageSize ?? 10

@@ -19,18 +19,18 @@ namespace MK.Domain.Common
         }
     }
 
-    public class PaginationResponse<T> : ResponseObject<PagedList<T>>
+    public class PagingResponse<T> : ResponseObject<PagedList<T>>
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
 
-        public PaginationResponse()
+        public PagingResponse()
         {
 
         }
 
-        public PaginationResponse(PagedList<T> data)
+        public PagingResponse(PagedList<T> data)
         {
             PageNumber = data.CurrentPage;
             PageSize = data.PageSize;

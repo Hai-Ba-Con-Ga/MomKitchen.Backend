@@ -33,9 +33,9 @@ namespace MK.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PaginationResponse<FavouriteKitchenRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagingResponse<FavouriteKitchenRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get([FromQuery] PaginationParameters pagingParam)
+        public async Task<IActionResult> Get([FromQuery] PagingParameters pagingParam)
         {
             var result = await _favouriteKitchenService.Get(pagingParam);
             return StatusCode((int)result.StatusCode, result);

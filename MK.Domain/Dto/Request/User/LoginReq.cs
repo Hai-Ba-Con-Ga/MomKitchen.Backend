@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Dto.Request.User
 {
-    public class LoginRequest
+    public class LoginReq
     {
         public string IdToken { get; set; } = null!;
         public string? FcmToken { get; set; }

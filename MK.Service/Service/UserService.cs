@@ -16,7 +16,7 @@ namespace MK.Application.Service
         }
 
 
-        public async Task<ResponseObject<UserResponse>> Create(CreateUserRequest userRequest)
+        public async Task<ResponseObject<UserRes>> Create(CreateUserReq userRequest)
         {
             try
             {
@@ -27,12 +27,12 @@ namespace MK.Application.Service
                 var role = (await _unitOfWork.Role.Get(queryRole)).FirstOrDefault();
                 if (role is null)
                 {
-                    return BadRequest<UserResponse>("Invalid role");
+                    return BadRequest<UserRes>("Invalid role");
                 }
 
                 if (userRequest.Email is null && userRequest.Phone is null)
                 {
-                    return BadRequest<UserResponse>("Invalid token");
+                    return BadRequest<UserRes>("Invalid token");
                 }
 
                 var query = new QueryHelper<User>()
@@ -44,7 +44,7 @@ namespace MK.Application.Service
                 var user = (await _unitOfWork.User.Get(query, false)).FirstOrDefault();
                 if (user != null)
                 {
-                    return BadRequest<UserResponse>("User already exists");
+                    return BadRequest<UserRes>("User already exists");
                 }
 
                 user = new User()
@@ -60,9 +60,9 @@ namespace MK.Application.Service
                 var userId = await _unitOfWork.User.CreateAsync(user, true);
                 if (userId == Guid.Empty)
                 {
-                    return BadRequest<UserResponse>("Create user failed");
+                    return BadRequest<UserRes>("Create user failed");
                 }
-                var userResponse = _mapper.Map<UserResponse>(user);
+                var userResponse = _mapper.Map<UserRes>(user);
                 userResponse.Role = role;
 
                 return Success(userResponse);
@@ -70,19 +70,19 @@ namespace MK.Application.Service
             catch (Exception e)
             {
 
-                return BadRequest<UserResponse>(e.Message);
+                return BadRequest<UserRes>(e.Message);
             }
 
         }
 
-        public async Task<ResponseObject<UserResponse>> Update(Guid id, UpdateUserRequest userRequest)
+        public async Task<ResponseObject<UserRes>> Update(Guid id, UpdateUserReq userRequest)
         {
             try
             {
                 User user = await _unitOfWork.User.GetById(id, null, false);
                 if (user == null)
                 {
-                    return BadRequest<UserResponse>("User not found");
+                    return BadRequest<UserRes>("User not found");
                 }
                 user.Email = userRequest.Email ?? "";
                 user.FullName = userRequest.FullName ?? "";
@@ -90,12 +90,12 @@ namespace MK.Application.Service
                 user.Phone = userRequest.Phone ?? "";
                 user.Birthday = userRequest.Birthday;
                 await _unitOfWork.User.SaveChangesAsync();
-                UserResponse userResponse = _mapper.Map<UserResponse>(user);
+                UserRes userResponse = _mapper.Map<UserRes>(user);
                 return Success(userResponse);
             }
             catch (Exception e)
             {
-                return BadRequest<UserResponse>(e.Message);
+                return BadRequest<UserRes>(e.Message);
             }
         }
 
@@ -112,7 +112,7 @@ namespace MK.Application.Service
             }
         }
 
-        public async Task<ResponseObject<UserResponse>> GetById(Guid id)
+        public async Task<ResponseObject<UserRes>> GetById(Guid id)
         {
             try
             {
@@ -123,9 +123,9 @@ namespace MK.Application.Service
                 User user = await _unitOfWork.User.GetById(id, query, false);
                 if (user is null)
                 {
-                    return NotFound<UserResponse>("User not found");
+                    return NotFound<UserRes>("User not found");
                 }
-                UserResponse userResponse = _mapper.Map<UserResponse>(user);
+                UserRes userResponse = _mapper.Map<UserRes>(user);
                 userResponse.Role = user.Role;
                 return Success(userResponse);
 
@@ -133,19 +133,19 @@ namespace MK.Application.Service
             }
             catch (Exception e)
             {
-                return BadRequest<UserResponse>(e.Message);
+                return BadRequest<UserRes>(e.Message);
             }
         }
 
 
-        public async Task<PaginationResponse<UserResponse>> GetAll(string roleName, PaginationParameters paginationparam = null)
+        public async Task<PagingResponse<UserRes>> GetAll(string roleName, PagingParameters paginationparam = null)
         {
             try
             {
-                var query = new QueryHelper<User, UserResponse>()
+                var query = new QueryHelper<User, UserRes>()
                 {
                     Filter = x => x.Role.Name.Equals(roleName),
-                    PaginationParams = paginationparam ??= new PaginationParameters(),
+                    PagingParams = paginationparam ??= new PagingParameters(),
                     Include = t => t.Include(x => x.Role),
                 };
                 var resultQuery = await _unitOfWork.User.GetWithPagination(query);
@@ -153,7 +153,7 @@ namespace MK.Application.Service
             }
             catch (Exception ex)
             {
-                return BadRequests<UserResponse>(ex.Message);
+                return BadRequests<UserRes>(ex.Message);
             }
 
         }

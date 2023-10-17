@@ -25,7 +25,7 @@ namespace MK.Service.Service
         }
 
 
-        public string GenerateToken(UserResponse user)
+        public string GenerateToken(UserRes user)
         {
             return _tokenService.GetToken(user);
         }
@@ -36,7 +36,7 @@ namespace MK.Service.Service
         }
 
 
-        public async Task<ResponseObject<LoginResponse>> GetUserByFirebaseTokenAsync(LoginRequest loginRequest)
+        public async Task<ResponseObject<LoginRes>> GetUserByFirebaseTokenAsync(LoginReq loginRequest)
         {
             try
             {
@@ -51,13 +51,13 @@ namespace MK.Service.Service
                 var role = await _unitOfWork.Role.GetFirstOrDefaultAsync(x => x.Name.Equals(loginRequest.RoleName));
                 if (role is null)
                 {
-                    return BadRequest<LoginResponse>("Invalid role");
+                    return BadRequest<LoginRes>("Invalid role");
                 }
 
-                LoginResponse loginResponse = new();
+                LoginRes loginResponse = new();
                 if (email is null && phone is null)
                 {
-                    return BadRequest<LoginResponse>("Invalid token");
+                    return BadRequest<LoginRes>("Invalid token");
                 }
 
                 var query = new QueryHelper<User>()
@@ -94,7 +94,7 @@ namespace MK.Service.Service
                         await _unitOfWork.Customer.CreateAsync(customer, true);
                     }
 
-                    UserResponse userResponse = _mapper.Map<UserResponse>(newUser);
+                    UserRes userResponse = _mapper.Map<UserRes>(newUser);
                     userResponse.Role = role;
 
 
@@ -115,7 +115,7 @@ namespace MK.Service.Service
                         await _unitOfWork.User.SaveChangesAsync();
 
                     }
-                    UserResponse userResponse = _mapper.Map<UserResponse>(user);
+                    UserRes userResponse = _mapper.Map<UserRes>(user);
                     userResponse.Role = user.Role;
 
 
@@ -128,7 +128,7 @@ namespace MK.Service.Service
             }
             catch (Exception e)
             {
-                return BadRequest<LoginResponse>(e.Message);
+                return BadRequest<LoginRes>(e.Message);
             }
 
         }
@@ -145,7 +145,7 @@ namespace MK.Service.Service
             return Success(true);
         }
 
-        public async Task<ResponseObject<UserResponse>> Get(Guid id)
+        public async Task<ResponseObject<UserRes>> Get(Guid id)
         {
             var query = new QueryHelper<User>()
             {
@@ -154,20 +154,20 @@ namespace MK.Service.Service
             User user = await _unitOfWork.User.GetById(id, query, false);
             if (user is null)
             {
-                return NotFound<UserResponse>("User not found");
+                return NotFound<UserRes>("User not found");
             }
-            UserResponse userResponse = _mapper.Map<UserResponse>(user);
+            UserRes userResponse = _mapper.Map<UserRes>(user);
             userResponse.Role = user.Role;
             return Success(userResponse);
         }
 
-        public async Task<ResponseObject<UserResponse>> Update(Guid id, UpdateUserRequest userRequest)
+        public async Task<ResponseObject<UserRes>> Update(Guid id, UpdateUserReq userRequest)
         {
             User user = await _unitOfWork.User.GetById(id, null, false);
 
             if (user is null)
             {
-                return NotFound<UserResponse>("User not found");
+                return NotFound<UserRes>("User not found");
             }
             user.Email = userRequest.Email ?? "";
             user.FullName = userRequest.FullName ?? "";
@@ -176,7 +176,7 @@ namespace MK.Service.Service
             user.Birthday = userRequest.Birthday;
 
             await _unitOfWork.User.SaveChangesAsync();
-            UserResponse userResponse = _mapper.Map<UserResponse>(user);
+            UserRes userResponse = _mapper.Map<UserRes>(user);
             return Success(userResponse);
         }
 

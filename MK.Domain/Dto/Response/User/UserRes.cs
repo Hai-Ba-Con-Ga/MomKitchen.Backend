@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Dto.Response.User
 {
-    public class UserResponse
+    public class UserRes
     {
         public Guid Id { get; set; }
         public string? Email { get; set; }

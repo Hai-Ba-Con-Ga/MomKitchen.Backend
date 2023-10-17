@@ -77,12 +77,11 @@ namespace MK.Service.Service
         {
             try
             {
-                Expression<Func<Kitchen, IEnumerable<Meal>>> q = t => t.Meals;
-
                 var queryHelper = new QueryHelper<Kitchen, KitchenRes>()
                 {
                     Selector = t => new KitchenRes
                     {
+                        No = t.No,
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
@@ -129,7 +128,7 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PaginationResponse<KitchenRes>> GetAll(PaginationParameters pagingParam = null)
+        public async Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null)
         {
             try
             {
@@ -137,6 +136,7 @@ namespace MK.Service.Service
                 {
                     Selector = t => new KitchenRes
                     {
+                        No = t.No,
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
@@ -168,7 +168,7 @@ namespace MK.Service.Service
                                     .Include(t => t.Dishes)
                                     .Include(t => t.Trays)
                                     .Include(t => t.Meals),
-                    PaginationParams = pagingParam ??= new PaginationParameters(),
+                    PagingParams = pagingParam ??= new PagingParameters(),
                 };
 
                 var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);

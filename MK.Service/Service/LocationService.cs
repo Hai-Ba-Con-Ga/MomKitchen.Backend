@@ -46,13 +46,13 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PaginationResponse<LocationRes>> GetAll(PaginationParameters pagingParam = null)
+        public async Task<PagingResponse<LocationRes>> GetAll(PagingParameters pagingParam = null)
         {
             try
             {
                 var query = new QueryHelper<Location, LocationRes>()
                 {
-                    PaginationParams = pagingParam ??= new PaginationParameters(),
+                    PagingParams = pagingParam ??= new PagingParameters(),
                 };
 
                 var resultQuery = await _unitOfWork.Location.GetWithPagination(query);
