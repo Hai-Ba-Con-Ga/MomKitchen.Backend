@@ -13,17 +13,17 @@ namespace MK.Service.Service
 {
     public class AuthenticationService : BaseService, IAuthenticationService
     {
-        
+
         private readonly ITokenService _tokenService;
 
 
-        public AuthenticationService (IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService) : base(unitOfWork, mapper)
+        public AuthenticationService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService) : base(unitOfWork, mapper)
         {
 
             _tokenService = tokenService;
 
         }
-        
+
 
         public string GenerateToken(UserResponse user)
         {
@@ -63,7 +63,7 @@ namespace MK.Service.Service
                 var query = new QueryHelper<User>()
                 {
                     Filter = x => (x.Email == email || x.Phone == phone),
-                    Includes = new Expression<Func<User, object>>[] { x => x.Role },
+                    Include = x => x.Include(t => t.Role),
                 };
 
                 var user = (await _unitOfWork.User.Get(query, false)).FirstOrDefault();
@@ -93,7 +93,7 @@ namespace MK.Service.Service
                         };
                         await _unitOfWork.Customer.CreateAsync(customer, true);
                     }
-                    
+
                     UserResponse userResponse = _mapper.Map<UserResponse>(newUser);
                     userResponse.Role = role;
 
@@ -101,7 +101,7 @@ namespace MK.Service.Service
                     loginResponse.User = userResponse;
                     //generate token
                     loginResponse.Token = GenerateToken(userResponse);
-                    
+
 
                 }
                 else
@@ -113,7 +113,7 @@ namespace MK.Service.Service
                         user.FcmToken.Add(loginRequest.FcmToken);
 
                         await _unitOfWork.User.SaveChangesAsync();
-                        
+
                     }
                     UserResponse userResponse = _mapper.Map<UserResponse>(user);
                     userResponse.Role = user.Role;
@@ -130,7 +130,7 @@ namespace MK.Service.Service
             {
                 return BadRequest<LoginResponse>(e.Message);
             }
-           
+
         }
 
         public async Task<ResponseObject<bool>> Logout(Guid userId, string fcmToken)
@@ -149,7 +149,7 @@ namespace MK.Service.Service
         {
             var query = new QueryHelper<User>()
             {
-                Includes = new Expression<Func<User, object>>[] { x => x.Role },
+                Include = t => t.Include(i => i.Role),
             };
             User user = await _unitOfWork.User.GetById(id, query, false);
             if (user is null)
@@ -164,7 +164,7 @@ namespace MK.Service.Service
         public async Task<ResponseObject<UserResponse>> Update(Guid id, UpdateUserRequest userRequest)
         {
             User user = await _unitOfWork.User.GetById(id, null, false);
-            
+
             if (user is null)
             {
                 return NotFound<UserResponse>("User not found");

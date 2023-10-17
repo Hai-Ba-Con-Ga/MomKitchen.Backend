@@ -164,78 +164,10 @@ namespace MK.Infrastructure.Repository
         #endregion Update
 
         #region Retrieve
-        /// <summary>
-        /// GetAll an entity is active by id and match orther condition predicate, this function is AsNoTracking 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="predicate">can null</param>
-        /// <param name="includes"></param>
-        /// <returns></returns>
-        public async Task<T?> GetById(Guid id, Expression<Func<T, T>> selector, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[]? includes)
-        {
-            Expression<Func<T, bool>> isNotDeleteCondition = p => p.IsDeleted == false && p.Id == id;
-
-            if (predicate == null)
-            {
-                predicate = isNotDeleteCondition;
-            }
-            else
-            {
-                predicate = PredicateBuilder.And(isNotDeleteCondition, predicate);
-            }
-
-            if (includes == null)
-            {
-                return await dbSet.AsNoTracking().Where(predicate).SingleOrDefaultAsync();
-            }
-            else
-            {
-                var query = dbSet.AsNoTracking().Where(predicate);
-                return await query
-                            .Includes(includes)
-                            .Select(selector)
-                            .SingleOrDefaultAsync();
-            }
-        }
-
-        /// <summary>
-        /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <param name="includes"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<T>> GetWithCondition(Expression<Func<T, T>> selector, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[]? includes)
-        {
-            Expression<Func<T, bool>> isNotDeleteCondition = p => p.IsDeleted == false;
-
-            if (predicate == null)
-            {
-                predicate = isNotDeleteCondition;
-            }
-            else
-            {
-                predicate = PredicateBuilder.And(isNotDeleteCondition, predicate);
-            }
-
-            if (includes == null)
-            {
-                return await dbSet.AsNoTracking().Where(predicate).ToListAsync();
-            }
-            else
-            {
-                var query = dbSet.AsNoTracking().Where(predicate);
-
-                return query.Includes(includes)
-                            .Select(selector);
-            }
-        }
-
-
         public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
             return await dbSet.AsQueryable().AsNoTracking().FirstOrDefaultAsync(predicate).ConfigureAwait(false);
         }
-
         #endregion Retrieve
 
         /// <summary>

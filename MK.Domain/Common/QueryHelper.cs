@@ -1,4 +1,5 @@
-﻿using MK.Domain.Entity;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using MK.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,11 @@ namespace MK.Domain.Common
         /// <summary>
         /// Helper for include entity - JOIN command
         /// </summary>
-        public Expression<Func<T, object>>[]? Includes { get; set; } = null;
+        //public Expression<Func<T, object>>[]? Includes { get; set; } = null;
+        /// <summary>
+        /// Helper for include entity - JOIN command
+        /// </summary>
+        public Func<IQueryable<T>, IIncludableQueryable<T, object>> Include = null;
         /// <summary>
         /// Helper for select field from entity - SELECT command
         /// </summary>

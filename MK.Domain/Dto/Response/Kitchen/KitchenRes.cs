@@ -1,4 +1,5 @@
-﻿using MK.Domain.Entity;
+﻿using MK.Domain.Dto.Response.Customer;
+using MK.Domain.Entity;
 using MK.Domain.Enum;
 using System;
 using System.Collections.Generic;
@@ -17,15 +18,20 @@ namespace MK.Domain.Dto.Response
 
         public string Address { get; set; }
 
+        public int NoOfDish { get; set; }
+
+        public int NoOfTray { get; set; }
+
+        public int NoOfMeal { get; set; }
+
+        public float Rating { get; set; }
+
         public KitchenStatus Status { get; set; }
 
         public LocationRes Location { get; set; }
 
-        public Guid OwnerId { get; set; }
+       public OwnerRes Owner { get; set; }
 
-        public string OwnerName { get; set; }
-
-        public Guid AreaId { get; set; }
-        public string AreaName { get; set; } = null!;
+       public GetAreaRes Area { get; set; }
     }
 }

@@ -30,12 +30,10 @@ namespace MK.Service.Service
                         AvatarUrl = t.User.AvatarUrl,
                         Status = t.Status
                     },
-                    Includes = new Expression<Func<Customer, object>>[]{
-                        t => t.User,
-                        t => t.Orders,
-                        t => t.Feedbacks,
-                        t => t.FavouriteKitchens
-                    },
+                    Include = i => i.Include(x => x.User)
+                                    .Include(x => x.Orders)
+                                    .Include(x => x.Feedbacks)
+                                    .Include(x => x.FavouriteKitchens),
                     PaginationParams = pagingParam ??= new PaginationParameters()
                 };
                 var customer = await _unitOfWork.Customer.GetWithPagination(queryHelper);
@@ -63,13 +61,12 @@ namespace MK.Service.Service
                         AvatarUrl = t.User.AvatarUrl,
                         Status = t.Status
                     },
-                    Includes = new Expression<Func<Customer, object>>[]{
-                        t => t.User,
-                        t => t.Orders,
-                        t => t.Feedbacks,
-                        t => t.FavouriteKitchens
-                    }
+                    Include = t => t.Include(x => x.User)
+                                    .Include(x => x.Orders)
+                                    .Include(x => x.Feedbacks)
+                                    .Include(x => x.FavouriteKitchens)
                 };
+
                 var customer = await _unitOfWork.Customer.GetById(customerId, queryHelper);
                 return Success(customer);
             }

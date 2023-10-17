@@ -55,10 +55,7 @@ namespace MK.Service.Service
                 var result = await _unitOfWork.FavouriteKitchen.GetWithPagination(new QueryHelper<FavouriteKitchen, FavouriteKitchenRes>()
                 {
                     PaginationParams = pagingParam,
-                    Includes = new Expression<Func<FavouriteKitchen, object>>[]
-                    {
-                        t => t.Kitchen
-                    },
+                    Include = t => t.Include(x => x.Kitchen),
                     Selector = t => new FavouriteKitchenRes
                     {
                         CustomerId = t.CustomerId,

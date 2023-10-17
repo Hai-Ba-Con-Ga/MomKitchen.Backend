@@ -12,7 +12,7 @@ namespace MK.Domain.Dto.Response
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
 
-        public IEnumerable<LocationRes> Boundaries { get; set; }
+        public IEnumerable<LocationRes> Boundaries { get; set; } = null;
 
     }
 }

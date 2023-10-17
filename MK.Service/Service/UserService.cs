@@ -38,7 +38,7 @@ namespace MK.Application.Service
                 var query = new QueryHelper<User>()
                 {
                     Filter = x => (x.Email == userRequest.Email || x.Phone == userRequest.Phone),
-                    Includes = new Expression<Func<User, object>>[] { x => x.Role },
+                    Include = t => t.Include(i => i.Role),
                 };
 
                 var user = (await _unitOfWork.User.Get(query, false)).FirstOrDefault();
@@ -118,7 +118,7 @@ namespace MK.Application.Service
             {
                 var query = new QueryHelper<User>()
                 {
-                    Includes = new Expression<Func<User, object>>[] { x => x.Role },
+                    Include = t => t.Include(i => i.Role),
                 };
                 User user = await _unitOfWork.User.GetById(id, query, false);
                 if (user is null)
@@ -146,7 +146,7 @@ namespace MK.Application.Service
                 {
                     Filter = x => x.Role.Name.Equals(roleName),
                     PaginationParams = paginationparam ??= new PaginationParameters(),
-                    Includes = new Expression<Func<User, object>>[] { x => x.Role },
+                    Include = t => t.Include(x => x.Role),
                 };
                 var resultQuery = await _unitOfWork.User.GetWithPagination(query);
                 return Success(resultQuery);

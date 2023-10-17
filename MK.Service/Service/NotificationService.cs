@@ -9,7 +9,7 @@ namespace MK.Service.Service
 {
     public class NotificationService : BaseService, INotificationService
     {
-        
+
         public NotificationService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
 
@@ -42,7 +42,7 @@ namespace MK.Service.Service
             {
                 return BadRequest<NotificationResponse>(ex.Message);
             }
-            
+
         }
 
         public async Task<PaginationResponse<NotificationResponse>> GetAll(PaginationParameters paginationparam = null)
@@ -51,32 +51,30 @@ namespace MK.Service.Service
             {
                 var query = new QueryHelper<Domain.Entity.Notification, NotificationResponse>()
                 {
-                    Includes = new Expression<Func<Domain.Entity.Notification, object>>[] { x => x.Receiver },
+                    Include = i => i.Include(x => x.Receiver),
                     PaginationParams = paginationparam ??= new PaginationParameters(),
-
-
                 };
                 var notifications = await _unitOfWork.Notification.GetWithPagination(query);
                 return Success(notifications);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequests<NotificationResponse>(ex.Message);
             }
-            
+
         }
 
         public async Task<string> SendNotificationOneDeviceAsync(string fcmToken, string title, string content)
         {
             var message = new Message()
             {
-                   Data = new Dictionary<string, string>()
+                Data = new Dictionary<string, string>()
                    {
                        { "title", title },
                        { "content", content }
                    },
-                   Token = fcmToken
-            
+                Token = fcmToken
+
             };
             string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
             return response;
