@@ -5,8 +5,19 @@ namespace MK.API.Application.Repository
     public interface IGenericRepository<T> : IDisposable where T : BaseEntity, new()
     {
         Task<int> SaveChangesAsync();
-
+        /// <summary>
+        /// Create an entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="isSaveChange"></param>
+        /// <returns></returns>
         Task<Guid> CreateAsync(T entity, bool isSaveChange = false);
+        /// <summary>
+        /// Create multiple entities
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <param name="isSaveChange"></param>
+        /// <returns></returns>
         Task<IEnumerable<Guid>> CreateAsync(IEnumerable<T> entities, bool isSaveChange = false);
         /// <summary>
         /// Hard delete
@@ -34,10 +45,12 @@ namespace MK.API.Application.Repository
         /// <param name="setPropertyCalls"></param>
         /// <returns></returns>
         Task<int> UpdateAsync(Expression<Func<T, bool>>? predicate, Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls);
-
-        Task<T?> GetById(Guid id, Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
-        Task<IEnumerable<T>> GetWithCondition(Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
-        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
+        /// <summary>
+        /// Get an entity is active and match condition predicate
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         #region Version 2.0
         /// <summary>
         /// GetAll entity by id and other conditions
@@ -57,6 +70,20 @@ namespace MK.API.Application.Repository
         /// </returns>
         Task<TResult?> GetById<TResult>(Guid id, QueryHelper<T, TResult> queryHelper = null, bool isAsNoTracking = true) where TResult : class;
         /// <summary>
+        /// Get an entity is active and match condition predicate
+        /// </summary>
+        /// <param name="queryHelper"></param>
+        /// <param name="isAsNoTracking"></param>
+        /// <returns></returns>
+        Task<T?> GetFirstOrDefault(QueryHelper<T> queryHelper, bool isAsNoTracking = true);
+        /// <summary>
+        /// Get an entity has mapping dto object is active and match condition predicate
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryHelper"></param>
+        /// <param name="isAsNoTracking"></param>
+        /// <returns></returns>
+        Task<TResult?> GetFirstOrDefault<TResult>(QueryHelper<T, TResult> queryHelper, bool isAsNoTracking = true) where TResult : class;
         /// GetAll all entities are active and match condition predicate, this function is AsNoTracking
         /// </summary>
         /// <param name="queryHelper"></param>
@@ -88,8 +115,12 @@ namespace MK.API.Application.Repository
         ///  PagedList is a class derived from List<TSource> and it is used to represent pagination of a list of objects.
         /// </returns>
         Task<PagedList<TResult>> GetWithPagination<TResult>(QueryHelper<T, TResult> queryHelper = null, bool isAsNoTracking = true) where TResult : class;
-
         #endregion Version 2.0
+
+        #region Remove in version 2.0
+        //Task<T?> GetById(Guid id, Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
+        //Task<IEnumerable<T>> GetWithCondition(Expression<Func<T, T>> selector, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includes);
+        #endregion Remove in version 2.0
 
         #region Comming soon  - Địt chưa làm đc đừng có sài
         /// <summary>

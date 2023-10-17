@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Dto.Request.User
 {
-    public class CreateUserRequest
+    public class CreateUserReq
     {
         public string? FcmToken { get; set; } 
         public string Email { get; set; } = null!;

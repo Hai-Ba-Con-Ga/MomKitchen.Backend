@@ -4,7 +4,9 @@ using MK.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,29 +18,14 @@ namespace MK.Infrastructure.Common
     /// </summary>
     public static class RepositoryHelpers
     {
-        /// <summary>
-        /// Excute include for a list of include expression
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="query"></param>
-        /// <param name="includes"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<T> Includes<T>(this IQueryable<T> query, params Expression<Func<T, object>>[]? includes) where T : BaseEntity
+        public static IQueryable<T> Includes<T>(this IQueryable<T> query, QueryHelper<T> queryable) where T : BaseEntity
         {
-            if (query == null)
-                throw new ArgumentNullException(nameof(query));
+            if (queryable.Include == null)
+                return query;
 
-            if (includes != null && includes.Any())
-            {
-                foreach (var include in includes)
-                {
-                    query = query.Include(include);
-                }
-            }
-
-            return query;
+            return queryable.Include(query);
         }
+
         /// <summary>
         /// Add where condition for query
         /// </summary>
@@ -147,9 +134,10 @@ namespace MK.Infrastructure.Common
                 query = query.AsNoTracking();
             }
 
-            return query.Includes(queryHelper.Includes)
-                     .WhereCondition(queryHelper.Filter)
-                     .SelectField(queryHelper.SelectedFields);
+            return query.Includes(queryHelper)
+                        .AsSplitQuery()
+                        .WhereCondition(queryHelper.Filter)
+                        .SelectField(queryHelper.SelectedFields);
         }
         /// <summary>
         /// Require: QueryHelper<TSource, TResult> queryHelper
@@ -178,9 +166,10 @@ namespace MK.Infrastructure.Common
                 query = query.AsNoTracking();
             }
 
-            return query.Includes(queryHelper.Includes)
-                        .WhereCondition(queryHelper.Filter)
-                        .SelectField<TSource, TResult>(queryHelper.Selector);
+            return query.Includes(queryHelper)
+                        .AsSplitQuery()
+                        .Where(queryHelper.Filter)
+                        .SelectField(queryHelper.Selector);
         }
 
         #region Dynamic query extension

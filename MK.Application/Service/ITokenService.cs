@@ -10,7 +10,7 @@ namespace MK.Application.Service
 {
     public interface ITokenService
     {
-        string GetToken(UserResponse user);
+        string GetToken(UserRes user);
         IEnumerable<Claim> DecodeAndValidateToken(string token);
     }
 }

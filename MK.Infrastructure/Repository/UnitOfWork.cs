@@ -36,96 +36,149 @@ namespace MK.Infrastructure.Repository
         //    }
 
 
-        private IGenericRepository<Location> _locationRepository;
+        private IGenericRepository<Location> _location;
         public IGenericRepository<Location> Location
         {
             get
             {
-                if (_locationRepository == null)
+                if (_location == null)
                 {
-                    _locationRepository = new GenericRepository<Location>(_dbContext);
+                    _location = new GenericRepository<Location>(_dbContext);
                 }
-                return _locationRepository;
+                return _location;
             }
         }
 
-        private IGenericRepository<User> _userRepository;
+        private IGenericRepository<User> _user;
         public IGenericRepository<User> User
         {
             get
             {
-                if (_userRepository == null)
+                if (_user == null)
                 {
-                    _userRepository = new GenericRepository<User>(_dbContext);
+                    _user = new GenericRepository<User>(_dbContext);
                 }
-                return _userRepository;
+                return _user;
             }
         }
 
-        private IGenericRepository<Role> _roleRepository;
+        private IGenericRepository<Role> _role;
         public IGenericRepository<Role> Role
         {
             get
             {
-                if (_roleRepository == null)
+                if (_role == null)
                 {
-                    _roleRepository = new GenericRepository<Role>(_dbContext);
+                    _role = new GenericRepository<Role>(_dbContext);
                 }
-                return _roleRepository;
+                return _role;
             }
         }
 
-        private IGenericRepository<Customer> _customerRepository;
+        private IGenericRepository<Customer> _customer;
         public IGenericRepository<Customer> Customer
         {
             get
             {
-                if (_customerRepository == null)
+                if (_customer == null)
                 {
-                    _customerRepository = new GenericRepository<Customer>(_dbContext);
+                    _customer = new GenericRepository<Customer>(_dbContext);
                 }
-                return _customerRepository;
+                return _customer;
             }
         }
 
-        private IGenericRepository<Notification> _notificationRepository;
+        private IGenericRepository<Notification> _notification;
         public IGenericRepository<Notification> Notification
         {
             get
             {
-                if (_notificationRepository == null)
+                if (_notification == null)
                 {
-                    _notificationRepository = new GenericRepository<Notification>(_dbContext);
+                    _notification = new GenericRepository<Notification>(_dbContext);
                 }
-                return _notificationRepository;
+                return _notification;
             }
         }
 
-        private IGenericRepository<Kitchen> _kitchenRepository;
+        private IGenericRepository<Kitchen> _kitchen;
         public IGenericRepository<Kitchen> Kitchen
         {
             get
             {
-                if (_kitchenRepository == null)
+                if (_kitchen == null)
                 {
-                    _kitchenRepository = new GenericRepository<Kitchen>(_dbContext);
+                    _kitchen = new GenericRepository<Kitchen>(_dbContext);
                 }
-                return _kitchenRepository;
+                return _kitchen;
             }
         }
 
-        private IGenericRepository<Area> _areaRepository;
+        private IGenericRepository<Area> _area;
         public IGenericRepository<Area> Area
         {
             get
             {
-                if (_areaRepository == null)
+                if (_area == null)
                 {
-                    _areaRepository = new GenericRepository<Area>(_dbContext);
+                    _area = new GenericRepository<Area>(_dbContext);
                 }
-                return _areaRepository;
+                return _area;
             }
         }
+
+        public IGenericRepository<FavouriteKitchen> _favouriteKitchen;
+        public IGenericRepository<FavouriteKitchen> FavouriteKitchen
+        {
+            get
+            {
+                if (_favouriteKitchen == null)
+                {
+                    _favouriteKitchen = new GenericRepository<FavouriteKitchen>(_dbContext);
+                }
+                return _favouriteKitchen;
+            }
+        }
+
+        private IGenericRepository<Dish> _dish;
+        public IGenericRepository<Dish> Dish
+        {
+            get
+            {
+                if (_dish == null)
+                {
+                    _dish = new GenericRepository<Dish>(_dbContext);
+                }
+                return _dish;
+            }
+        }
+
+        public IGenericRepository<Tray> _tray;
+        public IGenericRepository<Tray> Tray
+        {
+            get
+            {
+                if (_tray == null)
+                {
+                    _tray = new GenericRepository<Tray>(_dbContext);
+                }
+                return _tray;
+            }
+        }
+
+        public IGenericRepository<Meal> _meal;
+        public IGenericRepository<Meal> Meal
+        {
+            get
+            {
+                if (_meal == null)
+                {
+                    _meal = new GenericRepository<Meal>(_dbContext);
+                }
+                return _meal;
+            }
+        }
+
         #endregion Repository
 
 

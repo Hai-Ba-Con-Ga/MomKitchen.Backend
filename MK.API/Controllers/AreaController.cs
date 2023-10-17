@@ -66,7 +66,7 @@ namespace MK.API.Controllers
         /// </summary>
         /// <returns>Paging list of location</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<LocationRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<GetAreaRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll()
         {

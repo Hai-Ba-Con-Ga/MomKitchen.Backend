@@ -70,7 +70,7 @@ namespace MK.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll(int? pageNumer = null, int? pageSize = null)
         {
-            var result = await _locationService.GetAll(new PaginationParameters
+            var result = await _locationService.GetAll(new PagingParameters
             {
                 PageNumber = pageNumer ?? 1,
                 PageSize = pageSize ?? 10

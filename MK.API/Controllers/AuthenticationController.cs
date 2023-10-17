@@ -36,7 +36,7 @@ namespace MK.API.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        public async Task<IActionResult> Login([FromBody] LoginReq loginRequest)
         {
             var result = await _authenticationService.GetUserByFirebaseTokenAsync(loginRequest);
             if (result.StatusCode == HttpStatusCode.OK)
@@ -57,7 +57,7 @@ namespace MK.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("logout")]
-        public async Task<IActionResult> Logout([FromBody] LogoutRequest logoutRequest)
+        public async Task<IActionResult> Logout([FromBody] LogoutReq logoutRequest)
         {
             Console.WriteLine(this.User);
             RemoveCookie(AppConstant.COOKIE_NAME);
@@ -108,7 +108,7 @@ namespace MK.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("me")]
-        public async Task<IActionResult> Update([FromBody] UpdateUserRequest userRequest)
+        public async Task<IActionResult> Update([FromBody] UpdateUserReq userRequest)
         {
             string rawUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
             if (rawUserId.IsNullOrEmpty())

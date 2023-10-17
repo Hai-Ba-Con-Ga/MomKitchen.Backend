@@ -11,14 +11,24 @@ namespace MK.API.Controllers
     public class KitchenController : ControllerBase
     {
         private readonly IKitchenService _kitchenService;
+        private readonly IDishService _dishService;
+        private readonly ITrayService _trayService;
+        private readonly IMealService _mealService;
 
-        public KitchenController(IKitchenService kitchenService)
+        public KitchenController(
+            IKitchenService kitchenService,
+            IDishService dishService,
+            ITrayService trayService,
+            IMealService mealService)
         {
             _kitchenService = kitchenService;
+            _dishService = dishService;
+            _trayService = trayService;
+            _mealService = mealService;
         }
 
         /// <summary>
-        /// Function to create new location 
+        /// Function to create new Kitchen 
         /// </summary>
         /// <param name="req"></param>
         /// <returns>Guid of object have been created successfully</returns>
@@ -31,7 +41,11 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-
+        /// <summary>
+        /// Function to delete kitchen
+        /// </summary>
+        /// <param name="kitchenId"></param>
+        /// <returns></returns>
         [HttpDelete("{kitchenId}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -41,7 +55,12 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-
+        /// <summary>
+        /// Function to update kitchen
+        /// </summary>
+        /// <param name="kitchenId"></param>
+        /// <param name="req"></param>
+        /// <returns></returns>
         [HttpPut("{kitchenId}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -59,9 +78,9 @@ namespace MK.API.Controllers
         /// Paging List of Location response
         /// </returns>
         [HttpGet]
-        [ProducesResponseType(typeof(PaginationResponse<LocationRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagingResponse<KitchenRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationParameters req)
+        public async Task<IActionResult> GetAll([FromQuery] PagingParameters req)
         {
             var result = await _kitchenService.GetAll(req);
             return StatusCode((int)result.StatusCode, result);
@@ -72,14 +91,60 @@ namespace MK.API.Controllers
         /// </summary>
         /// <param name="areaId"></param>
         /// <returns></returns>
-        [HttpGet("{areaId}")]
+        [HttpGet("{kitchenId}")]
         [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetById(Guid areaId)
+        public async Task<IActionResult> GetById([Required] Guid kitchenId)
         {
-            var result = await _kitchenService.GetById(areaId);
+            var result = await _kitchenService.GetById(kitchenId);
             return StatusCode((int)result.StatusCode, result);
         }
 
+        /// <summary>
+        /// Get all dishes of a kitchen
+        /// </summary>
+        /// <param name="kitchenId"></param>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpGet("{kitchenId}/dishes")]
+        [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDishByKitchenId([Required] Guid kitchenId, [FromQuery] PagingParameters req)
+        {
+            var result = await _dishService.GetDishesByKitchenId(kitchenId, req ?? new PagingParameters());
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Get all trays of a kitchen
+        /// </summary>
+        /// <param name="kitchenId"></param>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpGet("{kitchenId}/trays")]
+        [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetTrayByKitchenId([Required] Guid kitchenId, [FromQuery] PagingParameters req)
+        {
+            var result = await _trayService.GetTraysByKitchenId(kitchenId, req ?? new PagingParameters());
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Get all meals of a kitchen
+        /// </summary>
+        /// <param name="kitchenId"></param>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpGet("{kitchenId}/meals")]
+        [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMealsByKitchenId([Required] Guid kitchenId, [FromQuery] PagingParameters req)
+        {
+            var result = await _mealService.GetMealsByKitchenId(kitchenId, req ?? new PagingParameters());
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+       
     }
 }

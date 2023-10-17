@@ -46,15 +46,15 @@ namespace MK.Domain.Common
                                 .ToListAsync()
                                 .ConfigureAwait(false);
 
-            this.TotalCount = items.Count();
+            this.TotalCount = queryList.Count();
             this.PageSize = pageSize;
             this.CurrentPage = pageNumber;
-            this.TotalPages = (int)Math.Ceiling(items.Count() / (double)pageSize);
+            this.TotalPages = (int)Math.Ceiling(queryList.Count() / (double)pageSize);
 
             this.AddRange(items);
         }
 
-        public async Task LoadData(IQueryable<T> queryList, PaginationParameters paginationParams)
+        public async Task LoadData(IQueryable<T> queryList, PagingParameters paginationParams)
         {
             if (paginationParams == null)
             {

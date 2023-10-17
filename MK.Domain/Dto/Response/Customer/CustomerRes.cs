@@ -9,6 +9,7 @@ namespace MK.Domain.Dto.Response.Customer
 {
     public class CustomerRes
     {
+        public int No { get; set; }
         public Guid Id  { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }

@@ -13,6 +13,6 @@ namespace MK.Application.Service
         Task<ResponseObject<bool>> Delete(Guid kitchenId);
         Task<ResponseObject<bool>> Update(Guid kitchenId, UpdateKitchenReq req);
         Task<ResponseObject<KitchenRes>> GetById(Guid kitchenId);
-        Task<PaginationResponse<KitchenRes>> GetAll(PaginationParameters pagingParam = null);
+        Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null);
     }
 }

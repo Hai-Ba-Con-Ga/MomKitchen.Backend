@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Dto.Request.User
 {
-    public class LogoutRequest
+    public class LogoutReq
     {
         public string FcmToken { get; set; }
     }

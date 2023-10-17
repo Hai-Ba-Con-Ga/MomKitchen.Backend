@@ -1,6 +1,6 @@
 ﻿namespace MK.Domain.Common
 {
-    public class PaginationParameters
+    public class PagingParameters
     {
         const int maxPageSize = 50;
         private int _pageSize = 0;
@@ -18,13 +18,13 @@
             }
         }
 
-        public PaginationParameters()
+        public PagingParameters()
         {
             PageNumber = 1;
             PageSize = 10;
         }
 
-        public PaginationParameters(int? pageNumer, int? pageSize)
+        public PagingParameters(int? pageNumer, int? pageSize)
         {
             PageNumber = pageNumer ?? 1;
             PageSize = pageSize ?? 10;

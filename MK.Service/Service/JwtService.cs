@@ -21,7 +21,7 @@ namespace MK.Service.Service
             _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppConfig.JwtSetting.IssuerSigningKey));
             _credentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
         }
-        public string GetToken(UserResponse user)
+        public string GetToken(UserRes user)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppConfig.JwtSetting.IssuerSigningKey));
             var _TokenExpiryTimeInHour = Convert.ToInt64(AppConfig.JwtSetting.ValidateLifetime);
