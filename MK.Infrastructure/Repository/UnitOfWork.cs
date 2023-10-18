@@ -179,6 +179,32 @@ namespace MK.Infrastructure.Repository
             }
         }
 
+        public IGenericRepository<PaymentType> _paymentType;
+        public IGenericRepository<PaymentType> PaymentType
+        {
+            get
+            {
+                if (_paymentType == null)
+                {
+                    _paymentType = new GenericRepository<PaymentType>(_dbContext);
+                }
+                return _paymentType;
+            }
+        }
+
+        public IGenericRepository<OrderPayment> _orderPayment;
+        public IGenericRepository<OrderPayment> OrderPayment
+        {
+            get
+            {
+                if (_orderPayment == null)
+                {
+                    _orderPayment = new GenericRepository<OrderPayment>(_dbContext);
+                }
+                return _orderPayment;
+            }
+        }
+
         #endregion Repository
 
 
