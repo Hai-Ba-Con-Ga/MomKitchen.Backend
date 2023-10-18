@@ -137,14 +137,18 @@ namespace MK.Application.Service
             }
         }
 
-
-        public async Task<PagingResponse<UserRes>> GetAll(string roleName, PagingParameters paginationparam = null)
+        public async Task<PagingResponse<UserRes>> GetAll(string roleName, string searchKey, PagingParameters paginationparam = null)
         {
+            searchKey = searchKey ?? string.Empty;
+
             try
             {
                 var query = new QueryHelper<User, UserRes>()
                 {
-                    Filter = x => x.Role.Name.Equals(roleName),
+                    Filter = x => x.Role.Name.Equals(roleName) &&
+                                    (x.Email.Contains(searchKey)
+                                    || x.Phone.Contains(searchKey)
+                                    || x.FullName.Contains(searchKey)),
                     PagingParams = paginationparam ??= new PagingParameters(),
                     Include = t => t.Include(x => x.Role),
                 };
@@ -157,6 +161,7 @@ namespace MK.Application.Service
             }
 
         }
+
         public async Task<ResponseObject<bool>> UpdateRole(Guid userId, string roleName)
         {
             var user = await _unitOfWork.User.GetById(userId, null, false);

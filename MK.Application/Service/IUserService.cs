@@ -14,8 +14,7 @@ namespace MK.Application.Service
         Task<ResponseObject<UserRes>> Update(Guid id, UpdateUserReq userRequest);
         Task<ResponseObject<bool>> Delete(Guid id);
         Task<ResponseObject<UserRes>> GetById(Guid id);
-
-        Task<PagingResponse<UserRes>> GetAll(string roleName, PagingParameters paginationparam = null);
+        Task<PagingResponse<UserRes>> GetAll(string roleName, string searchKey, PagingParameters paginationparam = null);
         Task<ResponseObject<bool>> UpdateRole(Guid userId, string roleName);
     }
 }

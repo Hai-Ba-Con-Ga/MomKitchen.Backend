@@ -75,15 +75,9 @@ namespace MK.API.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? roleName = "Customer", int? pageNumber = null, int? pageSize = null)
+        public async Task<IActionResult> GetAll(string searchKey, string? roleName = "Customer",[FromQuery] PagingParameters queryParam = null)
         {
-            var result = await _userService.GetAll(
-                roleName,
-                new PagingParameters
-                {
-                    PageNumber = pageNumber ?? 1,
-                    PageSize = pageSize ?? 10
-                });
+            var result = await _userService.GetAll(roleName, searchKey, queryParam);
             return StatusCode((int)result.StatusCode, result);
         }
 
