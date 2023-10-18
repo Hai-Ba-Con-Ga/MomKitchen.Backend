@@ -145,18 +145,21 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<ResponseObject<IEnumerable<GetAreaRes>>> GetAll()
+        public async Task<PagingResponse<GetAreaRes>> GetAll(PagingParameters queryParam)
         {
             try
             {
-                var areas = await _unitOfWork.Area.Get(new QueryHelper<Area>());
+                var areas = await _unitOfWork.Area.GetWithPagination(new QueryHelper<Area>()
+                {
+                    PagingParams = queryParam ??= new PagingParameters()
+                });
 
                 if (areas == null)
                 {
-                    return BadRequest<IEnumerable<GetAreaRes>>("Can not get areas");
+                    return BadRequests<GetAreaRes>("Can not get areas");
                 }
 
-                var result = new List<GetAreaRes>();
+                var result = new PagedList<GetAreaRes>();
 
                 foreach (var area in areas)
                 {
@@ -167,7 +170,7 @@ namespace MK.Service.Service
 
                     if (locations == null)
                     {
-                        return BadRequest<IEnumerable<GetAreaRes>>("Can not get locations for area : " + area.Id);
+                        return BadRequests<GetAreaRes>("Can not get locations for area : " + area.Id);
                     }
 
                     result.Add(new GetAreaRes()
@@ -179,11 +182,11 @@ namespace MK.Service.Service
                     });
                 }
 
-                return Success(result.AsEnumerable());
+                return Success(result);
             }
             catch (Exception ex)
             {
-                return BadRequest<IEnumerable<GetAreaRes>>(ex.Message);
+                return BadRequests<GetAreaRes>(ex.Message);
             }
         }
     }

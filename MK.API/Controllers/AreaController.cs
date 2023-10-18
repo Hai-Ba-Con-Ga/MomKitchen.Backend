@@ -68,9 +68,9 @@ namespace MK.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<GetAreaRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PagingParameters queryParam)
         {
-            var result = await _areaService.GetAll();
+            var result = await _areaService.GetAll(queryParam);
             return StatusCode((int)result.StatusCode, result);
         }
 
