@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MK.Service.Common
@@ -33,6 +34,18 @@ namespace MK.Service.Common
             {
                 throw new ArgumentException("Invalid source type");
             }
+        }
+
+        public static bool IsMatchFieldPattern(this IEnumerable<string> fields)
+        {
+            if (fields == null)
+            {
+                return true;
+            }
+
+            string pattern = @"^[^:]+:[^:]+$";
+
+            return fields.All(t => Regex.IsMatch(t, pattern));
         }
     }
 }

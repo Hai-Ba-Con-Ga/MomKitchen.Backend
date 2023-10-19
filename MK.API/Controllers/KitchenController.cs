@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MK.Domain.Dto.Request.Kitchen;
+using MK.Service.Common;
 using System.ComponentModel.DataAnnotations;
 
 namespace MK.API.Controllers
@@ -71,7 +72,7 @@ namespace MK.API.Controllers
         }
 
         /// <summary>
-        /// Function to get all Location with paging
+        /// Function to get all Kitchen with paging
         /// </summary>
         /// <param name="req"></param>
         /// <returns>
@@ -80,8 +81,17 @@ namespace MK.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PagingResponse<KitchenRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll([FromQuery] PagingParameters req)
+        public async Task<IActionResult> GetAll([FromQuery] string[]? fields, [FromQuery] PagingParameters req)
         {
+            if (fields != null && !fields.IsMatchFieldPattern())
+            {
+                return BadRequest(new ResponseObject<KitchenRes>()
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = "Fields are not valid, they are not match with pattern [fieldName:action]"
+                });
+            }
+
             var result = await _kitchenService.GetAll(req);
             return StatusCode((int)result.StatusCode, result);
         }
@@ -145,6 +155,6 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-       
+
     }
 }

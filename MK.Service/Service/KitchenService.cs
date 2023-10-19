@@ -128,7 +128,7 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null)
+        public async Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null, string[] fields = null)
         {
             try
             {
@@ -169,12 +169,13 @@ namespace MK.Service.Service
                                     .Include(t => t.Trays)
                                     .Include(t => t.Meals),
                     PagingParams = pagingParam ??= new PagingParameters(),
+                    OrderByFields = fields
                 };
 
                 var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
 
 
-                return Success(kitchen);
+                    return Success(kitchen);
             }
             catch (Exception ex)
             {
