@@ -27,6 +27,7 @@ namespace MK.Service.Service
                 {
                     RegionEndpoint = Amazon.RegionEndpoint.APSoutheast1
                 };
+
                 var uploadRequest = new TransferUtilityUploadRequest()
                 {
                     //upload to /foleName
@@ -35,13 +36,16 @@ namespace MK.Service.Service
                     BucketName = AppConfig.AwsCredentials.BucketName,
                     CannedACL = S3CannedACL.PublicRead
                 };
+
                 using var client = new AmazonS3Client(creadentials, config);
                 // initialise the transfer/upload tools
                 var transferUtility = new TransferUtility(client);
 
                 // initiate the file upload
-                await transferUtility.UploadAsync(uploadRequest);
+                await transferUtility.UploadAsync(uploadRequest).ConfigureAwait(false);
+
                 var url = $"{AppConfig.AwsCredentials.BucketName}/{uploadRequest.Key}";
+
                 return Success(new StorageRes { Url = url });
             }
             catch (Exception ex)

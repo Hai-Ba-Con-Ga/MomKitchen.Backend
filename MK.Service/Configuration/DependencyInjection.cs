@@ -14,11 +14,15 @@
         {
             //scan all assemblies finding for IRegister
             var config = TypeAdapterConfig.GlobalSettings;
-            var assemblies = new Assembly[] 
-            { 
-                Assembly.GetExecutingAssembly(), 
-                typeof(BaseEntity).Assembly 
+            config.Default.IgnoreNullValues(true);
+
+            var assemblies = new Assembly[]
+            {
+                Assembly.GetExecutingAssembly(),
+                typeof(BaseEntity).Assembly
             };
+
+       
             config.Scan(assemblies);
 
             builder.RegisterInstance(config).SingleInstance();

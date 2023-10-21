@@ -119,7 +119,7 @@ namespace MK.Infrastructure.Common
         /// <returns></returns>
         public static IQueryable<T> OrderByFields<T>(this IQueryable<T> query, string[]? orderByFields) where T : BaseEntity
         {
-            if (orderByFields == null || orderByFields.Length > 0)
+            if (orderByFields == null || orderByFields.Any() == false)
                 return query;
 
             if (query == null)
