@@ -1,91 +1,92 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MK.Domain.Dto.Response.Tray;
 using MK.Domain.Dto;
-using MK.Domain.Dto.Response.Dish;
 using System.ComponentModel.DataAnnotations;
+using MK.Domain.Dto.Request.Tray;
 
 namespace MK.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class DishController : ControllerBase
+    public class TrayController : ControllerBase
     {
-        private readonly IDishService _dishService;
-
-        public DishController(IDishService dishService)
+        private readonly ITrayService _trayService;
+        public TrayController(ITrayService trayService)
         {
-            _dishService = dishService;
+            _trayService = trayService;
         }
 
+
         /// <summary>
-        /// Function to create new dish
+        /// Function to create new tray
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([Required] CreateDishReq req)
+        public async Task<IActionResult> Create([Required] CreateTrayReq req)
         {
-            var result = await _dishService.CreateDish(req);
+            var result = await _trayService.Create(req);
             return StatusCode((int)result.StatusCode, result);
         }
 
         /// <summary>
-        /// Function to update dish
+        /// Function to update tray
         /// </summary>
-        /// <param name="dishId"></param>
+        /// <param name="trayId"></param>
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update([FromQuery] Guid dishId, [FromBody] UpdateDishReq req)
+        public async Task<IActionResult> Update([FromQuery] Guid trayId, [FromBody] UpdateTrayReq req)
         {
-            var result = await _dishService.UpdateDish(dishId, req);
+            var result = await _trayService.Update(trayId, req);
             return StatusCode((int)result.StatusCode, result);
         }
 
         /// <summary>
-        /// Function to delete dish
+        /// Function to delete tray
         /// </summary>
-        /// <param name="dishId"></param>
+        /// <param name="trayId"></param>
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete([FromQuery] Guid dishId)
+        public async Task<IActionResult> Delete([FromQuery] Guid trayId)
         {
-            var result = await _dishService.DeleteDish(dishId);
+            var result = await _trayService.Delete(trayId);
             return StatusCode((int)result.StatusCode, result);
         }
 
         /// <summary>
-        /// Function to get all dish
+        /// Function to get all tray
         /// </summary>
         /// <param name="pagingParam"></param>
         /// <param name="fields"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(PagingResponse<DishRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagingResponse<TrayRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll([FromQuery] PagingParameters pagingParam, [FromQuery] string[] fields)
         {
-            var result = await _dishService.GetAllDish(pagingParam, fields);
+            var result = await _trayService.GetAll(pagingParam, fields);
             return StatusCode((int)result.StatusCode, result);
         }
 
         /// <summary>
-        /// Function to get dish by id
+        /// Function to get tray by id
         /// </summary>
         /// <param name="kitchenId"></param>
         /// <returns></returns>
-        [HttpGet("{dishId}")]
-        [ProducesResponseType(typeof(ResponseObject<DishDetailRes>), StatusCodes.Status200OK)]
+        [HttpGet("{trayId}")]
+        [ProducesResponseType(typeof(ResponseObject<TrayDetailRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get(Guid kitchenId)
+        public async Task<IActionResult> Get(Guid trayId)
         {
-            var result = await _dishService.GetDishById(kitchenId);
+            var result = await _trayService.GetTrayById(trayId);
             return StatusCode((int)result.StatusCode, result);
         }
     }

@@ -5,14 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Dto.Response
+namespace MK.Domain.Dto.Request.Tray
 {
-    public class TrayRes
+    public class CreateTrayReq
     {
-        public Guid Id { get; set; }
+        [Required]
         public string Name { get; set; } = null!;
+
         public string Description { get; set; } = null!;
+
+        [MaxLength(255)]
         public string ImgUrl { get; set; } = null!;
+
+        [Required]
         public decimal Price { get; set; }
+
+        [Required]
+        public Guid KitchenId { get; set; }
+        
+        public IEnumerable<Guid> DishIds { get; set; } = null!;
     }
 }
