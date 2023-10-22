@@ -21,6 +21,9 @@ namespace MK.Application.Repository
         IGenericRepository<Dish> Dish { get; }
         IGenericRepository<Tray> Tray { get; }
         IGenericRepository<Meal> Meal { get; }
+        IGenericRepository<PaymentType> PaymentType { get; }
+        IGenericRepository<OrderPayment> OrderPayment { get; }
+        IGenericRepository<Order> Order { get; }
 
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();

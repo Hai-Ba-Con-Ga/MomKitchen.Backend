@@ -12,6 +12,7 @@ namespace MK.Domain.Common
         public static FirebaseConfig FirebaseConfig { get; set; }
         public static JwtSetting JwtSetting { get; set; }
         public static AwsCredentials AwsCredentials { get; set; }
+        public static VnpayConfig VnpayConfig { get; set; }
     }
     public class FirebaseConfig
     {
@@ -70,5 +71,17 @@ namespace MK.Domain.Common
         public string AccessKey { get; set; }
         public string SecretKey { get; set; }
         public string BucketName { get; set; }
+    }
+    public class VnpayConfig
+    {
+        public static string VnpayConfigString = "VnpayConfig" ;
+        
+        public string ReturnUrl { get; set; }
+        public string Url { get; set; }
+        public string HashSecret { get; set; }
+        public string TmnCode { get; set; }
+        public string FrontendCallBack {get; set; }
+
+        
     }
 }
