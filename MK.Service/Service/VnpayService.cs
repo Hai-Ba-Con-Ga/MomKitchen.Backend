@@ -7,7 +7,7 @@ using MK.Service.Util;
 
 namespace MK.Service.Service
 {
-    public class VnpayService : BaseService
+    public class VnpayService : BaseService, IPaymentService
     {
         public const string VERSION = "2.1.0";
         private SortedList<string, string> _requestData = new SortedList<string, string>();
@@ -117,13 +117,25 @@ namespace MK.Service.Service
                 return vnpCompare.Compare(x, y, CompareOptions.Ordinal);
             }
         }
-        public async Task<string> CreatePayment(CreateOrderPaymentReq payment, string origin)
+        public async Task<string> Create(CreateOrderPaymentReq payment, string origin)
         {
             _requestData.Clear();
             var vnp_Returnurl = origin + AppConfig.VnpayConfig.ReturnUrl;
             var vnp_Url = AppConfig.VnpayConfig.Url;
             var vnp_TmnCode = AppConfig.VnpayConfig.TmnCode;
             var vnp_HashSecret = AppConfig.VnpayConfig.HashSecret;
+            //TODO: check payment type and order
+            var paymentType = await _unitOfWork.PaymentType.GetById(payment.PaymentTypeId);
+            if (paymentType == null)
+            {
+                return "Payment type not found";
+            }
+            // var order = await _unitOfWork.Order.GetById(payment.OrderId);
+            // if (order == null)
+            // {
+            //     return "Order not found";
+            // }
+
             var entity = _mapper.Map<OrderPayment>(payment);
             await _unitOfWork.OrderPayment.CreateAsync(entity);
 
@@ -135,17 +147,18 @@ namespace MK.Service.Service
             AddRequestData("vnp_Version", VERSION);
             AddRequestData("vnp_Command", "pay");
             AddRequestData("vnp_TmnCode", vnp_TmnCode);
-            AddRequestData("vnp_Amount", ((long)entity.amount * 100).ToString());
+            AddRequestData("vnp_Amount", ((long)entity.Amount * 100).ToString());
             AddRequestData("vnp_CreateDate", entity.CreatedDate.ToString("yyyyMMddHHmmss"));
             AddRequestData("vnp_CurrCode", "VND");
-            AddRequestData("vnp_IpAddr", "");
             AddRequestData("vnp_Locale", "vn");
             AddRequestData("vnp_OrderInfo", "Thanh toan don hang: " + entity.Id);
             AddRequestData("vnp_OrderType", "other");
             AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-            var txnRef = entity.Id + "|" + "" + payment.LimitMonth + "|" + DateTime.Now.Millisecond;
+            AddRequestData("vnp_IpAddr", "127.0.0.1");
+            var txnRef = entity.Id.ToString();
             AddRequestData("vnp_TxnRef", txnRef); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
-            AddRequestData("vnp_ExpireDate", "20230924083000");
+            AddRequestData("vnp_ExpireDate", entity.CreatedDate.AddMonths(payment.LimitMonth).ToString("yyyyMMddHHmmss"));
+            //AddRequestData("vnp_SecureHashType", "HMACSHA512");
             //AddRequestData("vnp_Bill_AccountId", entity.AccountId.ToString());
             string paymentUrl = CreateRequestUrl(vnp_Url, vnp_HashSecret);
             return paymentUrl;

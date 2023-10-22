@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using MK.Domain.Dto.Request.Payment;
 
 namespace MK.API.Controllers
@@ -20,8 +21,8 @@ namespace MK.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([Required] CreateOrderPaymentReq req)
         {
-            var origin = "https://wyvernpserver.tech";
-            var result = await _paymentService.CreatePayment(req, origin);
+            var origin = "https://mamakitchen.tech";
+            var result = await _paymentService.Create(req, origin);
             return StatusCode(200, result);
         }
         [HttpGet("{paymentId}")]
@@ -39,6 +40,17 @@ namespace MK.API.Controllers
         {
             var result = await _paymentService.DeletePayment(paymentId);
             return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpGet("callback-vnpay")]
+        public async Task<IActionResult> CallbackVnPay()
+        {
+            var queryDictionary = QueryHelpers.ParseQuery(Request.QueryString.Value);
+            await _paymentService.ProcessCallback(queryDictionary);
+            string frontendUrlCallBack = AppConfig.VnpayConfig.FrontendCallBack;
+
+            string url = QueryHelpers.AddQueryString(frontendUrlCallBack, queryDictionary);
+            return Redirect($"https://www.mamakitchen.tech/{url}");
         }
 
 

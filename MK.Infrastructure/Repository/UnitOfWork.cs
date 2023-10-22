@@ -179,6 +179,19 @@ namespace MK.Infrastructure.Repository
             }
         }
 
+        public IGenericRepository<Order> _order;
+        public IGenericRepository<Order> Order
+        {
+            get
+            {
+                if (_order == null)
+                {
+                    _order = new GenericRepository<Order>(_dbContext);
+                }
+                return _order;
+            }
+        }
+
         public IGenericRepository<PaymentType> _paymentType;
         public IGenericRepository<PaymentType> PaymentType
         {

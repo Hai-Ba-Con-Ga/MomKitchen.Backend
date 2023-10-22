@@ -10,9 +10,10 @@ namespace MK.Application.Service
 {
     public interface IPaymentService
     {
-        Task<string> CreatePayment(CreateOrderPaymentReq payment, string origin);
+        Task<string> Create(CreateOrderPaymentReq payment, string origin);
         Task<ResponseObject<OrderPayment>> GetById(Guid paymentId);
         Task<PagingResponse<OrderPayment>> GetAll(PagingParameters pagingParam = null);
         Task<ResponseObject<bool>> DeletePayment(Guid paymentId);
+        Task ProcessCallback(Dictionary<string, StringValues> queryData);
     }
 }

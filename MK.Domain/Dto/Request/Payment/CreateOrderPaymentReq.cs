@@ -13,7 +13,9 @@ namespace MK.Domain.Dto.Request.Payment
         [Required]
         public decimal Amount { get; set; }
 
-        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
         public int LimitMonth { get; set; } = 1;
+        //TODO: Add OrderId
+        //public Guid OrderId { get; set; }
+        public Guid PaymentTypeId { get; set; }
     }
 }
