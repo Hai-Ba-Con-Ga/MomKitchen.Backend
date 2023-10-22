@@ -1,6 +1,8 @@
+using MK.Domain.Dto.Request.Payment;
+
 namespace MK.Service.Service
 {
-    public PaymentTypeService: BaseService, IPaymentTypeService
+    public class PaymentTypeService: BaseService, IPaymentTypeService
     {
         public PaymentTypeService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
@@ -42,7 +44,7 @@ namespace MK.Service.Service
             {
                 var queryHelper = new QueryHelper<PaymentType>
                 {
-                    Include = x => x.Include(t => t.OrderPayment)
+                    Include = x => x.Include(t => t.OrderPayments)
                 };
 
                 var paymentType = await _unitOfWork.PaymentType.GetById(paymentTypeId, queryHelper, isAsNoTracking: false);
@@ -54,24 +56,24 @@ namespace MK.Service.Service
                 return BadRequest<PaymentType>(ex.Message);
             }
         }
-        // public async Task<IEnumerable<PaymentType>> GetAll()
-        // {
-        //     try
-        //     {
-        //         var queryHelper = new QueryHelper<PaymentType>
-        //         {
-        //             Include = x => x.Include(t => t.OrderPayment)
-        //         };
+        public async Task<ResponseObject<IEnumerable<PaymentType>>> GetAll()
+        {
+            try
+            {
+                var queryHelper = new QueryHelper<PaymentType>
+                {
+                    Include = x => x.Include(t => t.OrderPayments)
+                };
 
-        //         var paymentType = await _unitOfWork.PaymentType.GetAll(queryHelper, isAsNoTracking: false);
+                var paymentType = await _unitOfWork.PaymentType.Get(queryHelper, isAsNoTracking: false);
 
-        //         return paymentType;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return BadRequest<PaymentType>(ex.Message);
-        //     }
-        // }
+                return Success(paymentType);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<IEnumerable<PaymentType>>(ex.Message);
+            }
+        }
 
 
 

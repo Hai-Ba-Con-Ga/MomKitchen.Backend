@@ -12,6 +12,6 @@ namespace MK.Application.Service
         Task<ResponseObject<Guid>> Create(CreatePaymentTypeReq req);
         Task<ResponseObject<bool>> Delete (Guid paymentTypeId);
         Task<ResponseObject<PaymentType>> GetById(Guid paymentTypeId);
-        // Task<IEnumerable<PaymentType>> GetAll();
+        Task<ResponseObject<IEnumerable<PaymentType>>> GetAll();
     }
 }
