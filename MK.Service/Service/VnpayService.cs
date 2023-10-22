@@ -137,7 +137,7 @@ namespace MK.Service.Service
             // }
 
             var entity = _mapper.Map<OrderPayment>(payment);
-            await _unitOfWork.OrderPayment.CreateAsync(entity);
+            await _unitOfWork.OrderPayment.CreateAsync(entity, true);
 
             // if (string.IsNullOrEmpty(vnp_TmnCode) || string.IsNullOrEmpty(vnp_HashSecret))
             // {
@@ -201,7 +201,7 @@ namespace MK.Service.Service
                         {
                             // entity.AccountId = accountId;
                             entity.Status = PaymentStatus.Paid;
-                            await _unitOfWork.OrderPayment.UpdateAsync(entity);
+                            await _unitOfWork.OrderPayment.UpdateAsync(entity, true);
                             var limitMonth = int.Parse(GetResponseData("vnp_TxnRef").Split('|')[1]);
                         }
                         isSuccess = 1;
@@ -212,7 +212,7 @@ namespace MK.Service.Service
                         if (entity != null)
                         {
                             entity.Status = PaymentStatus.Failed;
-                            await _unitOfWork.OrderPayment.UpdateAsync(entity);
+                            await _unitOfWork.OrderPayment.UpdateAsync(entity, true);
                         }
                         msg = string.Format("Thanh toan loi, OrderId={0}, VNPAY TranId={1},ResponseCode={2}",
                                  paymentId, vnpTranId, vnp_ResponseCode);
