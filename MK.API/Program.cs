@@ -54,9 +54,14 @@ public class Program
             options.AddPolicy("AllowAll",
                 builder =>
                 {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
+                    builder
+            // .AllowAnyOrigin()
+           .AllowAnyHeader()
+           .AllowAnyMethod()
+           .WithOrigins(new string[] { "http://localhost:3000", "https://www.globird.tech","http://localhost:5173"
+            ,"http://localhost:3001","http://localhost:3002","http://localhost:3003","https://localhost:3000"
+            })
+          .AllowCredentials();
                 });
         });
 
@@ -92,6 +97,8 @@ public class Program
         app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
         builder.Services.SeedData().GetAwaiter().GetResult();
+
+        app.UseCors("AllowAll");
 
         app.UseHttpsRedirection();
 
