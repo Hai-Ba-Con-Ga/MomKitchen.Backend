@@ -22,7 +22,8 @@
                 typeof(BaseEntity).Assembly
             };
 
-       
+            config = config.ConfigCustomMapper();
+
             config.Scan(assemblies);
 
             builder.RegisterInstance(config).SingleInstance();

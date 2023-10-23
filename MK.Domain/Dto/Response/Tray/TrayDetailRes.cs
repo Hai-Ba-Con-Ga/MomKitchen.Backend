@@ -19,7 +19,7 @@ namespace MK.Domain.Dto.Response.Tray
         public decimal Price { get; set; }
         public Guid KitchenId { get; set; }
         public string KitchenName { get; set; }
-        public virtual IEnumerable<DishRes> Dishies { get; set; }
+        public virtual IEnumerable<DishRes>? Dishies { get; set; } = null;
         public DateTime CreatedDate { get; set; }
     }
 }

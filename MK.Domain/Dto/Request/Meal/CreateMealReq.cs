@@ -6,12 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MK.Domain.Dto.Response
+namespace MK.Domain.Dto.Request.Meal
 {
-    public class MealRes
+    public class CreateMealReq
     {
-        public Guid Id { get; set; }
-        public int No { get; set;}
         public string Name { get; set; } = null!;
 
         public decimal Price { get; set; }
@@ -22,6 +20,10 @@ namespace MK.Domain.Dto.Response
 
         public int ServiceQuantity { get; set; }
 
-        public DateTime close_time { get; set; }
+        public DateTime CloseTime { get; set; }
+
+        public Guid TrayId { get; set; }
+
+        public Guid KitchenId { get; set; }
     }
 }

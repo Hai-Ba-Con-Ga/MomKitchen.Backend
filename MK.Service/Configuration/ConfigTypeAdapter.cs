@@ -1,6 +1,7 @@
 ﻿using Amazon.Auth.AccessControlPolicy;
 using FluentValidation;
 using MK.Domain.Dto;
+using MK.Domain.Dto.Response.Tray;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,13 @@ namespace MK.Service.Configuration
 {
     public static class ConfigTypeAdapter
     {
-        public static void ConfigTypeAdapters()
+        public static TypeAdapterConfig ConfigCustomMapper(this TypeAdapterConfig config)
         {
-            TypeAdapterConfig.GlobalSettings.NewConfig<UpdateDishReq, Dish>().IgnoreNullValues(true);
+
+           config.NewConfig<Tray, TrayDetailRes>()
+                .Map(dest => dest.KitchenName, src => src.Kitchen.Name);
+
+            return config;
         }
 
     }
