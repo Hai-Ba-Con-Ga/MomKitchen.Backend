@@ -98,5 +98,24 @@ namespace MK.Service.Service
             }
 
         }
+
+        public async Task<ResponseObject<bool>> Delete(Guid customerId)
+        {
+            try
+            {
+                if (!await _unitOfWork.Customer.IsExist(t => t.Id == customerId))
+                {
+                    return BadRequest<bool>("Customer not found");
+                }
+
+                var deleteResult = await _unitOfWork.Customer.SoftDeleteAsync(t => t.Id == customerId);
+
+                return Success(deleteResult > 0);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<bool>(ex.GetExceptionMessage());
+            }
+        }
     }
 }

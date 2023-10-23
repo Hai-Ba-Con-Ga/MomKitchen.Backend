@@ -40,6 +40,7 @@ public class Program
         {
             x.JsonSerializerOptions.ReferenceHandler = null;
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         });
 
         // Add services to the container.

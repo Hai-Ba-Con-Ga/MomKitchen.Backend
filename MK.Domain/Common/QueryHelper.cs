@@ -38,6 +38,10 @@ namespace MK.Domain.Common
         /// Helper for select field from entity - SELECT command
         /// </summary>
         public string[] SelectedFields { get; set; } = null!;
+        /// <summary>
+        /// Helper for select field from entity - Order By command
+        /// </summary>
+        public string[]? OrderByFields { get; set; } = null;
     }
     /// <summary>
     /// QueryHelper<TSource, TResult> TSource is an entity, TResult is a dto object

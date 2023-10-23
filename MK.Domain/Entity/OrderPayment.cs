@@ -13,9 +13,9 @@ namespace MK.Domain.Entity
     public partial class OrderPayment : BaseEntity
     {
 
-        public PaymentStatus Status { get; set; }
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
         [Required]
-        public decimal amount { get; set; }
+        public decimal Amount { get; set; }
 
         [Required]
         public Guid OrderId { get; set; }

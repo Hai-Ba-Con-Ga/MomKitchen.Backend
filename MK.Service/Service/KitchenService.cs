@@ -128,7 +128,7 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null)
+        public async Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null, string[] fields = null)
         {
             try
             {
@@ -169,6 +169,7 @@ namespace MK.Service.Service
                                     .Include(t => t.Trays)
                                     .Include(t => t.Meals),
                     PagingParams = pagingParam ??= new PagingParameters(),
+                    OrderByFields = fields
                 };
 
                 var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
@@ -181,5 +182,62 @@ namespace MK.Service.Service
                 return BadRequests<KitchenRes>(ex.Message);
             }
         }
+
+        public async Task<PagingResponse<KitchenRes>> GetKitchensByAreaId(Guid areaId, PagingParameters pagingParam = null, string[] fields = null)
+        {
+            try
+            {
+                var queryHelper = new QueryHelper<Kitchen, KitchenRes>()
+                {
+                    Selector = t => new KitchenRes
+                    {
+                        No = t.No,
+                        Id = t.Id,
+                        Name = t.Name,
+                        Address = t.Address,
+                        Area = new GetAreaRes()
+                        {
+                            Id = t.AreaId,
+                            Name = t.Area.Name
+                        },
+                        Location = new LocationRes()
+                        {
+                            Id = t.LocationId,
+                            Lat = t.Location.Lat,
+                            Lng = t.Location.Lng
+                        },
+                        Owner = new OwnerRes()
+                        {
+                            OwnerName = t.Owner.FullName,
+                            OwnerAvatarUrl = t.Owner.AvatarUrl,
+                            OwnerEmail = t.Owner.Email
+                        },
+                        Status = t.Status,
+                        NoOfDish = t.Dishes.Count,
+                        NoOfTray = t.Trays.Count,
+                        NoOfMeal = t.Meals.Count,
+                    },
+                    Include = t => t.Include(x => x.Area)
+                                    .Include(x => x.Owner)
+                                    .Include(x => x.Location)
+                                    .Include(t => t.Dishes)
+                                    .Include(t => t.Trays)
+                                    .Include(t => t.Meals),
+                    PagingParams = pagingParam ??= new PagingParameters(),
+                    OrderByFields = fields,
+                    Filter = t => t.AreaId == areaId
+                };
+
+                var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
+
+
+                return Success(kitchen);
+            }
+            catch (Exception ex)
+            {
+                return BadRequests<KitchenRes>(ex.Message);
+            }
+        }
+
     }
 }

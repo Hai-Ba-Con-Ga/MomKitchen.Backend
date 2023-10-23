@@ -13,6 +13,6 @@ namespace MK.Application.Service
         Task<ResponseObject<bool>> Update(Guid areaId, UpdateAreaReq req);
         Task<ResponseObject<bool>> Delete(Guid areaId);
         Task<ResponseObject<GetAreaRes>> GetById(Guid areaId);
-        Task<ResponseObject<IEnumerable<GetAreaRes>>> GetAll();
+        Task<PagingResponse<GetAreaRes>> GetAll(PagingParameters queryParam);
     }
 }

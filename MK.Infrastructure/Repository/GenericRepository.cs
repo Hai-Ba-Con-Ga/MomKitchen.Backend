@@ -164,9 +164,29 @@ namespace MK.Infrastructure.Repository
         #endregion Update
 
         #region Retrieve
-        public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        /// <summary>
+        /// Get first entity by predicate, this function is AsNoTracking
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
             return await dbSet.AsQueryable().AsNoTracking().FirstOrDefaultAsync(predicate).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Check entity exist in database by condition predicate
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExist(Expression<Func<T, bool>> predicate)
+        {
+            var entity = await dbSet.AsQueryable().AsNoTracking()
+                                    .Where(predicate)
+                                    .Select(t => t.Id)
+                                    .FirstOrDefaultAsync();
+
+            return entity != null;
         }
         #endregion Retrieve
 

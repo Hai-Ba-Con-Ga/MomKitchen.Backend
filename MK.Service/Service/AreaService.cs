@@ -145,46 +145,55 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<ResponseObject<IEnumerable<GetAreaRes>>> GetAll()
+        public async Task<PagingResponse<GetAreaRes>> GetAll(PagingParameters queryParam)
         {
             try
             {
-                var areas = await _unitOfWork.Area.Get(new QueryHelper<Area>());
+                var areas = await _unitOfWork.Area.GetWithPagination(new QueryHelper<Area, GetAreaRes>()
+                {
+                    Selector = i => new GetAreaRes()
+                    {
+                        No = i.No,
+                        Id = i.Id,
+                        Name = i.Name,
+                        NoOfKitchens = i.Kitchens.Count(),
+                        CreatedDate = i.CreatedDate,
+                        BoundaryIds = i.Boundaries
+                    },
+                    PagingParams = queryParam ??= new PagingParameters(),
+                    Include = i => i.Include(a => a.Kitchens),
+                });
 
                 if (areas == null)
                 {
-                    return BadRequest<IEnumerable<GetAreaRes>>("Can not get areas");
+                    return BadRequests<GetAreaRes>("Can not get areas");
                 }
 
-                var result = new List<GetAreaRes>();
 
                 foreach (var area in areas)
                 {
                     var locations = await _unitOfWork.Location.Get(new QueryHelper<Location, LocationRes>()
                     {
-                        Filter = i => area.Boundaries.Contains(i.Id),
+                        Filter = i => area.BoundaryIds.Contains(i.Id),
                     });
 
                     if (locations == null)
                     {
-                        return BadRequest<IEnumerable<GetAreaRes>>("Can not get locations for area : " + area.Id);
+                        return BadRequests<GetAreaRes>("Can not get locations for area : " + area.Id);
                     }
 
-                    result.Add(new GetAreaRes()
-                    {
-                        No = area.No,
-                        Id = area.Id,
-                        Boundaries = locations,
-                        Name = area.Name
-                    });
+                    area.Boundaries = locations;
+                    area.BoundaryIds = null;
                 }
 
-                return Success(result.AsEnumerable());
+                return Success(areas);
             }
             catch (Exception ex)
             {
-                return BadRequest<IEnumerable<GetAreaRes>>(ex.Message);
+                return BadRequests<GetAreaRes>(ex.Message);
             }
         }
+
+        
     }
 }

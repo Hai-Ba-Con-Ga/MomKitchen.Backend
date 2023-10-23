@@ -8,7 +8,7 @@ namespace MK.API.Controllers
     [Route("api/v1/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class CustomerController :  ControllerBase
+    public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
 
@@ -36,7 +36,7 @@ namespace MK.API.Controllers
         /// </summary>
         /// <param name="customerId"></param>
         /// <returns></returns>
-        
+
         [HttpGet("{customerId}")]
         [ProducesResponseType(typeof(CustomerRes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -58,6 +58,20 @@ namespace MK.API.Controllers
         public async Task<IActionResult> Update(Guid customerId, CustomerStatusReq req)
         {
             var result = await _customerService.Update(customerId, req);
+            return StatusCode((int)result.StatusCode, result);
+        }
+        /// <summary>
+        /// Fucntion to delete Customer
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        [HttpDelete("{customerId}")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(Guid customerId)
+        {
+            var result = await _customerService.Delete(customerId);
+
             return StatusCode((int)result.StatusCode, result);
         }
     }

@@ -10,8 +10,11 @@ namespace MK.Domain.Dto.Response.Dish
 {
     public class DishRes
     {
+        public Guid Id { get; set; }
+        public int No { get; set; }
         public string Name { get; set; } = null!;
         public string ImageUrl { get; set; } = null!;
         public string? Description { get; set; }
+        public Guid KitchenId { get; set; }
     }
 }

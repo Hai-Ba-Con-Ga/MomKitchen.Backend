@@ -10,6 +10,8 @@ namespace MK.Domain.Dto.Response
 {
     public class MealRes
     {
+        public Guid Id { get; set; }
+        public int No { get; set;}
         public string Name { get; set; } = null!;
 
         public decimal Price { get; set; }
