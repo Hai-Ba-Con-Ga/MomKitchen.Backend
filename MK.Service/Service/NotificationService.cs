@@ -68,11 +68,11 @@ namespace MK.Service.Service
         {
             var message = new Message()
             {
-                Data = new Dictionary<string, string>()
-                   {
-                       { "title", title },
-                       { "content", content }
-                   },
+                Notification = new FirebaseAdmin.Messaging.Notification()
+                {
+                    Title = title,
+                    Body = content
+                },
                 Token = fcmToken
 
             };
@@ -84,11 +84,11 @@ namespace MK.Service.Service
         {
             var message = new MulticastMessage()
             {
-                Data = new Dictionary<string, string>()
+                Notification = new FirebaseAdmin.Messaging.Notification()
                 {
-                       { "title", title },
-                       { "content", content }
-                   },
+                    Title = title,
+                    Body = content
+                },
                 Tokens = fcmTokens
 
             };
