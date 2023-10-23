@@ -14,5 +14,6 @@ namespace MK.Application.Service
         Task<ResponseObject<bool>> Update(Guid kitchenId, UpdateKitchenReq req);
         Task<ResponseObject<KitchenRes>> GetById(Guid kitchenId);
         Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null, string[] fields = null);
+        Task<PagingResponse<KitchenRes>> GetKitchensByAreaId(Guid areaId, PagingParameters pagingParam = null, string[] fields = null);
     }
 }

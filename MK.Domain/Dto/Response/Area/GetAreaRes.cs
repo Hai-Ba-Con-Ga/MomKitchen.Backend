@@ -11,8 +11,10 @@ namespace MK.Domain.Dto.Response
     {
         public int No { get; set; }
         public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-
+        public string Name { get; set; } = null;
+        public DateTime CreatedDate { get; set; }
+        public int? NoOfKitchens { get; set; } = null;
+        public Guid[] BoundaryIds { get; set; } = null;
         public IEnumerable<LocationRes> Boundaries { get; set; } = null;
 
     }

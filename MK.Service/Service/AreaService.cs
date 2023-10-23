@@ -149,9 +149,19 @@ namespace MK.Service.Service
         {
             try
             {
-                var areas = await _unitOfWork.Area.GetWithPagination(new QueryHelper<Area>()
+                var areas = await _unitOfWork.Area.GetWithPagination(new QueryHelper<Area, GetAreaRes>()
                 {
-                    PagingParams = queryParam ??= new PagingParameters()
+                    Selector = i => new GetAreaRes()
+                    {
+                        No = i.No,
+                        Id = i.Id,
+                        Name = i.Name,
+                        NoOfKitchens = i.Kitchens.Count(),
+                        CreatedDate = i.CreatedDate,
+                        BoundaryIds = i.Boundaries
+                    },
+                    PagingParams = queryParam ??= new PagingParameters(),
+                    Include = i => i.Include(a => a.Kitchens),
                 });
 
                 if (areas == null)
@@ -159,13 +169,12 @@ namespace MK.Service.Service
                     return BadRequests<GetAreaRes>("Can not get areas");
                 }
 
-                var result = new PagedList<GetAreaRes>();
 
                 foreach (var area in areas)
                 {
                     var locations = await _unitOfWork.Location.Get(new QueryHelper<Location, LocationRes>()
                     {
-                        Filter = i => area.Boundaries.Contains(i.Id),
+                        Filter = i => area.BoundaryIds.Contains(i.Id),
                     });
 
                     if (locations == null)
@@ -173,21 +182,18 @@ namespace MK.Service.Service
                         return BadRequests<GetAreaRes>("Can not get locations for area : " + area.Id);
                     }
 
-                    result.Add(new GetAreaRes()
-                    {
-                        No = area.No,
-                        Id = area.Id,
-                        Boundaries = locations,
-                        Name = area.Name
-                    });
+                    area.Boundaries = locations;
+                    area.BoundaryIds = null;
                 }
 
-                return Success(result);
+                return Success(areas);
             }
             catch (Exception ex)
             {
                 return BadRequests<GetAreaRes>(ex.Message);
             }
         }
+
+        
     }
 }

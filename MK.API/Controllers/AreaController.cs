@@ -11,10 +11,12 @@ namespace MK.API.Controllers
     public class AreaController : ControllerBase
     {
         private readonly IAreaService _areaService;
+        private readonly IKitchenService _kitchenService;
 
-        public AreaController(IAreaService areaService)
+        public AreaController(IAreaService areaService, IKitchenService kitchenService)
         {
             _areaService = areaService;
+            _kitchenService = kitchenService;
         }
 
 
@@ -85,6 +87,15 @@ namespace MK.API.Controllers
         public async Task<IActionResult> GetById(Guid areaId)
         {
             var result = await _areaService.GetById(areaId);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpGet("{areaId}/kitchens")]
+        [ProducesResponseType(typeof(IEnumerable<KitchenRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetKitchensByAreaId(Guid areaId, [FromQuery] PagingParameters pagingParam, [FromQuery] string[] fields)
+        {
+            var result = await _kitchenService.GetKitchensByAreaId(areaId);
             return StatusCode((int)result.StatusCode, result);
         }
     }
