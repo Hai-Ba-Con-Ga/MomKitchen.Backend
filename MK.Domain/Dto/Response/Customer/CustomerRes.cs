@@ -21,6 +21,7 @@ namespace MK.Domain.Dto.Response.Customer
         //TODO: handle properties
         public int? OrderQuantity { get; set; }
         public int? SpentMoney { get; set; }
+        public Guid UserId { get; set; }
         
         // public virtual ICollection<FavouriteKitchenRes> FavouriteKitchens { get; set; } = new List<FavouriteKitchenRes>();
         // public virtual ICollection<FeedbackRes> Feedbacks { get; set; } = new List<FeedbackRes>();
