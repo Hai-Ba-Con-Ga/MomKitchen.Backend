@@ -169,7 +169,5 @@ namespace MK.API.Controllers
             var result = await _kitchenService.GetKitchensByUserId(userId, req ?? new PagingParameters());
             return StatusCode((int)result.StatusCode, result);
         }
-
-
     }
 }

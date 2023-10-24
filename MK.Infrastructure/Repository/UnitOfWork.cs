@@ -218,6 +218,19 @@ namespace MK.Infrastructure.Repository
             }
         }
 
+        public IGenericRepository<Feedback> _feedback;
+        public IGenericRepository<Feedback> Feedback
+        {
+            get
+            {
+                if (_feedback == null)
+                {
+                    _feedback = new GenericRepository<Feedback>(_dbContext);
+                }
+                return _feedback;
+            }
+        }
+
 
         #endregion Repository
 

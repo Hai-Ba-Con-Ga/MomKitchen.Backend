@@ -24,6 +24,7 @@ namespace MK.Application.Repository
         IGenericRepository<PaymentType> PaymentType { get; }
         IGenericRepository<OrderPayment> OrderPayment { get; }
         IGenericRepository<Order> Order { get; }
+        IGenericRepository<Feedback> Feedback { get; }
 
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();

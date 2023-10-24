@@ -38,5 +38,6 @@ namespace MK.Domain.Entity
         public virtual ICollection<Dish> Dishes { get; set; } = new List<Dish>();
         public virtual ICollection<Tray> Trays { get; set; } = new List<Tray>();
         public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
+        public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
     }
 }

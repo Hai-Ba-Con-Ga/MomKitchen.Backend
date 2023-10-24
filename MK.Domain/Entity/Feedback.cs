@@ -20,7 +20,7 @@ namespace MK.Domain.Entity
         public float Rating { get; set; }
 
         [DataType(DataType.Text)]
-        public string img_url { get; set; } = null!;
+        public string? ImgUrl { get; set; }
 
         [Required]
         public Guid CustomerId { get; set; }
@@ -29,6 +29,10 @@ namespace MK.Domain.Entity
         [Required]
         public Guid OrderId { get; set; }
         public virtual Order Order { get; set; } = null!;
+
+        [Required]
+        public Guid KitchenId { get; set; }
+        public virtual Kitchen Kitchen { get; set; } = null!;
 
     }
 }
