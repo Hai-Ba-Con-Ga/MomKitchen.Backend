@@ -74,13 +74,13 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PagingResponse<TrayRes>> GetTraysByKitchenId(Guid kitchenId, PagingParameters pagingParam)
+        public async Task<PagingResponse<TrayRes>> GetTraysByKitchenId(Guid kitchenId, string searchKey, PagingParameters pagingParam)
         {
             try
             {
                 var queryHelper = new QueryHelper<Tray, TrayRes>()
                 {
-                    Filter = x => x.KitchenId == kitchenId,
+                    Filter = x => x.KitchenId == kitchenId && (searchKey == null || x.Name.Contains(searchKey)),
                     PagingParams = pagingParam ??= new PagingParameters(),
                 };
 

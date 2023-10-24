@@ -18,6 +18,9 @@ namespace MK.Service.Configuration
            config.NewConfig<Tray, TrayDetailRes>()
                 .Map(dest => dest.KitchenName, src => src.Kitchen.Name);
 
+
+
+
             return config;
         }
 

@@ -18,6 +18,8 @@ namespace MK.Domain.Dto.Response
 
         public string Address { get; set; }
 
+        public string ImgUrl { get; set; }
+
         public int? NoOfDish { get; set; } = null;
 
         public int? NoOfTray { get; set; } = null;

@@ -1,4 +1,5 @@
 ﻿using MK.Domain.Dto.Request.Meal;
+using MK.Domain.Dto.Response.Feedback;
 using MK.Domain.Dto.Response.Meal;
 using MK.Domain.Dto.Response.Tray;
 using MK.Domain.Entity;
@@ -16,13 +17,13 @@ namespace MK.Service.Service
         {
         }
 
-        public async Task<PagingResponse<MealRes>> GetMealsByKitchenId(Guid kitchenId, PagingParameters pagingParam)
+        public async Task<PagingResponse<MealRes>> GetMealsByKitchenId(Guid kitchenId, string searchKey, PagingParameters pagingParam)
         {
             try
             {
                 var queryHelper = new QueryHelper<Meal, MealRes>()
                 {
-                    Filter = x => x.KitchenId == kitchenId,
+                    Filter = x => x.KitchenId == kitchenId && (searchKey == null || x.Name.Contains(searchKey)),
                     PagingParams = pagingParam ??= new PagingParameters(),
                 };
 
@@ -43,8 +44,35 @@ namespace MK.Service.Service
 
                 var meal = await _unitOfWork.Meal.GetById(mealId, new QueryHelper<Meal, MealDetailRes>()
                 {
-                    Include = x => x.Include(x => x.Kitchen).Include(x => x.Tray),
-                    Selector = x => _mapper.Map<MealDetailRes>(x)
+                    Include = x => x.Include(x => x.Kitchen).Include(x => x.Tray).Include(x => x.Orders).ThenInclude(x => x.Feedback).ThenInclude(x => x.Customer).ThenInclude(x => x.User),
+                    Selector = x => new MealDetailRes()
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        No = x.No,
+                        Price = x.Price,
+                        ServiceFrom = x.ServiceFrom,
+                        ServiceTo = x.ServiceTo,
+                        ServiceQuantity = x.ServiceQuantity,
+                        CloseTime = x.CloseTime,
+                        Tray = _mapper.Map<TrayDetailRes>(x.Tray),
+                        Kitchen = _mapper.Map<KitchenRes>(x.Kitchen),
+                        Feedbacks = x.Orders.Select(x => new FeedbackRes(){
+                            Id = x.Feedback.Id,
+                            Content = x.Feedback.Content,
+                            Rating = x.Feedback.Rating,
+                            ImgUrl = x.Feedback.ImgUrl,
+                            Owner = new Domain.Dto.Response.Customer.OwnerRes()
+                            {
+                                OwnerId = x.Feedback.CustomerId,
+                                OwnerName = x.Feedback.Customer.User.FullName,
+                                OwnerAvatarUrl = x.Feedback.Customer.User.AvatarUrl,
+                                OwnerEmail = x.Feedback.Customer.User.Email,
+                            },
+                            OrderId = x.Feedback.OrderId,
+                            KitchenId = x.Feedback.KitchenId,
+                        }).ToList()
+                    }
                 });
 
 
