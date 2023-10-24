@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MK.Domain.Dto.Response.Tray;
+using MK.Domain.Dto.Response.Feedback;
 
 namespace MK.Domain.Dto.Response.Meal
 {
@@ -22,5 +23,6 @@ namespace MK.Domain.Dto.Response.Meal
         public DateTime CloseTime { get; set; }
         public TrayDetailRes Tray { get; set; } = null;
         public KitchenRes Kitchen { get; set; } = null;
+        public List<FeedbackRes> Feedbacks { get; set; } = null;
     }
 }
