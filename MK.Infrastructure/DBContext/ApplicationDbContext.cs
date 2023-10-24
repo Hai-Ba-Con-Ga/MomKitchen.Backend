@@ -195,6 +195,12 @@ namespace MK.Infrastructure.DBContext
                 .WithOne(r => r.Customer)
                 .HasForeignKey(x => x.CustomerId)
                 .IsRequired();
+            modelBuilder.Entity<Kitchen>()
+                .HasMany(x => x.Feedbacks)
+                .WithOne(r => r.Kitchen)
+                .HasForeignKey(x => x.KitchenId)
+                .IsRequired();
+                
 
             #endregion Config for Relationship
 
