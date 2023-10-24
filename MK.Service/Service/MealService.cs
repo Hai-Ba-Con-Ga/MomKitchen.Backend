@@ -16,13 +16,13 @@ namespace MK.Service.Service
         {
         }
 
-        public async Task<PagingResponse<MealRes>> GetMealsByKitchenId(Guid kitchenId, PagingParameters pagingParam)
+        public async Task<PagingResponse<MealRes>> GetMealsByKitchenId(Guid kitchenId, string searchKey, PagingParameters pagingParam)
         {
             try
             {
                 var queryHelper = new QueryHelper<Meal, MealRes>()
                 {
-                    Filter = x => x.KitchenId == kitchenId,
+                    Filter = x => x.KitchenId == kitchenId && (searchKey == null || x.Name.Contains(searchKey)),
                     PagingParams = pagingParam ??= new PagingParameters(),
                 };
 

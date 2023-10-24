@@ -23,13 +23,13 @@ namespace MK.Service.Service
             _storageService = storageService;
         }
 
-        public async Task<PagingResponse<DishRes>> GetDishesByKitchenId(Guid kitchenId, PagingParameters pagingParam)
+        public async Task<PagingResponse<DishRes>> GetDishesByKitchenId(Guid kitchenId, string searchKey, PagingParameters pagingParam)
         {
             try
             {
                 var queryHelper = new QueryHelper<Dish, DishRes>()
                 {
-                    Filter = x => x.KitchenId == kitchenId,
+                    Filter = x => x.KitchenId == kitchenId && (searchKey == null || x.Name.Contains(searchKey)),
                     PagingParams = pagingParam ??= new PagingParameters(),
                 };
 

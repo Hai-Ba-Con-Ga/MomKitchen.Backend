@@ -10,7 +10,7 @@ namespace MK.Application.Service
 {
     public interface IMealService
     {
-        Task<PagingResponse<MealRes>> GetMealsByKitchenId(Guid kitchenId, PagingParameters pagingParam);
+        Task<PagingResponse<MealRes>> GetMealsByKitchenId(Guid kitchenId, string searchKey, PagingParameters pagingParam);
         Task<ResponseObject<MealDetailRes>> GetMealById(Guid mealId);
         Task<PagingResponse<MealRes>> GetAll(PagingParameters pagingParam, string[] fields);
         Task<ResponseObject<Guid>> CreateMeal(CreateMealReq createData);

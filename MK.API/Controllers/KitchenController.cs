@@ -119,9 +119,9 @@ namespace MK.API.Controllers
         [HttpGet("{kitchenId}/dishes")]
         [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetDishByKitchenId([Required] Guid kitchenId, [FromQuery] PagingParameters req)
+        public async Task<IActionResult> GetDishByKitchenId([Required] Guid kitchenId, string searchKey, [FromQuery] PagingParameters req)
         {
-            var result = await _dishService.GetDishesByKitchenId(kitchenId, req ?? new PagingParameters());
+            var result = await _dishService.GetDishesByKitchenId(kitchenId, searchKey, req ?? new PagingParameters());
             return StatusCode((int)result.StatusCode, result);
         }
 
@@ -134,9 +134,9 @@ namespace MK.API.Controllers
         [HttpGet("{kitchenId}/trays")]
         [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetTrayByKitchenId([Required] Guid kitchenId, [FromQuery] PagingParameters req)
+        public async Task<IActionResult> GetTrayByKitchenId([Required] Guid kitchenId, string searchKey, [FromQuery] PagingParameters req)
         {
-            var result = await _trayService.GetTraysByKitchenId(kitchenId, req ?? new PagingParameters());
+            var result = await _trayService.GetTraysByKitchenId(kitchenId, searchKey, req ?? new PagingParameters());
             return StatusCode((int)result.StatusCode, result);
         }
 
@@ -149,9 +149,9 @@ namespace MK.API.Controllers
         [HttpGet("{kitchenId}/meals")]
         [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetMealsByKitchenId([Required] Guid kitchenId, [FromQuery] PagingParameters req)
+        public async Task<IActionResult> GetMealsByKitchenId([Required] Guid kitchenId, string searchKey, [FromQuery] PagingParameters req)
         {
-            var result = await _mealService.GetMealsByKitchenId(kitchenId, req ?? new PagingParameters());
+            var result = await _mealService.GetMealsByKitchenId(kitchenId, searchKey, req ?? new PagingParameters());
             return StatusCode((int)result.StatusCode, result);
         }
 

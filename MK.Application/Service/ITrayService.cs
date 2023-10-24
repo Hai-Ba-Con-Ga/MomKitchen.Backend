@@ -10,7 +10,7 @@ namespace MK.Application.Service
 {
     public interface ITrayService
     {
-        Task<PagingResponse<TrayRes>> GetTraysByKitchenId(Guid kitchenId, PagingParameters pagingParam);
+        Task<PagingResponse<TrayRes>> GetTraysByKitchenId(Guid kitchenId, string searchKey, PagingParameters pagingParam);
 
         Task<PagingResponse<TrayRes>> GetAll(PagingParameters pagingParam, string[] fields);
 
