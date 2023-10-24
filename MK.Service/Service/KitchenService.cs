@@ -85,6 +85,7 @@ namespace MK.Service.Service
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
+                        ImgUrl = t.ImgUrl,
                         Location = new LocationRes()
                         {
                             Id = t.LocationId,
@@ -140,6 +141,7 @@ namespace MK.Service.Service
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
+                        ImgUrl = t.ImgUrl,
                         Area = new GetAreaRes()
                         {
                             Id = t.AreaId,
@@ -196,6 +198,7 @@ namespace MK.Service.Service
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
+                        ImgUrl = t.ImgUrl,
                         Area = new GetAreaRes()
                         {
                             Id = t.AreaId,
@@ -253,6 +256,7 @@ namespace MK.Service.Service
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
+                        ImgUrl = t.ImgUrl,
                         Area = new GetAreaRes()
                         {
                             Id = t.AreaId,

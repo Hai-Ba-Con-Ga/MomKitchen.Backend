@@ -20,6 +20,8 @@ namespace MK.Domain.Entity
         [Required]
         public string Address { get; set; } = null!;
 
+        public string ImgUrl { get; set; } = null!;
+
         public KitchenStatus Status { get; set; }
 
         [Required]
