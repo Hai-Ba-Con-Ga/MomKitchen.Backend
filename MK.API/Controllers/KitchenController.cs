@@ -155,6 +155,21 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
+        /// <summary>
+        /// Get all kitchen by user id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpGet("user/{userId}")]
+        [ProducesResponseType(typeof(KitchenRes), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetByUserId([Required] Guid userId, [FromQuery] PagingParameters req)
+        {
+            var result = await _kitchenService.GetKitchensByUserId(userId, req ?? new PagingParameters());
+            return StatusCode((int)result.StatusCode, result);
+        }
+
 
     }
 }
