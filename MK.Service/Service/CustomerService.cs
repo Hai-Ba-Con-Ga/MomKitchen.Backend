@@ -30,7 +30,8 @@ namespace MK.Service.Service
                         Birthday = t.User.Birthday,
                         AvatarUrl = t.User.AvatarUrl,
                         Status = t.Status,
-                        UserId = t.UserId,
+                        UserId = t.UserId
+
                     },
                     Include = i => i.Include(x => x.User)
                                     .Include(x => x.Orders)
@@ -39,6 +40,7 @@ namespace MK.Service.Service
                     PagingParams = pagingParam ??= new PagingParameters()
                 };
                 var customer = await _unitOfWork.Customer.GetWithPagination(queryHelper);
+                
                 return Success(customer);
             }
             catch (Exception ex)
