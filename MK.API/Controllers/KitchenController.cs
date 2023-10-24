@@ -92,7 +92,7 @@ namespace MK.API.Controllers
                 });
             }
 
-            var result = await _kitchenService.GetAll(req);
+            var result = await _kitchenService.GetAll(req, fields);
             return StatusCode((int)result.StatusCode, result);
         }
 
