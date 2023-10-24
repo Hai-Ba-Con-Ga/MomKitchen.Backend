@@ -21,6 +21,7 @@ namespace MK.Domain.Dto.Request.Feedback
         public Guid CustomerId { get; set; }
 
         public Guid OrderId { get; set; }
+        public Guid KitchenId { get; set;}
         
     }
 }

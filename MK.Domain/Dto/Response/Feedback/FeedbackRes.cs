@@ -14,7 +14,7 @@ namespace MK.Domain.Dto.Response.Feedback
         public string Content { get; set; } = null!;
         public float Rating { get; set; }
         public string? ImgUrl { get; set; }
-        public Guid OwnerId { get; set; }
+        public Guid KitchenId { get; set; }
         public OwnerRes Owner { get; set; } = null!;
         public Guid OrderId { get; set; }
         

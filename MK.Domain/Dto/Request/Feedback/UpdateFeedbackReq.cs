@@ -10,8 +10,8 @@ namespace MK.Domain.Dto.Request.Feedback
     public class UpdateFeedbackReq
     {
         public string? Content { get; set; }
-        [Range(1, 5)]
 
+        [Range(1, 5)]
         public float Rating { get; set; }
 
         public string? ImgUrl { get; set; }

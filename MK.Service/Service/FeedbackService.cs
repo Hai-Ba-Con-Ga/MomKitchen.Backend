@@ -87,6 +87,7 @@ namespace MK.Service.Service
                             OwnerEmail = t.Customer.User.Email,
                         },
                         OrderId = t.OrderId,
+                        KitchenId = t.KitchenId,
                     },
                     Include = t => t.Include(t => t.Customer).
                     ThenInclude(t => t.User),
@@ -121,6 +122,7 @@ namespace MK.Service.Service
                             OwnerEmail = t.Customer.User.Email,
                         },
                         OrderId = t.OrderId,
+                        KitchenId = t.KitchenId,
                     },
                     PagingParams = pagingParam ??= new PagingParameters(),
                     OrderByFields = fields,
@@ -157,6 +159,7 @@ namespace MK.Service.Service
                             OwnerEmail = t.Customer.User.Email,
                         },
                         OrderId = t.OrderId,
+                        KitchenId = t.KitchenId,
                     },
                     Include = t => t.Include(t => t.Customer).ThenInclude(t => t.User),
                     PagingParams = pagingParam ??= new PagingParameters(),
