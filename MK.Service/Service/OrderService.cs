@@ -1,4 +1,5 @@
-﻿using MK.Domain.Dto.Request.Order;
+﻿using MK.Domain.Dto.Request.Notification;
+using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Order;
 using MK.Domain.Enum;
 using System;
@@ -11,10 +12,12 @@ namespace MK.Service.Service
 {
     public class OrderService : BaseService, IOrderService
     {
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        private readonly INotificationService _notificationService;
+        
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService) : base(unitOfWork, mapper)
         {
+            _notificationService = notificationService;
         }
-
         public async Task<ResponseObject<OrderDetailRes>> GetOrderById(Guid orderId)
         {
             try
@@ -91,6 +94,18 @@ namespace MK.Service.Service
                 order.OrderPayments.Add(orderPayment);
 
                 var createResult = await _unitOfWork.Order.CreateAsync(order, isSaveChange: true);
+                var customer = await _unitOfWork.Customer.GetById(orderReq.CustomerId, null, false);
+                if (customer == null)
+                    return BadRequest<Guid>("Customer not found");
+
+                var receiverId = customer.UserId;
+
+                await _notificationService.Create(new CreateNotificationReq()
+                {
+                    ReceiverId = receiverId,
+                    Title = "Order",
+                    Content = "Your order has been created",
+                });
 
                 return Success(createResult);
             }
