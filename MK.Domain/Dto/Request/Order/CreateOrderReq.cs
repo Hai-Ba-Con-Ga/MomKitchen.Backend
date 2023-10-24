@@ -15,7 +15,7 @@ namespace MK.Domain.Dto.Request.Order
         public int TotalQuantity { get; set; }
 
         [Required]
-        public Guid CustomerId { get; set; }
+        public Guid UserId { get; set; }
 
         [Required]
         public Guid MealId { get; set; }

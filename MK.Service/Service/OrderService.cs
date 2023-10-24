@@ -64,11 +64,13 @@ namespace MK.Service.Service
             {
                 decimal totalPrice = 0;
 
-                if (!await _unitOfWork.Customer.IsExist(t => t.Id == orderReq.CustomerId))
-                    return BadRequest<Guid>("Customer is not exist");
+                var customer = await _unitOfWork.Customer.GetById(orderReq.UserId, new QueryHelper<Customer>()
+                { Filter = t => t.UserId == orderReq.UserId }, false);
+
+                if (customer == null)
+                    return BadRequest<Guid>("Customer not found");
 
                 var meal = await _unitOfWork.Meal.GetById(orderReq.MealId);
-
                 if (meal == null)
                     return BadRequest<Guid>("Meal not found");
 
@@ -80,7 +82,7 @@ namespace MK.Service.Service
                     Surcharge = totalPrice * 5 / 100,
                     TotalPrice = Decimal.ToDouble(totalPrice),
                     TotalQuantity = orderReq.TotalQuantity,
-                    CustomerId = orderReq.CustomerId,
+                    CustomerId = orderReq.UserId,
                 };
 
                 var orderPayment = new OrderPayment()
@@ -94,15 +96,11 @@ namespace MK.Service.Service
                 order.OrderPayments.Add(orderPayment);
 
                 var createResult = await _unitOfWork.Order.CreateAsync(order, isSaveChange: true);
-                var customer = await _unitOfWork.Customer.GetById(orderReq.CustomerId, null, false);
-                if (customer == null)
-                    return BadRequest<Guid>("Customer not found");
 
-                var receiverId = customer.UserId;
-
+                //Push notification
                 await _notificationService.Create(new CreateNotificationReq()
                 {
-                    ReceiverId = receiverId,
+                    ReceiverId = customer.UserId,
                     Title = "Order",
                     Content = "Your order has been created",
                 });
