@@ -23,5 +23,6 @@ namespace MK.Domain.Dto.Response.Order
         public CustomerRes? Customer { get; set; } = null;
         public MealRes? Meal { get; set; } = null;
         public FeedbackRes? Feedback { get; set; } = null;
+        public DateTime CreatedDate { get; set; }
     }
 }
