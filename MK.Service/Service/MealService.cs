@@ -1,4 +1,5 @@
 ﻿using MK.Domain.Dto.Request.Meal;
+using MK.Domain.Dto.Response.Customer;
 using MK.Domain.Dto.Response.Feedback;
 using MK.Domain.Dto.Response.Meal;
 using MK.Domain.Dto.Response.Tray;
@@ -57,23 +58,27 @@ namespace MK.Service.Service
                         CloseTime = x.CloseTime,
                         Tray = _mapper.Map<TrayDetailRes>(x.Tray),
                         Kitchen = _mapper.Map<KitchenRes>(x.Kitchen),
-                        Feedbacks = x.Orders.Select(x => new FeedbackRes(){
-                            Id = x.Feedback.Id,
-                            Content = x.Feedback.Content,
-                            Rating = x.Feedback.Rating,
-                            ImgUrl = x.Feedback.ImgUrl,
-                            Owner = new Domain.Dto.Response.Customer.OwnerRes()
+                        Feedbacks = x.Orders.Select(o => o.Feedback).Where(f => f != null).Select(f => 
+                            new FeedbackRes()
                             {
-                                OwnerId = x.Feedback.CustomerId,
-                                OwnerName = x.Feedback.Customer.User.FullName,
-                                OwnerAvatarUrl = x.Feedback.Customer.User.AvatarUrl,
-                                OwnerEmail = x.Feedback.Customer.User.Email,
-                            },
-                            OrderId = x.Feedback.OrderId,
-                            KitchenId = x.Feedback.KitchenId,
-                        }).ToList()
+                                Id = f.Id,
+                                Content = f.Content,
+                                Rating = f.Rating,
+                                ImgUrl = f.ImgUrl,
+                                Owner = new OwnerRes()
+                                {
+                                    OwnerId = f.CustomerId,
+                                    OwnerName = f.Customer.User.FullName,
+                                    OwnerAvatarUrl = f.Customer.User.AvatarUrl,
+                                    OwnerEmail = f.Customer.User.Email,
+                                },
+                                OrderId = f.OrderId,
+                                KitchenId = f.KitchenId,
+                            }
+                        
+                        ).ToList()
                     }
-                });
+                });;
 
 
                 if (meal == null)
