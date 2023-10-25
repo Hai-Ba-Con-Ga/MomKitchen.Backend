@@ -11,7 +11,7 @@ namespace MK.Application.Service
     public interface IOrderService
     {
         Task<ResponseObject<OrderDetailRes>> GetOrderById(Guid orderId);
-        Task<PagingResponse<OrderRes>> GetAllOrder(PagingParameters pagingParam, string[] fields, string keySearch);
+        Task<PagingResponse<OrderDetailRes>> GetAllOrder(PagingParameters pagingParam, string[] fields, string keySearch);
         Task<ResponseObject<Guid>> CreateOrder(CreateOrderReq orderReq);
         Task<ResponseObject<bool>> DeleteOrder(Guid orderId);
     }

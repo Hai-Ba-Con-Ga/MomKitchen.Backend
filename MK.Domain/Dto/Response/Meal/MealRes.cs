@@ -23,5 +23,7 @@ namespace MK.Domain.Dto.Response
         public int ServiceQuantity { get; set; }
 
         public DateTime close_time { get; set; }
+
+        public TrayRes? Tray { get; set; } = null;
     }
 }

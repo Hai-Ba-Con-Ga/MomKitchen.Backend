@@ -36,16 +36,21 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PagingResponse<OrderRes>> GetAllOrder(PagingParameters pagingParam, string[] fields, string keySearch)
+        public async Task<PagingResponse<OrderDetailRes>> GetAllOrder(PagingParameters pagingParam, string[] fields, string keySearch)
         {
             try
             {
-                var queryHelper = new QueryHelper<Order, OrderRes>()
+                var queryHelper = new QueryHelper<Order, OrderDetailRes>()
                 {
-                    Selector = t => _mapper.Map<OrderRes>(t),
+                    Selector = t => _mapper.Map<OrderDetailRes>(t),
                     OrderByFields = fields,
                     Filter = t => t.No.ToString() == keySearch || t.Id.ToString() == keySearch || keySearch == null,
                     PagingParams = pagingParam ??= new PagingParameters(),
+                    Include = t => t.Include(x => x.Customer)
+                                    .ThenInclude(x => x.User)
+                                    .Include(x => x.Meal)
+                                    .ThenInclude(x => x.Tray)
+                                    .Include(x => x.Feedback)
                 };
 
                 var getResult = await _unitOfWork.Order.GetWithPagination(queryHelper);
@@ -54,7 +59,7 @@ namespace MK.Service.Service
             }
             catch (Exception ex)
             {
-                return BadRequests<OrderRes>(ex.GetExceptionMessage());
+                return BadRequests<OrderDetailRes>(ex.GetExceptionMessage());
             }
         }
 
