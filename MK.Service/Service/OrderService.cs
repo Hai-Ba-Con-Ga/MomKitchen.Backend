@@ -25,7 +25,11 @@ namespace MK.Service.Service
                 var order = await _unitOfWork.Order.GetById(orderId, new QueryHelper<Order, OrderDetailRes>()
                 {
                     Selector = t => _mapper.Map<OrderDetailRes>(t),
-                    Include = t => t.Include(x => x.Customer).Include(x => x.Meal).Include(x => x.Feedback)
+                    Include = t => t.Include(x => x.Customer)
+                                    .ThenInclude(x => x.User)
+                                    .Include(x => x.Meal)
+                                    .ThenInclude(x => x.Tray)
+                                    .Include(x => x.Feedback)
                 });
 
                 return Success(order);
