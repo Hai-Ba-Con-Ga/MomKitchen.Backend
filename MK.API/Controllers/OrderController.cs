@@ -36,9 +36,11 @@ namespace MK.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(ResponseObject<OrderDetailRes>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllOrder(string keySearch, [FromQuery] PagingParameters pagingParam, [FromQuery] string[] fields)
+        public async Task<IActionResult> GetAllOrder(
+            [FromQuery] PagingParameters pagingParam,
+            [FromQuery] GetOrderReq getOrderReq)
         {
-            var orderDetail = await _orderService.GetAllOrder(pagingParam, fields, keySearch);
+            var orderDetail = await _orderService.GetAllOrder(pagingParam, getOrderReq);
             return StatusCode((int)orderDetail.StatusCode, orderDetail);
         }
 

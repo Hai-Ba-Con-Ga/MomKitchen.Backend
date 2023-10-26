@@ -13,7 +13,7 @@ namespace MK.Service.Service
     public class OrderService : BaseService, IOrderService
     {
         private readonly INotificationService _notificationService;
-        
+
         public OrderService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService) : base(unitOfWork, mapper)
         {
             _notificationService = notificationService;
@@ -40,21 +40,24 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PagingResponse<OrderDetailRes>> GetAllOrder(PagingParameters pagingParam, string[] fields, string keySearch)
+        public async Task<PagingResponse<OrderDetailRes>> GetAllOrder(PagingParameters pagingParam, GetOrderReq getOrderReq)
         {
             try
             {
                 var queryHelper = new QueryHelper<Order, OrderDetailRes>()
                 {
-                    Selector = t => _mapper.Map<OrderDetailRes>(t),
-                    OrderByFields = fields,
-                    Filter = t => t.No.ToString() == keySearch || t.Id.ToString() == keySearch || keySearch == null,
                     PagingParams = pagingParam ??= new PagingParameters(),
+                    Selector = t => _mapper.Map<OrderDetailRes>(t),
+                    OrderByFields = getOrderReq.OrderBy,
                     Include = t => t.Include(x => x.Customer)
                                     .ThenInclude(x => x.User)
                                     .Include(x => x.Meal)
                                     .ThenInclude(x => x.Tray)
-                                    .Include(x => x.Feedback)
+                                    .Include(x => x.Feedback),
+                    Filter = t => (getOrderReq.KeySearch == null
+                                        || t.No.ToString() == getOrderReq.KeySearch
+                                        || t.Id.ToString() == getOrderReq.KeySearch)
+                                && (t.CreatedDate.Date >= getOrderReq.FromDate && t.CreatedDate <= getOrderReq.ToDate)
                 };
 
                 var getResult = await _unitOfWork.Order.GetWithPagination(queryHelper);

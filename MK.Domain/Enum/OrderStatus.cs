@@ -8,5 +8,9 @@ namespace MK.Domain.Enum
 {
     public enum OrderStatus
     {
+        UNPAID = 100,
+        PAID = 200,
+        CANCELED = 300,
+        COMPLETED = 400,
     }
 }

@@ -29,7 +29,7 @@ namespace MK.Domain.Common
         /// <summary>
         /// Helper for include entity - JOIN command
         /// </summary>
-        public Func<IQueryable<T>, IIncludableQueryable<T, object>> Include = null;
+        public Func<IQueryable<T>, IIncludableQueryable<T, object?>> Include = null;
         /// <summary>
         /// Helper for select field from entity - SELECT command
         /// </summary>

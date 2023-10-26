@@ -45,7 +45,13 @@ namespace MK.Service.Service
 
                 var meal = await _unitOfWork.Meal.GetById(mealId, new QueryHelper<Meal, MealDetailRes>()
                 {
-                    Include = x => x.Include(x => x.Kitchen).Include(x => x.Tray).Include(x => x.Orders).ThenInclude(x => x.Feedback).ThenInclude(x => x.Customer).ThenInclude(x => x.User),
+                    Include = x => x.Include(x => x.Kitchen)
+                                    .Include(x => x.Tray)
+                                        .ThenInclude(x => x.Dishies)
+                                    .Include(x => x.Orders)
+                                        .ThenInclude(x => x.Feedback)
+                                            .ThenInclude(x => x.Customer)
+                                                .ThenInclude(x => x.User),
                     Selector = x => new MealDetailRes()
                     {
                         Id = x.Id,
@@ -73,9 +79,8 @@ namespace MK.Service.Service
                                     OwnerEmail = f.Customer.User.Email,
                                 },
                                 OrderId = f.OrderId,
-                                KitchenId = f.KitchenId,
+                                KitchenId = f.KitchenId
                             }
-                        
                         ).ToList()
                     }
                 });;

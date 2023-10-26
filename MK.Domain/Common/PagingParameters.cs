@@ -1,6 +1,6 @@
 ﻿namespace MK.Domain.Common
 {
-    public class PagingParameters
+    public class PagingParameters : IPagingParameters
     {
         const int maxPageSize = 50;
         private int _pageSize = 0;
@@ -30,5 +30,11 @@
             PageSize = pageSize ?? 10;
         }
 
+    }
+
+    public interface IPagingParameters
+    {
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
 }

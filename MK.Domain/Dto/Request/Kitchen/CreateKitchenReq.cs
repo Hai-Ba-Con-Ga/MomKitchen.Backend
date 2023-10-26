@@ -16,6 +16,7 @@ namespace MK.Domain.Dto.Request.Kitchen
         [Required]
         public string Address { get; set; } = null!;
         public KitchenStatus Status { get; set; } = KitchenStatus.ACTIVE;
+        public string ImgUrl { get; set; }
         [Required]
         public CreateLocationReq Location { get; set; } = null!;
         [Required]
