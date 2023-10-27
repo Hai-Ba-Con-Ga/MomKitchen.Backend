@@ -21,7 +21,7 @@ namespace MK.Domain.Dto.Response.Customer
         public CustomerStatus Status { get; set; }
         //TODO: handle properties
         public int? OrderQuantity { get; set; } = null;
-        public int? SpentMoney { get; set; } = null;
+        public double? SpentMoney { get; set; } = null;
         public Guid UserId { get; set; }
         public UserRes User { get; set; } = null;
         

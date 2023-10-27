@@ -30,8 +30,9 @@ namespace MK.Service.Service
                         Birthday = t.User.Birthday,
                         AvatarUrl = t.User.AvatarUrl,
                         Status = t.Status,
-                        UserId = t.UserId
-
+                        UserId = t.UserId,
+                        OrderQuantity = t.Orders.Count,
+                        SpentMoney = t.Orders.Sum(o => o.TotalPrice)
                     },
                     Include = i => i.Include(x => x.User)
                                     .Include(x => x.Orders)
