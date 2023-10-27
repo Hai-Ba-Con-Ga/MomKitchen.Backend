@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MK.Domain.Dto.Response.Dish;
 
 namespace MK.Domain.Dto.Response
 {
@@ -14,5 +15,7 @@ namespace MK.Domain.Dto.Response
         public string Description { get; set; } = null!;
         public string ImgUrl { get; set; } = null!;
         public decimal Price { get; set; }
+
+        public IEnumerable<DishRes>? Dishes {get;set;}
     }
 }
