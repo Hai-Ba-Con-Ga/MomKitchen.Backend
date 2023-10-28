@@ -10,6 +10,7 @@ namespace MK.Domain.Dto.Request
 {
     public class CreateLocationReq
     {
+        public int OrderNo { get; set; }
         [Required]
         public double Lat { get; set; }
         [Required]

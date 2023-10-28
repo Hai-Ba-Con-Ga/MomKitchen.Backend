@@ -20,7 +20,7 @@ namespace MK.Service.Service
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                var locations = _mapper.Map<IEnumerable<Location>>(req.Boundaries);
+                var locations = _mapper.Map<IEnumerable<Location>>(req.Boundaries.OrderBy(x => x.OrderNo));
 
                 var createLocatinResults = await _unitOfWork.Location.CreateAsync(locations, true);
 
