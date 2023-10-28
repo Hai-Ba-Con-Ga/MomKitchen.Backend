@@ -50,14 +50,18 @@ namespace MK.Service.Service
                     Selector = t => _mapper.Map<OrderDetailRes>(t),
                     OrderByFields = getOrderReq.OrderBy,
                     Include = t => t.Include(x => x.Customer)
-                                    .ThenInclude(x => x.User)
+                                        .ThenInclude(x => x.User)
                                     .Include(x => x.Meal)
-                                    .ThenInclude(x => x.Tray)
+                                        .ThenInclude(x => x.Tray)
+                                            .ThenInclude(x => x.Dishies)
+                                    .Include(x => x.Meal)
+                                        .ThenInclude(x => x.Kitchen)
                                     .Include(x => x.Feedback),
                     Filter = t => (getOrderReq.KeySearch == null
                                         || t.No.ToString() == getOrderReq.KeySearch
                                         || t.Id.ToString() == getOrderReq.KeySearch)
                                 && (t.CreatedDate.Date >= getOrderReq.FromDate && t.CreatedDate <= getOrderReq.ToDate)
+                                && (getOrderReq.OrderStatus == null || t.Status == getOrderReq.OrderStatus)
                 };
 
                 var getResult = await _unitOfWork.Order.GetWithPagination(queryHelper);
