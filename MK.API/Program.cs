@@ -59,14 +59,20 @@ public class Program
                 builder =>
                 {
                     builder
-            // .AllowAnyOrigin()
-           .AllowAnyHeader()
-           .AllowAnyMethod()
-           .WithOrigins(new string[] { "http://localhost:3000", "https://mamakitchen.tech","http://mamakitchen.tech","http://localhost:5173"
-            ,"http://localhost:3001","http://localhost:3002","http://localhost:3003","https://localhost:3000"
-            })
-          .AllowCredentials();
-                });
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .WithOrigins(new string[] 
+                   { "http://localhost:3000", 
+                     "https://mamakitchen.tech",
+                     "http://mamakitchen.tech",
+                     "http://localhost:5173",
+                     "http://localhost:3001",
+                     "http://localhost:3002",
+                     "http://localhost:3003",
+                     "https://localhost:3000",
+                     "https://www.mamakitchen.tech"
+                    })
+                  .AllowCredentials();});
         });
 
         builder.Services.AddApiVersion();
