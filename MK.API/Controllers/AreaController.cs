@@ -95,7 +95,7 @@ namespace MK.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetKitchensByAreaId(Guid areaId, [FromQuery] PagingParameters pagingParam, [FromQuery] string[] fields)
         {
-            var result = await _kitchenService.GetKitchensByAreaId(areaId);
+            var result = await _kitchenService.GetKitchensByAreaId(areaId,pagingParam);
             return StatusCode((int)result.StatusCode, result);
         }
     }

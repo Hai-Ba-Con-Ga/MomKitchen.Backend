@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using MK.Domain.Dto.Request.Customer;
 using MK.Domain.Dto.Response.Customer;
+using MK.Domain.Dto.Response.Order;
 
 namespace MK.Service.Service
 {
     public class CustomerService : BaseService, ICustomerService
     {
+        private const int RecentOrdersAmountGet = 5;
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
@@ -30,8 +32,10 @@ namespace MK.Service.Service
                         Birthday = t.User.Birthday,
                         AvatarUrl = t.User.AvatarUrl,
                         Status = t.Status,
-                        UserId = t.UserId
-
+                        UserId = t.UserId,
+                        OrderQuantity = t.Orders.Count,
+                        SpentMoney = t.Orders.Sum(o => o.TotalPrice),
+                        RecentOrders  = t.Orders.OrderByDescending(o => o.CreatedDate).Select(o => _mapper.Map<OrderRes>(o))
                     },
                     Include = i => i.Include(x => x.User)
                                     .Include(x => x.Orders)
@@ -66,6 +70,9 @@ namespace MK.Service.Service
                         AvatarUrl = t.User.AvatarUrl,
                         Status = t.Status,
                         UserId = t.UserId,
+                        OrderQuantity = t.Orders.Count,
+                        SpentMoney = t.Orders.Sum(o => o.TotalPrice),
+                        RecentOrders  = t.Orders.OrderByDescending(o => o.CreatedDate).Take(RecentOrdersAmountGet).Select(o => _mapper.Map<OrderRes>(o))
                     },
                     Include = t => t.Include(x => x.User)
                                     .Include(x => x.Orders)

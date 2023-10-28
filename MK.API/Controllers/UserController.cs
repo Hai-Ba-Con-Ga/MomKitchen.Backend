@@ -41,7 +41,7 @@ namespace MK.API.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-        /// <summary>
+    /// <summary>
         /// Function to delete user
         /// </summary>
         /// <param name="id"></param>
