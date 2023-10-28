@@ -72,6 +72,13 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("name");
 
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
                         .HasColumnName("updated_by");
@@ -104,6 +111,13 @@ namespace MK.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -171,6 +185,13 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text")
@@ -220,6 +241,13 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("kitchen_id");
 
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
                         .HasColumnName("updated_by");
@@ -264,9 +292,24 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("customer_id");
 
+                    b.Property<string>("ImgUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("img_url");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("KitchenId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("kitchen_id");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid")
@@ -284,16 +327,14 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_date");
 
-                    b.Property<string>("img_url")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("img_url");
-
                     b.HasKey("Id")
                         .HasName("pk_feedback");
 
                     b.HasIndex("CustomerId")
                         .HasDatabaseName("ix_feedback_customer_id");
+
+                    b.HasIndex("KitchenId")
+                        .HasDatabaseName("ix_feedback_kitchen_id");
 
                     b.HasIndex("OrderId")
                         .IsUnique()
@@ -327,6 +368,10 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_date");
 
+                    b.Property<string>("ImgUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("img_url");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
@@ -340,6 +385,13 @@ namespace MK.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)")
                         .HasColumnName("name");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid")
@@ -401,6 +453,13 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("lng");
 
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
                         .HasColumnName("updated_by");
@@ -421,6 +480,10 @@ namespace MK.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("CloseTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("close_time");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text")
@@ -443,6 +506,13 @@ namespace MK.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric")
@@ -471,10 +541,6 @@ namespace MK.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_date");
-
-                    b.Property<DateTime>("close_time")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("close_time");
 
                     b.HasKey("Id")
                         .HasName("pk_meal");
@@ -511,6 +577,13 @@ namespace MK.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<string>("NotificationType")
                         .IsRequired()
@@ -575,6 +648,13 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("meal_id");
 
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
+
                     b.Property<int>("Status")
                         .HasColumnType("integer")
                         .HasColumnName("status");
@@ -618,6 +698,10 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amount");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text")
                         .HasColumnName("created_by");
@@ -629,6 +713,13 @@ namespace MK.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid")
@@ -650,10 +741,6 @@ namespace MK.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_date");
-
-                    b.Property<decimal>("amount")
-                        .HasColumnType("numeric")
-                        .HasColumnName("amount");
 
                     b.HasKey("Id")
                         .HasName("pk_order_payment");
@@ -696,6 +783,13 @@ namespace MK.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)")
                         .HasColumnName("name");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<string>("Provider")
                         .IsRequired()
@@ -745,6 +839,13 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
                         .HasColumnName("updated_by");
@@ -793,15 +894,18 @@ namespace MK.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("kitchen_id");
 
-                    b.Property<Guid?>("MealId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("meal_id");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric")
@@ -820,9 +924,6 @@ namespace MK.Infrastructure.Migrations
 
                     b.HasIndex("KitchenId")
                         .HasDatabaseName("ix_tray_kitchen_id");
-
-                    b.HasIndex("MealId")
-                        .HasDatabaseName("ix_tray_meal_id");
 
                     b.ToTable("tray", (string)null);
                 });
@@ -870,6 +971,13 @@ namespace MK.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("no");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("No"));
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -968,6 +1076,13 @@ namespace MK.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_feedback_customer_customer_id");
 
+                    b.HasOne("MK.Domain.Entity.Kitchen", "Kitchen")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("KitchenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_feedback_kitchen_kitchen_id");
+
                     b.HasOne("MK.Domain.Entity.Order", "Order")
                         .WithOne("Feedback")
                         .HasForeignKey("MK.Domain.Entity.Feedback", "OrderId")
@@ -976,6 +1091,8 @@ namespace MK.Infrastructure.Migrations
                         .HasConstraintName("fk_feedback_order_order_id");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Kitchen");
 
                     b.Navigation("Order");
                 });
@@ -1094,11 +1211,6 @@ namespace MK.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_tray_kitchen_kitchen_id");
 
-                    b.HasOne("MK.Domain.Entity.Meal", null)
-                        .WithMany("Trays")
-                        .HasForeignKey("MealId")
-                        .HasConstraintName("fk_tray_meal_meal_id");
-
                     b.Navigation("Kitchen");
                 });
 
@@ -1134,6 +1246,8 @@ namespace MK.Infrastructure.Migrations
 
                     b.Navigation("FavoriteKitchens");
 
+                    b.Navigation("Feedbacks");
+
                     b.Navigation("Meals");
 
                     b.Navigation("Trays");
@@ -1147,8 +1261,6 @@ namespace MK.Infrastructure.Migrations
             modelBuilder.Entity("MK.Domain.Entity.Meal", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("Trays");
                 });
 
             modelBuilder.Entity("MK.Domain.Entity.Order", b =>

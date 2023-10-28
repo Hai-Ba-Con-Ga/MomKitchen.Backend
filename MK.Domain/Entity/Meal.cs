@@ -28,7 +28,7 @@ namespace MK.Domain.Entity
         [Range(1, int.MaxValue)]
         public int ServiceQuantity { get; set; }
 
-        public DateTime close_time { get; set; }
+        public DateTime CloseTime { get; set; }
 
         [Required]
         public Guid TrayId { get; set; }
@@ -38,9 +38,9 @@ namespace MK.Domain.Entity
         public Guid KitchenId { get; set; }
         public Kitchen Kitchen { get; set; } = null!;
 
-        public virtual ICollection<Tray> Trays { get; set; } = new List<Tray>();
-
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
        
     }
+
+    
 }

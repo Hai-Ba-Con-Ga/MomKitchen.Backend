@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace MK.Domain.Dto.Response.User
 {
-    public class LoginResponse
+    public class LoginRes
     {
         public bool IsFirstTime { get; set; }
         public string Token { get; set; } = null!;
-        public UserResponse User { get; set; } = null!;
+        public UserRes User { get; set; } = null!;
     }
 }

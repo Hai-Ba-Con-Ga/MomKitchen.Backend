@@ -16,8 +16,15 @@ namespace MK.Application.Repository
         IGenericRepository<Notification> Notification { get; }
         IGenericRepository<Kitchen> Kitchen { get; }
 
-
+        IGenericRepository<FavouriteKitchen> FavouriteKitchen { get; }
         IGenericRepository<Area> Area { get; }
+        IGenericRepository<Dish> Dish { get; }
+        IGenericRepository<Tray> Tray { get; }
+        IGenericRepository<Meal> Meal { get; }
+        IGenericRepository<PaymentType> PaymentType { get; }
+        IGenericRepository<OrderPayment> OrderPayment { get; }
+        IGenericRepository<Order> Order { get; }
+        IGenericRepository<Feedback> Feedback { get; }
 
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();

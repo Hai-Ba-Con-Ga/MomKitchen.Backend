@@ -13,19 +13,19 @@ namespace MK.Service.Service
 {
     public class AuthenticationService : BaseService, IAuthenticationService
     {
-        
+
         private readonly ITokenService _tokenService;
 
 
-        public AuthenticationService (IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService) : base(unitOfWork, mapper)
+        public AuthenticationService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService) : base(unitOfWork, mapper)
         {
 
             _tokenService = tokenService;
 
         }
-        
 
-        public string GenerateToken(UserResponse user)
+
+        public string GenerateToken(UserRes user)
         {
             return _tokenService.GetToken(user);
         }
@@ -36,7 +36,7 @@ namespace MK.Service.Service
         }
 
 
-        public async Task<ResponseObject<LoginResponse>> GetUserByFirebaseTokenAsync(LoginRequest loginRequest)
+        public async Task<ResponseObject<LoginRes>> GetUserByFirebaseTokenAsync(LoginReq loginRequest)
         {
             try
             {
@@ -48,22 +48,22 @@ namespace MK.Service.Service
                 var avatar = firebaseToken.Claims.GetValueOrDefault("picture")?.ToString();
                 var name = firebaseToken.Claims.GetValueOrDefault("name")?.ToString();
 
-                var role = await _unitOfWork.Role.FirstOrDefaultAsync(x => x.Name.Equals(loginRequest.RoleName));
+                var role = await _unitOfWork.Role.GetFirstOrDefaultAsync(x => x.Name.Equals(loginRequest.RoleName));
                 if (role is null)
                 {
-                    return BadRequest<LoginResponse>("Invalid role");
+                    return BadRequest<LoginRes>("Invalid role");
                 }
 
-                LoginResponse loginResponse = new();
+                LoginRes loginResponse = new();
                 if (email is null && phone is null)
                 {
-                    return BadRequest<LoginResponse>("Invalid token");
+                    return BadRequest<LoginRes>("Invalid token");
                 }
 
                 var query = new QueryHelper<User>()
                 {
                     Filter = x => (x.Email == email || x.Phone == phone),
-                    Includes = new Expression<Func<User, object>>[] { x => x.Role },
+                    Include = x => x.Include(t => t.Role),
                 };
 
                 var user = (await _unitOfWork.User.Get(query, false)).FirstOrDefault();
@@ -93,15 +93,15 @@ namespace MK.Service.Service
                         };
                         await _unitOfWork.Customer.CreateAsync(customer, true);
                     }
-                    
-                    UserResponse userResponse = _mapper.Map<UserResponse>(newUser);
+
+                    UserRes userResponse = _mapper.Map<UserRes>(newUser);
                     userResponse.Role = role;
 
 
                     loginResponse.User = userResponse;
                     //generate token
                     loginResponse.Token = GenerateToken(userResponse);
-                    
+
 
                 }
                 else
@@ -113,9 +113,9 @@ namespace MK.Service.Service
                         user.FcmToken.Add(loginRequest.FcmToken);
 
                         await _unitOfWork.User.SaveChangesAsync();
-                        
+
                     }
-                    UserResponse userResponse = _mapper.Map<UserResponse>(user);
+                    UserRes userResponse = _mapper.Map<UserRes>(user);
                     userResponse.Role = user.Role;
 
 
@@ -128,9 +128,9 @@ namespace MK.Service.Service
             }
             catch (Exception e)
             {
-                return BadRequest<LoginResponse>(e.Message);
+                return BadRequest<LoginRes>(e.Message);
             }
-           
+
         }
 
         public async Task<ResponseObject<bool>> Logout(Guid userId, string fcmToken)
@@ -145,29 +145,29 @@ namespace MK.Service.Service
             return Success(true);
         }
 
-        public async Task<ResponseObject<UserResponse>> Get(Guid id)
+        public async Task<ResponseObject<UserRes>> Get(Guid id)
         {
             var query = new QueryHelper<User>()
             {
-                Includes = new Expression<Func<User, object>>[] { x => x.Role },
+                Include = t => t.Include(i => i.Role),
             };
             User user = await _unitOfWork.User.GetById(id, query, false);
             if (user is null)
             {
-                return NotFound<UserResponse>("User not found");
+                return NotFound<UserRes>("User not found");
             }
-            UserResponse userResponse = _mapper.Map<UserResponse>(user);
+            UserRes userResponse = _mapper.Map<UserRes>(user);
             userResponse.Role = user.Role;
             return Success(userResponse);
         }
 
-        public async Task<ResponseObject<UserResponse>> Update(Guid id, UpdateUserRequest userRequest)
+        public async Task<ResponseObject<UserRes>> Update(Guid id, UpdateUserReq userRequest)
         {
             User user = await _unitOfWork.User.GetById(id, null, false);
-            
+
             if (user is null)
             {
-                return NotFound<UserResponse>("User not found");
+                return NotFound<UserRes>("User not found");
             }
             user.Email = userRequest.Email ?? "";
             user.FullName = userRequest.FullName ?? "";
@@ -176,7 +176,7 @@ namespace MK.Service.Service
             user.Birthday = userRequest.Birthday;
 
             await _unitOfWork.User.SaveChangesAsync();
-            UserResponse userResponse = _mapper.Map<UserResponse>(user);
+            UserRes userResponse = _mapper.Map<UserRes>(user);
             return Success(userResponse);
         }
 

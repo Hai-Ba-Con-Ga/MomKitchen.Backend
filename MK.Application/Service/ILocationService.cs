@@ -10,7 +10,7 @@ namespace MK.Application.Service
 {
     public interface ILocationService
     {
-        Task<PaginationResponse<LocationRes>> GetAll(PaginationParameters pagingParam = null);
+        Task<PagingResponse<LocationRes>> GetAll(PagingParameters pagingParam = null);
         Task<ResponseObject<Guid>> Create(CreateLocationReq req);
         Task<ResponseObject<LocationRes>> GetById(Guid locationId);
         Task<ResponseObject<bool>> Delete(Guid locationId);

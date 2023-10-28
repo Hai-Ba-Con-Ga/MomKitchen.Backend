@@ -9,74 +9,72 @@ namespace MK.Service.Service
 {
     public class NotificationService : BaseService, INotificationService
     {
-        
+
         public NotificationService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
 
         }
 
-        public async Task<ResponseObject<NotificationResponse>> Create(CreateNotificationRequest notificationRequest)
+        public async Task<ResponseObject<NotificationRes>> Create(CreateNotificationReq notificationRequest)
         {
             try
             {
                 var user = await _unitOfWork.User.GetById(notificationRequest.ReceiverId, null, false);
                 if (user is null)
                 {
-                    return BadRequest<NotificationResponse>("User not found");
+                    return BadRequest<NotificationRes>("User not found");
                 }
                 var notificationId = await _unitOfWork.Notification.CreateAsync(_mapper.Map<Domain.Entity.Notification>(notificationRequest), true);
                 if (notificationId == Guid.Empty)
                 {
-                    return BadRequest<NotificationResponse>("Create notification failed");
+                    return BadRequest<NotificationRes>("Create notification failed");
                 }
                 var firebaseResponse = await SendNotificationMultiDeviceAsync(user.FcmToken, notificationRequest.Title, notificationRequest.Content);
                 if (firebaseResponse == "0")
                 {
-                    return BadRequest<NotificationResponse>("Send notification failed");
+                    return BadRequest<NotificationRes>("Send notification failed");
                 }
 
-                return Success<NotificationResponse>(_mapper.Map<NotificationResponse>(notificationRequest));
+                return Success<NotificationRes>(_mapper.Map<NotificationRes>(notificationRequest));
 
             }
             catch (Exception ex)
             {
-                return BadRequest<NotificationResponse>(ex.Message);
+                return BadRequest<NotificationRes>(ex.Message);
             }
-            
+
         }
 
-        public async Task<PaginationResponse<NotificationResponse>> GetAll(PaginationParameters paginationparam = null)
+        public async Task<PagingResponse<NotificationRes>> GetAll(PagingParameters paginationparam = null)
         {
             try
             {
-                var query = new QueryHelper<Domain.Entity.Notification, NotificationResponse>()
+                var query = new QueryHelper<Domain.Entity.Notification, NotificationRes>()
                 {
-                    Includes = new Expression<Func<Domain.Entity.Notification, object>>[] { x => x.Receiver },
-                    PaginationParams = paginationparam ??= new PaginationParameters(),
-
-
+                    Include = i => i.Include(x => x.Receiver),
+                    PagingParams = paginationparam ??= new PagingParameters(),
                 };
                 var notifications = await _unitOfWork.Notification.GetWithPagination(query);
                 return Success(notifications);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return BadRequests<NotificationResponse>(ex.Message);
+                return BadRequests<NotificationRes>(ex.Message);
             }
-            
+
         }
 
         public async Task<string> SendNotificationOneDeviceAsync(string fcmToken, string title, string content)
         {
             var message = new Message()
             {
-                   Data = new Dictionary<string, string>()
-                   {
-                       { "title", title },
-                       { "content", content }
-                   },
-                   Token = fcmToken
-            
+                Notification = new FirebaseAdmin.Messaging.Notification()
+                {
+                    Title = title,
+                    Body = content
+                },
+                Token = fcmToken
+
             };
             string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
             return response;
@@ -86,11 +84,11 @@ namespace MK.Service.Service
         {
             var message = new MulticastMessage()
             {
-                Data = new Dictionary<string, string>()
+                Notification = new FirebaseAdmin.Messaging.Notification()
                 {
-                       { "title", title },
-                       { "content", content }
-                   },
+                    Title = title,
+                    Body = content
+                },
                 Tokens = fcmTokens
 
             };

@@ -44,12 +44,30 @@ public class Program
         {
             x.JsonSerializerOptions.ReferenceHandler = null;
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         });
 
         // Add services to the container.
         builder.ConfigureAutofacContainer();
 
         builder.Services.AddDbContexts();
+
+        //allow cors
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    builder
+                       .AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .WithOrigins(new string[] 
+                       { "http://localhost:3000", "https://www.globird.tech","http://localhost:5173"
+                        ,"http://localhost:3001","http://localhost:3002","http://localhost:3003","https://localhost:3000"
+                       })
+                      .AllowCredentials();
+                });
+        });
 
         builder.Services.AddApiVersion();
 
@@ -67,6 +85,10 @@ public class Program
 
         builder.Services.AddSwaggerGenOption();
 
+        builder.Services.Configure<RouteOptions>(options =>
+        {
+            options.LowercaseUrls = true;
+        });
 
         var app = builder.Build();
 
@@ -75,9 +97,12 @@ public class Program
 
         app.UseSwaggerUI(option => option.EnablePersistAuthorization());
 
+
         app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
         builder.Services.SeedData().GetAwaiter().GetResult();
+
+        app.UseCors("AllowAll");
 
         app.UseHttpsRedirection();
 

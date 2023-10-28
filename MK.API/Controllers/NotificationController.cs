@@ -4,7 +4,7 @@ using MK.Domain.Dto.Request.Notification;
 
 namespace MK.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class NotificationController : ControllerBase
@@ -19,7 +19,7 @@ namespace MK.API.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateNotificationRequest notificationRequest)
+        public async Task<IActionResult> Create([FromBody] CreateNotificationReq notificationRequest)
         {
             var result = await _notificationService.Create(notificationRequest);
             return StatusCode((int)result.StatusCode, result);
@@ -31,7 +31,7 @@ namespace MK.API.Controllers
         /// <param name="paginationParameters"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationParameters paginationParameters)
+        public async Task<IActionResult> GetAll([FromQuery] PagingParameters paginationParameters)
         {
             var result = await _notificationService.GetAll(paginationParameters);
             return StatusCode((int)result.StatusCode, result);

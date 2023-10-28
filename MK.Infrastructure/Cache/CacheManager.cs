@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using MK.Application.Cache;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MK.Infrastructure.Cache
 {
@@ -12,10 +13,6 @@ namespace MK.Infrastructure.Cache
             PropertyNamingPolicy = null,
             AllowTrailingCommas = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-        private static readonly DistributedCacheEntryOptions _defaultCacheOptions = new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
         };
 
         private IDistributedCache _distributedCache;
@@ -57,17 +54,18 @@ namespace MK.Infrastructure.Cache
             }
         }
 
-        public async Task SetAsync(string key, object value, DistributedCacheEntryOptions options = null)
+        public async Task SetAsync<T>(string key, T value, TimeSpan? absoluteExpTime = null, TimeSpan? unusedExpTime = null)
         {
-            if (options == null)
+            var option = new DistributedCacheEntryOptions
             {
-                options = _defaultCacheOptions;
-            }
+                AbsoluteExpirationRelativeToNow = absoluteExpTime ?? AppConfig.CacheConfig.AbsoluteExpTime,
+                SlidingExpiration = unusedExpTime ?? AppConfig.CacheConfig.UnusedExpTime
+            };
 
             try
             {
                 var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value, _serializerOptions));
-                await _distributedCache.SetAsync(key, bytes, options);
+                await _distributedCache.SetAsync(key, bytes, option);
             }
             catch (Exception)
             {

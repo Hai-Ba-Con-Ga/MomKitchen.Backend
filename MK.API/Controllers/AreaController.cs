@@ -5,16 +5,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MK.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class AreaController : ControllerBase
     {
         private readonly IAreaService _areaService;
+        private readonly IKitchenService _kitchenService;
 
-        public AreaController(IAreaService areaService)
+        public AreaController(IAreaService areaService, IKitchenService kitchenService)
         {
             _areaService = areaService;
+            _kitchenService = kitchenService;
         }
 
 
@@ -66,11 +68,11 @@ namespace MK.API.Controllers
         /// </summary>
         /// <returns>Paging list of location</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<LocationRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<GetAreaRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PagingParameters queryParam)
         {
-            var result = await _areaService.GetAll();
+            var result = await _areaService.GetAll(queryParam);
             return StatusCode((int)result.StatusCode, result);
         }
 
@@ -85,6 +87,15 @@ namespace MK.API.Controllers
         public async Task<IActionResult> GetById(Guid areaId)
         {
             var result = await _areaService.GetById(areaId);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpGet("{areaId}/kitchens")]
+        [ProducesResponseType(typeof(IEnumerable<KitchenRes>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetKitchensByAreaId(Guid areaId, [FromQuery] PagingParameters pagingParam, [FromQuery] string[] fields)
+        {
+            var result = await _kitchenService.GetKitchensByAreaId(areaId);
             return StatusCode((int)result.StatusCode, result);
         }
     }

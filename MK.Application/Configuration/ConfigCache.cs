@@ -13,8 +13,8 @@ namespace MK.Application.Configuration
         {
             service.AddStackExchangeRedisCache(options =>
             {
-                options.InstanceName = "MK.Application";
-                options.Configuration = AppConfig.ConnectionStrings.RedisConnection;
+                options.InstanceName = AppConfig.CacheConfig.RedisInstanceName;
+                options.Configuration = AppConfig.CacheConfig.RedisConnectionString;
             });
         }
     }

@@ -10,6 +10,8 @@
                 AppConfig.FirebaseConfig = new FirebaseConfig();
                 AppConfig.JwtSetting = new JwtSetting();
                 AppConfig.AwsCredentials = new AwsCredentials();
+                AppConfig.VnpayConfig = new VnpayConfig();
+                AppConfig.CacheConfig = new CacheConfig();
             }
             while (AppConfig.ConnectionStrings == null);
 
@@ -17,6 +19,8 @@
             configuration.Bind("FirebaseConfig", AppConfig.FirebaseConfig);
             configuration.Bind("JwtSetting", AppConfig.JwtSetting);
             configuration.Bind("AwsCredentials", AppConfig.AwsCredentials);
+            configuration.Bind("VnpayConfig", AppConfig.VnpayConfig);
+            configuration.Bind("CacheSettings", AppConfig.CacheConfig);
         }
 
     }

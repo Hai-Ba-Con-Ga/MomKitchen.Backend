@@ -11,13 +11,13 @@ namespace MK.Application.Service
 {
     public interface IAuthenticationService 
     {
-        string GenerateToken(UserResponse user);
-        Task<ResponseObject<LoginResponse>> GetUserByFirebaseTokenAsync(LoginRequest loginRequest);
+        string GenerateToken(UserRes user);
+        Task<ResponseObject<LoginRes>> GetUserByFirebaseTokenAsync(LoginReq loginRequest);
 
         Task<FirebaseToken> GetFirebaseTokenAsync(string token);
         Task<ResponseObject<bool>> Logout(Guid userId, string fcmToken);
 
-        Task<ResponseObject<UserResponse>> Get(Guid userId);
-        Task<ResponseObject<UserResponse>> Update(Guid userId, UpdateUserRequest userRequest);
+        Task<ResponseObject<UserRes>> Get(Guid userId);
+        Task<ResponseObject<UserRes>> Update(Guid userId, UpdateUserReq userRequest);
     }
 }

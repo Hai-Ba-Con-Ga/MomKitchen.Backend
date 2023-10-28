@@ -10,12 +10,11 @@ namespace MK.Application.Service
 {
     public interface IUserService
     {
-        Task<ResponseObject<UserResponse>> Create(CreateUserRequest userRequest);
-        Task<ResponseObject<UserResponse>> Update(Guid id, UpdateUserRequest userRequest);
+        Task<ResponseObject<UserRes>> Create(CreateUserReq userRequest);
+        Task<ResponseObject<UserRes>> Update(Guid id, UpdateUserReq userRequest);
         Task<ResponseObject<bool>> Delete(Guid id);
-        Task<ResponseObject<UserResponse>> GetById(Guid id);
-
-        Task<PaginationResponse<UserResponse>> GetAll(string roleName, PaginationParameters paginationparam = null);
+        Task<ResponseObject<UserRes>> GetById(Guid id);
+        Task<PagingResponse<UserRes>> GetAll(string roleName, string searchKey, PagingParameters paginationparam = null);
         Task<ResponseObject<bool>> UpdateRole(Guid userId, string roleName);
     }
 }

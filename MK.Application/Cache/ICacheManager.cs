@@ -11,7 +11,7 @@ namespace MK.Application.Cache
     public interface ICacheManager
     {
         Task<(bool, T)> GetAsync<T>(string key);
-        Task SetAsync(string key, object value, DistributedCacheEntryOptions options = null);
+        Task SetAsync<T>(string key, T value, TimeSpan? absoluteExpTime = null, TimeSpan? unusedExpTime = null);
         Task RemoveAsync(string key);
     }
 }

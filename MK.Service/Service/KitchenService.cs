@@ -1,6 +1,8 @@
 ﻿using MK.Application.Repository;
 using MK.Domain.Common;
 using MK.Domain.Dto.Request.Kitchen;
+using MK.Domain.Dto.Response.Customer;
+using MK.Infrastructure.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,10 +53,7 @@ namespace MK.Service.Service
             {
                 var queryHelper = new QueryHelper<Kitchen>
                 {
-                    Includes = new Expression<Func<Kitchen, object>>[]
-                    {
-                        t => t.Location
-                    }
+                    Include = x => x.Include(t => t.Location)
                 };
 
                 var kitchen = await _unitOfWork.Kitchen.GetById(kitchenId, queryHelper, isAsNoTracking: false);
@@ -74,7 +73,6 @@ namespace MK.Service.Service
             }
         }
 
-
         public async Task<ResponseObject<KitchenRes>> GetById(Guid kitchenId)
         {
             try
@@ -83,27 +81,42 @@ namespace MK.Service.Service
                 {
                     Selector = t => new KitchenRes
                     {
+                        No = t.No,
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
-                        AreaId = t.AreaId,
-                        AreaName = t.Area.Name,
+                        ImgUrl = t.ImgUrl,
                         Location = new LocationRes()
                         {
                             Id = t.LocationId,
                             Lat = t.Location.Lat,
                             Lng = t.Location.Lng
                         },
-                        OwnerId = t.OwnerId,
-                        OwnerName = t.Owner.FullName,
-                        Status = t.Status
+                        Area = new GetAreaRes()
+                        {
+                            Id = t.AreaId,
+                            Name = t.Area.Name
+                        },
+                        Owner = new OwnerRes()
+                        {
+                            OwnerId = t.OwnerId,
+                            OwnerName = t.Owner.FullName,
+                            OwnerAvatarUrl = t.Owner.AvatarUrl,
+                            OwnerEmail = t.Owner.Email,
+                        },
+                        Status = t.Status,
+                        NoOfDish = t.Dishes.Count,
+                        NoOfTray = t.Trays.Count,
+                        NoOfMeal = t.Meals.Count,
+                        Rating = t.Meals.SelectMany(t => t.Orders).Count()
                     },
-                    Includes = new Expression<Func<Kitchen, object>>[]
-                    {
-                        t => t.Area,
-                        t => t.Owner,
-                        t => t.Location,
-                    }
+                    Include = t => t.Include(t => t.Area)
+                                    .Include(t => t.Owner)
+                                    .Include(t => t.Location)
+                                    .Include(t => t.Dishes)
+                                    .Include(t => t.Trays)
+                                    .Include(t => t.Meals)
+                                    .ThenInclude(t => t.Orders),
                 };
 
                 var kitchen = await _unitOfWork.Kitchen.GetById(kitchenId, queryHelper);
@@ -116,7 +129,7 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PaginationResponse<KitchenRes>> GetAll(PaginationParameters pagingParam = null)
+        public async Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null, string[] fields = null)
         {
             try
             {
@@ -124,34 +137,162 @@ namespace MK.Service.Service
                 {
                     Selector = t => new KitchenRes
                     {
+                        No = t.No,
                         Id = t.Id,
                         Name = t.Name,
                         Address = t.Address,
-                        AreaId = t.AreaId,
-                        AreaName = t.Area.Name,
+                        ImgUrl = t.ImgUrl,
+                        Area = new GetAreaRes()
+                        {
+                            Id = t.AreaId,
+                            Name = t.Area.Name
+                        },
                         Location = new LocationRes()
                         {
                             Id = t.LocationId,
                             Lat = t.Location.Lat,
                             Lng = t.Location.Lng
                         },
-                        OwnerId = t.OwnerId,
-                        OwnerName = t.Owner.FullName,
+                        Owner = new OwnerRes()
+                        {
+                            OwnerId = t.OwnerId,
+                            OwnerName = t.Owner.FullName,
+                            OwnerAvatarUrl = t.Owner.AvatarUrl,
+                            OwnerEmail = t.Owner.Email
+                        },
                         Status = t.Status,
-                        QuantiyDish = t.Dishes.Count,
+                        NoOfDish = t.Dishes.Count,
+                        NoOfTray = t.Trays.Count,
+                        NoOfMeal = t.Meals.Count,
                     },
-                    Includes = new Expression<Func<Kitchen, object>>[]
+                    Include = t => t.Include(x => x.Area)
+                                    .Include(x => x.Owner)
+                                    .Include(x => x.Location)
+                                    .Include(t => t.Dishes)
+                                    .Include(t => t.Trays)
+                                    .Include(t => t.Meals),
+                    PagingParams = pagingParam ??= new PagingParameters(),
+                    OrderByFields = fields
+                };
+
+                var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
+
+
+                return Success(kitchen);
+            }
+            catch (Exception ex)
+            {
+                return BadRequests<KitchenRes>(ex.Message);
+            }
+        }
+
+        public async Task<PagingResponse<KitchenRes>> GetKitchensByAreaId(Guid areaId, PagingParameters pagingParam = null, string[] fields = null)
+        {
+            try
+            {
+                var queryHelper = new QueryHelper<Kitchen, KitchenRes>()
+                {
+                    Selector = t => new KitchenRes
                     {
-                        t => t.Area,
-                        t => t.Owner,
-                        t => t.Location,
+                        No = t.No,
+                        Id = t.Id,
+                        Name = t.Name,
+                        Address = t.Address,
+                        ImgUrl = t.ImgUrl,
+                        Area = new GetAreaRes()
+                        {
+                            Id = t.AreaId,
+                            Name = t.Area.Name
+                        },
+                        Location = new LocationRes()
+                        {
+                            Id = t.LocationId,
+                            Lat = t.Location.Lat,
+                            Lng = t.Location.Lng
+                        },
+                        Owner = new OwnerRes()
+                        {
+                            OwnerId = t.OwnerId,
+                            OwnerName = t.Owner.FullName,
+                            OwnerAvatarUrl = t.Owner.AvatarUrl,
+                            OwnerEmail = t.Owner.Email
+                        },
+                        Status = t.Status,
+                        NoOfDish = t.Dishes.Count,
+                        NoOfTray = t.Trays.Count,
+                        NoOfMeal = t.Meals.Count,
                     },
-                    PaginationParams = pagingParam ??= new PaginationParameters(),
+                    Include = t => t.Include(x => x.Area)
+                                    .Include(x => x.Owner)
+                                    .Include(x => x.Location)
+                                    .Include(t => t.Dishes)
+                                    .Include(t => t.Trays)
+                                    .Include(t => t.Meals),
+                    PagingParams = pagingParam ??= new PagingParameters(),
+                    OrderByFields = fields,
+                    Filter = t => t.AreaId == areaId
                 };
              
 
                 var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
 
+
+                return Success(kitchen);
+            }
+            catch (Exception ex)
+            {
+                return BadRequests<KitchenRes>(ex.Message);
+            }
+        }
+
+        public async Task<PagingResponse<KitchenRes>> GetKitchensByUserId(Guid userId, PagingParameters pagingParam = null, string[] fields = null)
+        {
+            try
+            {
+                var queryHelper = new QueryHelper<Kitchen, KitchenRes>()
+                {
+                    Selector = t => new KitchenRes
+                    {
+                        No = t.No,
+                        Id = t.Id,
+                        Name = t.Name,
+                        Address = t.Address,
+                        ImgUrl = t.ImgUrl,
+                        Area = new GetAreaRes()
+                        {
+                            Id = t.AreaId,
+                            Name = t.Area.Name
+                        },
+                        Location = new LocationRes()
+                        {
+                            Id = t.LocationId,
+                            Lat = t.Location.Lat,
+                            Lng = t.Location.Lng
+                        },
+                        Owner = new OwnerRes()
+                        {
+                            OwnerId = t.OwnerId,
+                            OwnerName = t.Owner.FullName,
+                            OwnerAvatarUrl = t.Owner.AvatarUrl,
+                            OwnerEmail = t.Owner.Email
+                        },
+                        Status = t.Status,
+                        NoOfDish = t.Dishes.Count,
+                        NoOfTray = t.Trays.Count,
+                        NoOfMeal = t.Meals.Count,
+                    },
+                    Include = t => t.Include(x => x.Area)
+                                    .Include(x => x.Owner)
+                                    .Include(x => x.Location)
+                                    .Include(t => t.Dishes)
+                                    .Include(t => t.Trays)
+                                    .Include(t => t.Meals),
+                    PagingParams = pagingParam ??= new PagingParameters(),
+                    OrderByFields = fields,
+                    Filter = t => t.OwnerId == userId
+                };
+
+                var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
                 return Success(kitchen);
             }
             catch (Exception ex)

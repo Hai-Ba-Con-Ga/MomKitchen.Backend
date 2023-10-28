@@ -25,9 +25,55 @@ jobs:
             sonar-scanner \
               -Dsonar.login=$SONAR_TOKEN \
               -Dsonar.host.url=$SONAR_HOST_URL
+  build_deploy_dev:
+    machine:
+      image: ubuntu-2004:2023.02.1
+    steps:
+      - checkout
+      - run:
+          name: "Init settings"
+          command: |
+            echo $FIREBASE_SETTING >> $MAIN_PROJECT_PATH/firebase.json
+            echo $APP_SETTING >> $MAIN_PROJECT_PATH/appsettings.json
+      - run:
+          name: Install Docker
+          command: |
+            sudo apt-get update && sudo apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt-get update && sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+      - run:
+          name: Build Docker image
+          command: |
+            IFS='/' read -ra PARTS \<<< "$CIRCLE_BRANCH"  # Split branch name by '/'
+            BRANCH_NAME="${PARTS[1]}"  # Get the second part of the split
+            docker build -t $DOCKER_IMAGE_NAME:$BRANCH_NAME .
+      - run:
+          name: Push Docker image to Docker Hub
+          command: |
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+            docker tag $DOCKER_IMAGE_NAME $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME
+            docker push $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME
+      - add_ssh_keys:
+          fingerprints:
+            - "70:ee:cd:14:e5:fe:9a:af:98:32:2d:e9:f0:5c:f3:65"
+      - run:
+          name: SSH to server and deploy Docker image
+          command: |
+            CONTAINER_ID=$(ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SSH_HOST "docker ps --filter 'publish=7137' --format '{{.ID}}'")
+            if [ ! -z "$CONTAINER_ID" ]; then
+              ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SSH_HOST "docker stop $CONTAINER_ID && docker rm $CONTAINER_ID"
+            fi
+            ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SSH_HOST "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD && docker pull $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME && docker run -d -p 7137:80 $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME"
 
 workflows:
   version: 2
   build-and-deploy:
     jobs:
       - scan
+      - build_deploy_dev:
+          requires: [scan]
+          filters:
+              branches:
+                only:
+                  - /release\/.*/

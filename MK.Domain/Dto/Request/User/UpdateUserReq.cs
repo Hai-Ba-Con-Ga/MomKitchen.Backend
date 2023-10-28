@@ -1,6 +1,6 @@
 ﻿namespace MK.Domain.Dto.Request.User
 {
-    public class UpdateUserRequest
+    public class UpdateUserReq
     {
         public string Email { get; set; } = null!;
         public string? FullName { get; set; } = null!;

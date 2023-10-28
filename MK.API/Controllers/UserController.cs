@@ -4,7 +4,7 @@ using MK.Domain.Dto.Request.User;
 
 namespace MK.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class UserController : ControllerBase
@@ -21,7 +21,7 @@ namespace MK.API.Controllers
         /// <param name="userRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateUserRequest userRequest)
+        public async Task<IActionResult> Create([FromBody] CreateUserReq userRequest)
         {
             var result = await _userService.Create(userRequest);
             return StatusCode((int)result.StatusCode, result);
@@ -35,7 +35,7 @@ namespace MK.API.Controllers
         /// <returns></returns>
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest userRequest)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserReq userRequest)
         {
             var result = await _userService.Update(id, userRequest);
             return StatusCode((int)result.StatusCode, result);
@@ -75,15 +75,9 @@ namespace MK.API.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? roleName = "Customer", int? pageNumber = null, int? pageSize = null)
+        public async Task<IActionResult> GetAll(string searchKey, string? roleName = "Customer",[FromQuery] PagingParameters queryParam = null)
         {
-            var result = await _userService.GetAll(
-                roleName,
-                new PaginationParameters
-                {
-                    PageNumber = pageNumber ?? 1,
-                    PageSize = pageSize ?? 10
-                });
+            var result = await _userService.GetAll(roleName, searchKey, queryParam);
             return StatusCode((int)result.StatusCode, result);
         }
 

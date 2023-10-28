@@ -14,7 +14,7 @@ namespace MK.Service.Service
         {
         }
         //get customer all
-        public async Task<PaginationResponse<CustomerRes>> GetAll(PaginationParameters pagingParam = null)
+        public async Task<PagingResponse<CustomerRes>> GetAll(PagingParameters pagingParam = null)
         {
             try
             {
@@ -22,23 +22,25 @@ namespace MK.Service.Service
                 {
                     Selector = t => new CustomerRes
                     {
+                        No = t.No,
                         Id = t.Id,
                         FullName = t.User.FullName,
                         Email = t.User.Email,
                         Phone = t.User.Phone,
                         Birthday = t.User.Birthday,
                         AvatarUrl = t.User.AvatarUrl,
-                        Status = t.Status
+                        Status = t.Status,
+                        UserId = t.UserId
+
                     },
-                    Includes = new Expression<Func<Customer, object>>[]{
-                        t => t.User,
-                        t => t.Orders,
-                        t => t.Feedbacks,
-                        t => t.FavouriteKitchens
-                    },
-                    PaginationParams = pagingParam ??= new PaginationParameters()
+                    Include = i => i.Include(x => x.User)
+                                    .Include(x => x.Orders)
+                                    .Include(x => x.Feedbacks)
+                                    .Include(x => x.FavouriteKitchens),
+                    PagingParams = pagingParam ??= new PagingParameters()
                 };
                 var customer = await _unitOfWork.Customer.GetWithPagination(queryHelper);
+                
                 return Success(customer);
             }
             catch (Exception ex)
@@ -55,21 +57,22 @@ namespace MK.Service.Service
                 {
                     Selector = t => new CustomerRes
                     {
+                        No = t.No,
                         Id = t.Id,
                         FullName = t.User.FullName,
                         Email = t.User.Email,
                         Phone = t.User.Phone,
                         Birthday = t.User.Birthday,
                         AvatarUrl = t.User.AvatarUrl,
-                        Status = t.Status
+                        Status = t.Status,
+                        UserId = t.UserId,
                     },
-                    Includes = new Expression<Func<Customer, object>>[]{
-                        t => t.User,
-                        t => t.Orders,
-                        t => t.Feedbacks,
-                        t => t.FavouriteKitchens
-                    }
+                    Include = t => t.Include(x => x.User)
+                                    .Include(x => x.Orders)
+                                    .Include(x => x.Feedbacks)
+                                    .Include(x => x.FavouriteKitchens)
                 };
+
                 var customer = await _unitOfWork.Customer.GetById(customerId, queryHelper);
                 return Success(customer);
             }
@@ -98,6 +101,25 @@ namespace MK.Service.Service
                 return BadRequest<bool>(e.Message);
             }
 
+        }
+
+        public async Task<ResponseObject<bool>> Delete(Guid customerId)
+        {
+            try
+            {
+                if (!await _unitOfWork.Customer.IsExist(t => t.Id == customerId))
+                {
+                    return BadRequest<bool>("Customer not found");
+                }
+
+                var deleteResult = await _unitOfWork.Customer.SoftDeleteAsync(t => t.Id == customerId);
+
+                return Success(deleteResult > 0);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<bool>(ex.GetExceptionMessage());
+            }
         }
     }
 }
