@@ -27,5 +27,6 @@ namespace MK.Domain.Dto.Response
         public KitchenRes? Kitchen { get; set; } = null;
 
         public TrayRes? Tray { get; set; } = null;
+        public KitchenRes? Kitchen { get; set; } = null;
     }
 }
