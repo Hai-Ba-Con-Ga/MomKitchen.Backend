@@ -25,5 +25,6 @@ namespace MK.Domain.Dto.Response
         public DateTime close_time { get; set; }
 
         public TrayRes? Tray { get; set; } = null;
+        public KitchenRes? Kitchen { get; set; } = null;
     }
 }

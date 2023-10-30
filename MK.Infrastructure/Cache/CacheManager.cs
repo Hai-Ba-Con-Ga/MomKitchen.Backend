@@ -23,13 +23,13 @@ namespace MK.Infrastructure.Cache
             _distributedCache = cache;
         }
 
-        public async Task<(bool, T)> GetAsync<T>(string key)
+        public async Task<(bool, T?)> GetAsync<T>(string key)
         {
             try
             {
                 var rawGetReult = await _distributedCache.GetAsync(key);
 
-                if (rawGetReult == null)
+                if (rawGetReult != null)
                 {
                     var getResult = JsonSerializer.Deserialize<T>(rawGetReult, _serializerOptions);
 

@@ -105,8 +105,11 @@ namespace MK.Service.Service
             {
                 var queryHelper = new QueryHelper<Meal, MealRes>()
                 {
+                    Selector = t => _mapper.Map<MealRes>(t),
                     PagingParams = pagingParam ??= new PagingParameters(),
-                    OrderByFields = fields
+                    OrderByFields = fields,
+                    Include = t => t.Include(t => t.Kitchen)
+                                    .Include(t => t.Tray)
                 };
 
                 var meals = await _unitOfWork.Meal.GetWithPagination(queryHelper);

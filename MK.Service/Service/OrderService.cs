@@ -76,7 +76,7 @@ namespace MK.Service.Service
             {
                 decimal totalPrice = 0;
 
-                var customer = await _unitOfWork.Customer.GetById(orderReq.UserId, new QueryHelper<Customer>()
+                var customer = await _unitOfWork.Customer.GetFirstOrDefault(new QueryHelper<Customer>()
                 { Filter = t => t.UserId == orderReq.UserId }, false);
 
                 if (customer == null)
@@ -94,7 +94,7 @@ namespace MK.Service.Service
                     Surcharge = totalPrice * 5 / 100,
                     TotalPrice = Decimal.ToDouble(totalPrice),
                     TotalQuantity = orderReq.TotalQuantity,
-                    CustomerId = orderReq.UserId,
+                    CustomerId = customer.Id,
                 };
 
                 var orderPayment = new OrderPayment()
