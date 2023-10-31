@@ -44,7 +44,7 @@ namespace MK.Service.Service
                 // initiate the file upload
                 await transferUtility.UploadAsync(uploadRequest).ConfigureAwait(false);
 
-                var url = $"{AppConfig.AwsCredentials.BucketName}/{uploadRequest.Key}";
+                var url = $"https://{AppConfig.AwsCredentials.BucketName}.s3.amazonaws.com/{uploadRequest.Key}";
 
                 return Success(new StorageRes { Url = url });
             }
