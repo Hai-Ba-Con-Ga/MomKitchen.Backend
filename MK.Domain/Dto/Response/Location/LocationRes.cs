@@ -13,5 +13,6 @@ namespace MK.Domain.Dto.Response
         public Guid Id { get; set; }
         public double? Lat { get; set; }
         public double? Lng { get; set; }
+        public int? No { get; set; }
     }
 }
