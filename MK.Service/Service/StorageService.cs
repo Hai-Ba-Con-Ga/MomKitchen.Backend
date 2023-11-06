@@ -27,12 +27,20 @@ namespace MK.Service.Service
                 {
                     RegionEndpoint = Amazon.RegionEndpoint.APSoutheast1
                 };
+                string fileName = storageReq.File.FileName;
+                string fileExtension = Path.GetExtension(fileName);
+                string uploadName = Guid.NewGuid().ToString();
+                List<string> officeExtensions = new List<string> { ".docx", ".xlsx", ".pptx"};
 
+                if (officeExtensions.Contains(fileExtension, StringComparer.OrdinalIgnoreCase))
+                {
+                    uploadName += fileExtension;
+                }
                 var uploadRequest = new TransferUtilityUploadRequest()
                 {
                     //upload to /foleName
                     InputStream = storageReq.File.OpenReadStream(),
-                    Key = Guid.NewGuid().ToString(),
+                    Key = uploadName,
                     BucketName = AppConfig.AwsCredentials.BucketName,
                     CannedACL = S3CannedACL.PublicRead
                 };
