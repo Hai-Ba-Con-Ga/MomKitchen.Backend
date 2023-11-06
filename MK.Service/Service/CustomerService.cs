@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MK.Domain.Dto.Request.Customer;
+using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Customer;
 using MK.Domain.Dto.Response.Order;
 
@@ -16,7 +17,7 @@ namespace MK.Service.Service
         {
         }
         //get customer all
-        public async Task<PagingResponse<CustomerRes>> GetAll(PagingParameters pagingParam = null)
+        public async Task<PagingResponse<CustomerRes>> GetAll(GetRequestBase req, PagingParameters pagingParam = null)
         {
             try
             {
@@ -35,16 +36,20 @@ namespace MK.Service.Service
                         UserId = t.UserId,
                         OrderQuantity = t.Orders.Count,
                         SpentMoney = t.Orders.Sum(o => o.TotalPrice),
-                        RecentOrders  = t.Orders.OrderByDescending(o => o.CreatedDate).Select(o => _mapper.Map<OrderRes>(o))
+                        RecentOrders = t.Orders.OrderByDescending(o => o.CreatedDate).Select(o => _mapper.Map<OrderRes>(o))
                     },
                     Include = i => i.Include(x => x.User)
                                     .Include(x => x.Orders)
                                     .Include(x => x.Feedbacks)
                                     .Include(x => x.FavouriteKitchens),
-                    PagingParams = pagingParam ??= new PagingParameters()
+                    PagingParams = pagingParam ??= new PagingParameters(),
+                    Filter = t => (req.KeySearch == null
+                                        || t.No.ToString() == req.KeySearch
+                                        || t.Id.ToString() == req.KeySearch)
+                                && (t.CreatedDate.Date >= req.FromDate && t.CreatedDate <= req.ToDate)
                 };
                 var customer = await _unitOfWork.Customer.GetWithPagination(queryHelper);
-                
+
                 return Success(customer);
             }
             catch (Exception ex)
@@ -72,7 +77,7 @@ namespace MK.Service.Service
                         UserId = t.UserId,
                         OrderQuantity = t.Orders.Count,
                         SpentMoney = t.Orders.Sum(o => o.TotalPrice),
-                        RecentOrders  = t.Orders.OrderByDescending(o => o.CreatedDate).Take(RecentOrdersAmountGet).Select(o => _mapper.Map<OrderRes>(o))
+                        RecentOrders = t.Orders.OrderByDescending(o => o.CreatedDate).Take(RecentOrdersAmountGet).Select(o => _mapper.Map<OrderRes>(o))
                     },
                     Include = t => t.Include(x => x.User)
                                     .Include(x => x.Orders)

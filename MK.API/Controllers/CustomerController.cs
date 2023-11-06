@@ -25,9 +25,9 @@ namespace MK.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PagingResponse<CustomerRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll([FromQuery] PagingParameters pagingParam = null)
+        public async Task<IActionResult> GetAll([FromQuery] GetRequestBase req,[FromQuery] PagingParameters pagingParam = null)
         {
-            var result = await _customerService.GetAll(pagingParam);
+            var result = await _customerService.GetAll(req,pagingParam);
             return StatusCode((int)result.StatusCode, result);
         }
 

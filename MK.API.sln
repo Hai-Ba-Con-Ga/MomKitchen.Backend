@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK.Domain", "MK.Domain\MK.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK.Service", "MK.Service\MK.Service.csproj", "{EEC94904-120C-4FB9-AA6B-3E39E0145783}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK.MessageQueue", "MK.MessageQueue\MK.MessageQueue.csproj", "{EAFE0BB8-11B1-40AE-90C6-63DDDA259585}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{EEC94904-120C-4FB9-AA6B-3E39E0145783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEC94904-120C-4FB9-AA6B-3E39E0145783}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEC94904-120C-4FB9-AA6B-3E39E0145783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAFE0BB8-11B1-40AE-90C6-63DDDA259585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAFE0BB8-11B1-40AE-90C6-63DDDA259585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAFE0BB8-11B1-40AE-90C6-63DDDA259585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAFE0BB8-11B1-40AE-90C6-63DDDA259585}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

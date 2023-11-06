@@ -10,7 +10,7 @@ namespace MK.Application.Service
 {
     public interface ICustomerService
     {
-        Task<PagingResponse<CustomerRes>> GetAll(PagingParameters pagingParam = null);
+        Task<PagingResponse<CustomerRes>> GetAll(GetRequestBase req, PagingParameters pagingParam = null);
         Task<ResponseObject<CustomerRes>> GetById(Guid customerId);
         Task<ResponseObject<bool>> Update(Guid kitchenId, CustomerStatusReq req);
         Task<ResponseObject<bool>> Delete(Guid customerId);

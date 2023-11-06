@@ -57,5 +57,12 @@ namespace MK.API.Controllers
             var orderDetail = await _orderService.CreateOrder(createReq);
             return StatusCode((int)orderDetail.StatusCode, orderDetail);
         }
+
+        //[HttpGet]
+        //public Task<IActionResult> OrderExport(ExportOrderReq req)
+        //{
+        //    //return Ok(null);
+        //}
+
     }
 }
