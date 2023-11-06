@@ -82,16 +82,16 @@ namespace MK.Service.Service
                 {
                     Filter = x => x.KitchenId == kitchenId && (searchKey == null || x.Name.Contains(searchKey)),
                     PagingParams = pagingParam ??= new PagingParameters(),
-                    Include = t => t.Include(t=>t.Dishies),
-                    Selector = t => new TrayRes(){
+                    Include = t => t.Include(t => t.Dishies),
+                    Selector = t => new TrayRes()
+                    {
                         Description = t.Description,
                         Price = t.Price,
                         Id = t.Id,
                         ImgUrl = t.ImgUrl,
                         Name = t.Name,
-                        Dishes = t.Dishies.Select(d => _mapper.Map<DishRes>(d)),
-
-                        }
+                        Dishes = _mapper.Map<IEnumerable<DishRes>>(t.Dishies)
+                    }
                 };
 
                 var trays = await _unitOfWork.Tray.GetWithPagination(queryHelper);
@@ -158,7 +158,7 @@ namespace MK.Service.Service
             try
             {
                 var tray = await _unitOfWork.Tray.GetById(trayId, new QueryHelper<Tray>()
-                { 
+                {
                     Include = t => t.Include(t => t.Dishies),
                 }, isAsNoTracking: false);
 

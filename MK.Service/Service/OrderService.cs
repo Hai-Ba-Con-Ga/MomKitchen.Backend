@@ -66,10 +66,10 @@ namespace MK.Service.Service
                     Filter = t => (getOrderReq.KeySearch == null
                                         || t.No.ToString() == getOrderReq.KeySearch
                                         || t.Id.ToString() == getOrderReq.KeySearch)
-                                &&  (t.CreatedDate.Date >= getOrderReq.FromDate && t.CreatedDate <= getOrderReq.ToDate)
-                                &&  (getOrderReq.OrderStatus == null || t.Status == getOrderReq.OrderStatus)
-                                &&  (getOrderReq.KitchenId == null || getOrderReq.KitchenId == t.Meal.KitchenId) 
-                                &&  (getOrderReq.OwnerId == null || getOrderReq.OwnerId == t.CustomerId)
+                                && (t.CreatedDate.Date >= getOrderReq.FromDate && t.CreatedDate <= getOrderReq.ToDate)
+                                && (getOrderReq.OrderStatus == null || t.Status == getOrderReq.OrderStatus)
+                                && (getOrderReq.KitchenId == null || getOrderReq.KitchenId == t.Meal.KitchenId)
+                                && (getOrderReq.OwnerId == null || getOrderReq.OwnerId == t.CustomerId)
                 };
 
                 var getResult = await _unitOfWork.Order.GetWithPagination(queryHelper);
@@ -144,6 +144,7 @@ namespace MK.Service.Service
                     TotalPrice = Decimal.ToDouble(totalPrice),
                     TotalQuantity = orderReq.TotalQuantity,
                     CustomerId = customer.Id,
+                    Status = OrderStatus.UNPAID
                 };
 
                 var orderPayment = new OrderPayment()
@@ -171,6 +172,27 @@ namespace MK.Service.Service
             catch (Exception ex)
             {
                 return BadRequest<Guid>(ex.GetExceptionMessage());
+            }
+        }
+
+        public async Task<ResponseObject<bool>> UpdateOrderStatus(UpdateOrderStatusReq req)
+        {
+            try
+            {
+                if (!await _unitOfWork.Order.IsExist(t => t.Id == req.OrderId))
+                    throw new ArgumentException("Order not found");
+
+                var order = await _unitOfWork.Order.GetById(req.OrderId, isAsNoTracking: false);
+
+                order.Status = req.OrderStatus;
+
+                var result = await _unitOfWork.Order.UpdateAsync(order, isSaveChange: true);
+
+                return Success(result > 0);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest<bool>(ex.GetExceptionMessage());
             }
         }
 

@@ -64,5 +64,13 @@ namespace MK.API.Controllers
         //    //return Ok(null);
         //}
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrderStatus(UpdateOrderStatusReq req)
+        {
+            var result = await _orderService.UpdateOrderStatus(req);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+
     }
 }

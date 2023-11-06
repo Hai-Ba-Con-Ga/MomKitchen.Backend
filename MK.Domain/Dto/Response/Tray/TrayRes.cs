@@ -17,6 +17,6 @@ namespace MK.Domain.Dto.Response
         public string ImgUrl { get; set; } = null!;
         public decimal Price { get; set; }
         public ICollection<DishRes>? Dishies {get;set;}
-        public IEnumerable<DishRes>? Dishes {get;set;}
+        public IEnumerable<DishRes>? Dishes {get;set; }
     }
 }

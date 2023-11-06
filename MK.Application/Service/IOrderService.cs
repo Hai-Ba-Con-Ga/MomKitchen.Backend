@@ -14,5 +14,6 @@ namespace MK.Application.Service
         Task<PagingResponse<OrderDetailRes>> GetAllOrder(PagingParameters pagingParam, GetOrderReq getOrderReq);
         Task<ResponseObject<Guid>> CreateOrder(CreateOrderReq orderReq);
         Task<ResponseObject<bool>> DeleteOrder(Guid orderId);
+        Task<ResponseObject<bool>> UpdateOrderStatus(UpdateOrderStatusReq req);
     }
 }
