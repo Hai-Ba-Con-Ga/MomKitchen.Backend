@@ -182,7 +182,7 @@ namespace MK.Service.Service
                         return BadRequests<GetAreaRes>("Can not get locations for area : " + area.Id);
                     }
 
-                    area.Boundaries = locations;
+                    area.Boundaries = locations.OrderBy(l=>l.No);
                     area.BoundaryIds = null;
                 }
 

@@ -26,6 +26,18 @@ namespace MK.Service.Service
                 {
                     Filter = x => x.KitchenId == kitchenId && (searchKey == null || x.Name.Contains(searchKey)),
                     PagingParams = pagingParam ??= new PagingParameters(),
+                    Include = m => m.Include(m=>m.Tray),
+                    Selector = m => new MealRes(){
+                        Id = m.Id,
+                        No = m.No,
+                        Name = m.Name,
+                        Price = m.Price,
+                        ServiceFrom = m.ServiceFrom,
+                        ServiceQuantity = m.ServiceQuantity,
+                        ServiceTo = m.ServiceTo,
+                        close_time = m.CloseTime,
+                        Tray = _mapper.Map<Tray,TrayRes>(m.Tray),
+                    }
                 };
 
                 var meals = await _unitOfWork.Meal.GetWithPagination(queryHelper);
