@@ -43,7 +43,10 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PagingResponse<OrderDetailRes>> GetAllOrder(PagingParameters pagingParam, GetOrderReq getOrderReq)
+        public async Task<PagingResponse<OrderDetailRes>> GetAllOrder(
+            PagingParameters pagingParam,
+            GetOrderReq getOrderReq
+        )
         {
             try
             {
@@ -63,8 +66,10 @@ namespace MK.Service.Service
                     Filter = t => (getOrderReq.KeySearch == null
                                         || t.No.ToString() == getOrderReq.KeySearch
                                         || t.Id.ToString() == getOrderReq.KeySearch)
-                                && (t.CreatedDate.Date >= getOrderReq.FromDate && t.CreatedDate <= getOrderReq.ToDate)
-                                && (getOrderReq.OrderStatus == null || t.Status == getOrderReq.OrderStatus)
+                                &&  (t.CreatedDate.Date >= getOrderReq.FromDate && t.CreatedDate <= getOrderReq.ToDate)
+                                &&  (getOrderReq.OrderStatus == null || t.Status == getOrderReq.OrderStatus)
+                                &&  (getOrderReq.KitchenId == null || getOrderReq.KitchenId == t.Meal.KitchenId) 
+                                &&  (getOrderReq.OwnerId == null || getOrderReq.OwnerId == t.CustomerId)
                 };
 
                 var getResult = await _unitOfWork.Order.GetWithPagination(queryHelper);
@@ -76,6 +81,43 @@ namespace MK.Service.Service
                 return BadRequests<OrderDetailRes>(ex.GetExceptionMessage());
             }
         }
+
+        //public Task<ResponseObject<OrderDetailRes>> GetOrdersByKitchenId(
+        //    Guid kitchenId,
+        //    PagingParameters pagingParam,
+        //    GetOrderReq getOrderReq)
+        //{
+        //    try
+        //    {
+        //        var queryHelper = new QueryHelper<Order, OrderDetailRes>()
+        //        {
+        //            PagingParams = pagingParam ??= new PagingParameters(),
+        //            Selector = t => _mapper.Map<OrderDetailRes>(t),
+        //            OrderByFields = getOrderReq.OrderBy,
+        //            Include = t => t.Include(x => x.Customer)
+        //                                .ThenInclude(x => x.User)
+        //                            .Include(x => x.Meal)
+        //                                .ThenInclude(x => x.Tray)
+        //                                    .ThenInclude(x => x.Dishies)
+        //                            .Include(x => x.Meal)
+        //                                .ThenInclude(x => x.Kitchen)
+        //                            .Include(x => x.Feedback),
+        //            Filter = t => (getOrderReq.KeySearch == null
+        //                                || t.No.ToString() == getOrderReq.KeySearch
+        //                                || t.Id.ToString() == getOrderReq.KeySearch)
+        //                        && (t.CreatedDate.Date >= getOrderReq.FromDate && t.CreatedDate <= getOrderReq.ToDate)
+        //                        && (getOrderReq.OrderStatus == null || t.Status == getOrderReq.OrderStatus)
+        //        };
+
+        //        var getResult = await _unitOfWork.Order.GetWithPagination(queryHelper);
+
+        //        return Success(getResult);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequests<OrderDetailRes>(ex.GetExceptionMessage());
+        //    }
+        //}
 
         public async Task<ResponseObject<Guid>> CreateOrder(CreateOrderReq orderReq)
         {
@@ -148,5 +190,7 @@ namespace MK.Service.Service
                 return BadRequest<bool>(ex.GetExceptionMessage());
             }
         }
+
+
     }
 }

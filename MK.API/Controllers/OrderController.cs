@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Order;
+using MK.Domain.Entity;
 
 namespace MK.API.Controllers
 {

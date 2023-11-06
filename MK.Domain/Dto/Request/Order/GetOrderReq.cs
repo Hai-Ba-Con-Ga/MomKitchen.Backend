@@ -11,5 +11,8 @@ namespace MK.Domain.Dto.Request.Order
     public class GetOrderReq : GetRequestBase
     {
         public OrderStatus? OrderStatus { get; set; } = null;
+        public Guid? KitchenId { get; set; } = null;
+        public Guid? OwnerId { get; set; } = null;
+
     }
 }

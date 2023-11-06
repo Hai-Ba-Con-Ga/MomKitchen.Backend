@@ -11,7 +11,7 @@ namespace MK.Application.Service
     public interface INotificationService
     {
         Task<ResponseObject<NotificationRes>> Create(CreateNotificationReq notificationRequest);
-        Task<PagingResponse<NotificationRes>> GetAll(PagingParameters paginationparam = null);
+        Task<PagingResponse<NotificationRes>> GetAll(GetNoticationReq getReq, PagingParameters paginationparam = null);
         Task<string> SendNotificationOneDeviceAsync(string fcmToken, string title, string content);
         Task<string> SendNotificationMultiDeviceAsync(List<string> fcmTokens, string title, string content);
     }

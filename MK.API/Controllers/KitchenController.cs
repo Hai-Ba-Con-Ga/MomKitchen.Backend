@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MK.Domain.Dto.Request.Kitchen;
+using MK.Domain.Dto.Request.Order;
+using MK.Domain.Dto.Response.Order;
 using MK.Service.Common;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,6 +17,7 @@ namespace MK.API.Controllers
         private readonly IDishService _dishService;
         private readonly ITrayService _trayService;
         private readonly IMealService _mealService;
+        private readonly IOrderService _orderService;
 
         public KitchenController(
             IKitchenService kitchenService,
@@ -81,9 +84,9 @@ namespace MK.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PagingResponse<KitchenRes>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll([FromQuery] string[]? fields, [FromQuery] PagingParameters req)
+        public async Task<IActionResult> GetAll([FromQuery] PagingParameters req, [FromQuery] GetKitchenReq getReq)
         {
-            if (fields != null && !fields.IsMatchFieldPattern())
+            if (getReq.OrderBy!= null && !getReq.OrderBy.IsMatchFieldPattern())
             {
                 return BadRequest(new ResponseObject<KitchenRes>()
                 {
@@ -92,7 +95,7 @@ namespace MK.API.Controllers
                 });
             }
 
-            var result = await _kitchenService.GetAll(req, fields);
+            var result = await _kitchenService.GetAll(getReq,req);
             return StatusCode((int)result.StatusCode, result);
         }
 

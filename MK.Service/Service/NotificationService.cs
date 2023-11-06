@@ -2,6 +2,7 @@
 using MK.Application.Repository;
 using MK.Domain.Common;
 using MK.Domain.Dto.Request.Notification;
+using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Notification;
 using MK.Domain.Entity;
 
@@ -45,7 +46,7 @@ namespace MK.Service.Service
 
         }
 
-        public async Task<PagingResponse<NotificationRes>> GetAll(PagingParameters paginationparam = null)
+        public async Task<PagingResponse<NotificationRes>> GetAll(GetNoticationReq getReq, PagingParameters paginationparam = null)
         {
             try
             {
@@ -53,6 +54,12 @@ namespace MK.Service.Service
                 {
                     Include = i => i.Include(x => x.Receiver),
                     PagingParams = paginationparam ??= new PagingParameters(),
+                    OrderByFields = getReq.OrderBy,
+                    Filter = t => (getReq.KeySearch == null
+                                        || t.No.ToString() == getReq.KeySearch
+                                        || t.Id.ToString() == getReq.KeySearch)
+                                && (t.CreatedDate.Date >= getReq.FromDate && t.CreatedDate <= getReq.ToDate)
+                                && (getReq.UserId == null || t.ReceiverId == getReq.UserId)
                 };
                 var notifications = await _unitOfWork.Notification.GetWithPagination(query);
                 return Success(notifications);

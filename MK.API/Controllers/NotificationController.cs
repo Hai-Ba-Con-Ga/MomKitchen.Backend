@@ -17,7 +17,7 @@ namespace MK.API.Controllers
         {
             _notificationService = notificationService;
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateNotificationReq notificationRequest)
         {
@@ -31,9 +31,9 @@ namespace MK.API.Controllers
         /// <param name="paginationParameters"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] PagingParameters paginationParameters)
+        public async Task<IActionResult> GetAll([FromQuery] PagingParameters paginationParameters, [FromQuery] GetNoticationReq getReq)
         {
-            var result = await _notificationService.GetAll(paginationParameters);
+            var result = await _notificationService.GetAll(getReq, paginationParameters);
             return StatusCode((int)result.StatusCode, result);
         }
 

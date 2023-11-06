@@ -1,6 +1,7 @@
 ﻿using MK.Application.Repository;
 using MK.Domain.Common;
 using MK.Domain.Dto.Request.Kitchen;
+using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Customer;
 using MK.Infrastructure.Common;
 using System;
@@ -129,7 +130,7 @@ namespace MK.Service.Service
             }
         }
 
-        public async Task<PagingResponse<KitchenRes>> GetAll(PagingParameters pagingParam = null, string[] fields = null)
+        public async Task<PagingResponse<KitchenRes>> GetAll(GetKitchenReq getReq, PagingParameters pagingParam = null)
         {
             try
             {
@@ -172,7 +173,11 @@ namespace MK.Service.Service
                                     .Include(t => t.Trays)
                                     .Include(t => t.Meals),
                     PagingParams = pagingParam ??= new PagingParameters(),
-                    OrderByFields = fields
+                    OrderByFields = getReq?.OrderBy,
+                    Filter = t => (getReq.KeySearch == null
+                                        || t.No.ToString() == getReq.KeySearch
+                                        || t.Id.ToString() == getReq.KeySearch)
+                                    && (t.CreatedDate.Date >= getReq.FromDate && t.CreatedDate <= getReq.ToDate)
                 };
 
                 var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
