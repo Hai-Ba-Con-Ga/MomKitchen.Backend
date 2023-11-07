@@ -45,9 +45,9 @@ namespace MK.Service.Service
                     PagingParams = pagingParam ??= new PagingParameters(),
                     Filter = t => (req.KeySearch == null
                                         || t.No.ToString() == req.KeySearch
-                                        || t.User.FullName.ToString().Contains(req.KeySearch)
-                                        || t.User.Phone.ToString().Contains(req.KeySearch)
-                                        || t.User.Email.ToString().Contains(req.KeySearch))
+                                        || t.User.FullName.Contains(req.KeySearch)
+                                        || t.User.Phone.Contains(req.KeySearch)
+                                        || t.User.Email.Contains(req.KeySearch))
                                 && (t.CreatedDate.Date >= req.FromDate && t.CreatedDate <= req.ToDate)
                 };
                 var customer = await _unitOfWork.Customer.GetWithPagination(queryHelper);

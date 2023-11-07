@@ -175,9 +175,9 @@ namespace MK.Service.Service
                     PagingParams = pagingParam ??= new PagingParameters(),
                     OrderByFields = getReq?.OrderBy,
                     Filter = t => (getReq.KeySearch == null
-                                        || t.No.ToString() == getReq.KeySearch)
-                                        || t.Name.ToString().Contains(getReq.KeySearch)
-                                        || t.Address.ToString().Contains(getReq.KeySearch)
+                                        || t.No.ToString() == getReq.KeySearch
+                                        || t.Name.Contains(getReq.KeySearch)
+                                        || t.Address.Contains(getReq.KeySearch))
                                     && (t.CreatedDate.Date >= getReq.FromDate && t.CreatedDate <= getReq.ToDate)
                 };
 
