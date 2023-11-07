@@ -12,7 +12,7 @@ namespace MK.Domain.Common
         public string KeySearch { get; set; } = null;
         public string[] OrderBy { get; set; } = null;
 
-        private DateTime _fromDate = DateTime.Now.AddDays(-30);
+        private DateTime _fromDate = DateTime.MinValue;
         public DateTime? FromDate
         {
             get
@@ -21,7 +21,7 @@ namespace MK.Domain.Common
             }
             set
             {
-                _fromDate = value ?? DateTime.Now.AddDays(-30);
+                _fromDate = value ?? DateTime.MaxValue;
             }
         }
 
