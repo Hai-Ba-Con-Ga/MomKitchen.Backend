@@ -118,15 +118,30 @@ namespace MK.Application.Service
             {
                 var query = new QueryHelper<User>()
                 {
-                    Include = t => t.Include(i => i.Role),
+                    Include = t => t.Include(i => i.Role)
+                                    .Include(i => i.Customer)
+                                    .Include(i => i.Kitchen),
+
                 };
+
                 User user = await _unitOfWork.User.GetById(id, query, false);
                 if (user is null)
                 {
                     return NotFound<UserRes>("User not found");
                 }
+
                 UserRes userResponse = _mapper.Map<UserRes>(user);
                 userResponse.Role = user.Role;
+
+                if (user.Customer != null)
+                {
+                    userResponse.CustomerId = user.Customer.Id;
+                }
+                else if (user.Kitchen != null)
+                {
+                    userResponse.KitchenId = user.Kitchen.Id;
+                }
+
                 return Success(userResponse);
 
 

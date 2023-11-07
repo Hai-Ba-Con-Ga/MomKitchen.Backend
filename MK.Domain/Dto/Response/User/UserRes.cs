@@ -1,4 +1,5 @@
-﻿using MK.Domain.Entity;
+﻿using MK.Domain.Dto.Response.Customer;
+using MK.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,5 +34,8 @@ namespace MK.Domain.Dto.Response.User
                 return _roleName;
             }
         }
+
+        public Guid? CustomerId { get; set; } = null;
+        public Guid? KitchenId { get; set; } = null;
     }
 }
