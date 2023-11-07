@@ -63,6 +63,7 @@ namespace MK.Service.Service
                 kitchen.Address = req.Address ?? kitchen.Address;
                 kitchen.Status = req.Status ?? kitchen.Status;
                 kitchen.Location.Lat = req.Location?.Lat ?? kitchen.Location.Lat;
+                kitchen.Location.Lng = req.Location?.Lng ?? kitchen.Location.Lng;
 
                 var updateResult = await _unitOfWork.Kitchen.UpdateAsync(kitchen, isSaveChange: true);
 
