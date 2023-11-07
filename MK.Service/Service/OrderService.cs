@@ -1,4 +1,5 @@
-﻿using MK.Domain.Dto.Request.Notification;
+﻿using MK.Application.Cache;
+using MK.Domain.Dto.Request.Notification;
 using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Order;
 using MK.Domain.Enum;
@@ -14,7 +15,8 @@ namespace MK.Service.Service
     {
         private readonly INotificationService _notificationService;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService) : base(unitOfWork, mapper)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, ICacheManager cacheManager,
+            INotificationService notificationService) : base(unitOfWork, mapper, cacheManager)
         {
             _notificationService = notificationService;
         }

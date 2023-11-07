@@ -43,7 +43,7 @@ namespace MK.Infrastructure.Cache
             {
                 string rawGetReult = await _redisCache.StringGetAsync(key);
 
-                if (rawGetReult != null)
+                if (rawGetReult == null)
                     return (true, default(T));
 
                 var getResult = JsonSerializer.Deserialize<T>(rawGetReult, _serializerOptions);
@@ -69,12 +69,6 @@ namespace MK.Infrastructure.Cache
 
         public async Task SetAsync<T>(string key, T value, TimeSpan? absoluteExpTime = null, TimeSpan? unusedExpTime = null)
         {
-            //var option = new DistributedCacheEntryOptions
-            //{
-            //    AbsoluteExpirationRelativeToNow = absoluteExpTime ?? AppConfig.CacheConfig.AbsoluteExpTime,
-            //    SlidingExpiration = unusedExpTime ?? AppConfig.CacheConfig.UnusedExpTime
-            //};
-
             try
             {
                 var rawData = JsonSerializer.Serialize(value, _serializerOptions);

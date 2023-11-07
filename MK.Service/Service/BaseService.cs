@@ -1,5 +1,6 @@
 ﻿using Autofac.Diagnostics;
 using Microsoft.EntityFrameworkCore.Update;
+using MK.Application.Cache;
 using MK.Application.Repository;
 using MK.Domain.Common;
 using System;
@@ -15,9 +16,19 @@ namespace MK.Service.Service
     {
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
+        protected readonly ICacheManager _cacheManager;
 
         protected BaseService(IUnitOfWork unitOfWork,
-         IMapper mapper)
+         IMapper mapper,
+         ICacheManager cacheManager)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _cacheManager = cacheManager;
+        }
+
+        protected BaseService(IUnitOfWork unitOfWork,
+        IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

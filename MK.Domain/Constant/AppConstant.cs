@@ -9,5 +9,8 @@ namespace MK.Domain.Constant
     public class AppConstant
     {
         public const string COOKIE_NAME = "access_token";
+        
+        public static string CacheKey_KitchenPage1 = "KitchenPage1";
     }
+
 }

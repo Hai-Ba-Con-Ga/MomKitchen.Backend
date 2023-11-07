@@ -1,8 +1,11 @@
-﻿using MK.Application.Repository;
+﻿using MK.Application.Cache;
+using MK.Application.Repository;
 using MK.Domain.Common;
+using MK.Domain.Constant;
 using MK.Domain.Dto.Request.Kitchen;
 using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Customer;
+using MK.Infrastructure.Cache;
 using MK.Infrastructure.Common;
 using System;
 using System.Collections.Generic;
@@ -14,7 +17,7 @@ namespace MK.Service.Service
 {
     public class KitchenService : BaseService, IKitchenService
     {
-        public KitchenService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public KitchenService(IUnitOfWork unitOfWork, IMapper mapper, ICacheManager cacheManager) : base(unitOfWork, mapper, cacheManager)
         {
         }
 
@@ -25,6 +28,8 @@ namespace MK.Service.Service
                 var newKitchen = _mapper.Map<Kitchen>(req);
 
                 var crateReult = await _unitOfWork.Kitchen.CreateAsync(newKitchen, isSaveChange: true);
+
+                await _cacheManager.RemoveAsync(AppConstant.CacheKey_KitchenPage1);
 
                 return Success(crateReult);
             }
@@ -40,6 +45,7 @@ namespace MK.Service.Service
             {
                 var deleteResult = await _unitOfWork.Kitchen.SoftDeleteAsync(t => t.Id == kitchenId);
 
+                await _cacheManager.RemoveAsync(AppConstant.CacheKey_KitchenPage1);
                 return Success(deleteResult > 0);
             }
             catch (Exception ex)
@@ -66,6 +72,8 @@ namespace MK.Service.Service
                 kitchen.Location.Lng = req.Location?.Lng ?? kitchen.Location.Lng;
 
                 var updateResult = await _unitOfWork.Kitchen.UpdateAsync(kitchen, isSaveChange: true);
+
+                await _cacheManager.RemoveAsync(AppConstant.CacheKey_KitchenPage1);
 
                 return Success(updateResult > 0);
             }
@@ -135,6 +143,15 @@ namespace MK.Service.Service
         {
             try
             {
+                if (pagingParam.PageNumber == 1)
+                {
+                    var (result, kitchenCache) = await _cacheManager.GetAsync<PagedList<KitchenRes>>(AppConstant.CacheKey_KitchenPage1);
+                    if (kitchenCache != null)
+                    {
+                        return Success(kitchenCache);
+                    }
+                }
+
                 var queryHelper = new QueryHelper<Kitchen, KitchenRes>()
                 {
                     Selector = t => new KitchenRes
@@ -184,6 +201,10 @@ namespace MK.Service.Service
 
                 var kitchen = await _unitOfWork.Kitchen.GetWithPagination(queryHelper);
 
+                if (pagingParam.PageNumber == 1)
+                {
+                    await _cacheManager.SetAsync(AppConstant.CacheKey_KitchenPage1, kitchen);
+                }
 
                 return Success(kitchen);
             }

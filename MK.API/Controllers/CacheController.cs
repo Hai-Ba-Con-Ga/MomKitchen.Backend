@@ -36,5 +36,14 @@ namespace MK.API.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Remove(string key)
+        {
+            await _cacheManager.RemoveAsync(key);
+
+            return Ok();
+        }
+
     }
 }
