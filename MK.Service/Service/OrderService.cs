@@ -50,6 +50,12 @@ namespace MK.Service.Service
         {
             try
             {
+                getOrderReq.OrderBy ??= new string[] { };
+                if (!getOrderReq.OrderBy.Contains("CreatedDate:desc"))
+                {
+                    getOrderReq.OrderBy = getOrderReq.OrderBy.Append("CreatedDate:desc").ToArray();
+                }
+
                 var queryHelper = new QueryHelper<Order, OrderDetailRes>()
                 {
                     PagingParams = pagingParam ??= new PagingParameters(),

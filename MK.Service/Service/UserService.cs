@@ -20,21 +20,25 @@ namespace MK.Application.Service
         {
             try
             {
+                //1. Check role id
                 var queryRole = new QueryHelper<Role>()
                 {
                     Filter = x => x.Name.Equals(userRequest.RoleName),
                 };
+
                 var role = (await _unitOfWork.Role.Get(queryRole)).FirstOrDefault();
                 if (role is null)
                 {
                     return BadRequest<UserRes>("Invalid role");
                 }
 
+                //2. Check token
                 if (userRequest.Email is null && userRequest.Phone is null)
                 {
                     return BadRequest<UserRes>("Invalid token");
                 }
 
+                //3/ Check user exists
                 var query = new QueryHelper<User>()
                 {
                     Filter = x => (x.Email == userRequest.Email || x.Phone == userRequest.Phone),
@@ -47,6 +51,8 @@ namespace MK.Application.Service
                     return BadRequest<UserRes>("User already exists");
                 }
 
+                //Create user
+                await _unitOfWork.BeginTransactionAsync();
                 user = new User()
                 {
                     Email = userRequest.Email,
@@ -57,11 +63,30 @@ namespace MK.Application.Service
                     FcmToken = new List<string>() { userRequest.FcmToken },
                     RoleId = role.Id,
                 };
+
                 var userId = await _unitOfWork.User.CreateAsync(user, true);
                 if (userId == Guid.Empty)
                 {
                     return BadRequest<UserRes>("Create user failed");
                 }
+
+                if (role.Name == "Customer")
+                {
+                    var customerId = await _unitOfWork.Customer.CreateAsync(new Customer()
+                    {
+                        UserId = userId,
+                    }, true);
+
+                    if (customerId == Guid.Empty)
+                    {
+                        await _unitOfWork.RolebackTransactionAsync();
+                        return BadRequest<UserRes>("Create customer failed");
+                    }
+
+                }
+
+                await _unitOfWork.CommitTransactionAsync();
+
                 var userResponse = _mapper.Map<UserRes>(user);
                 userResponse.Role = role;
 
