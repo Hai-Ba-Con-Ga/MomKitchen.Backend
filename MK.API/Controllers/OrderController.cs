@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using MK.Domain.Dto.Request.Order;
 using MK.Domain.Dto.Response.Order;
 using MK.Domain.Entity;
+using MK.MessageQueue.Service;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace MK.API.Controllers
 {
@@ -58,11 +61,17 @@ namespace MK.API.Controllers
             return StatusCode((int)orderDetail.StatusCode, orderDetail);
         }
 
-        //[HttpGet]
-        //public Task<IActionResult> OrderExport(ExportOrderReq req)
-        //{
-        //    //return Ok(null);
-        //}
+        [HttpGet("xlsx")]
+        public async Task<IActionResult> OrderExport([FromQuery]ExportOrderReq req)
+        {
+            string json = JsonConvert.SerializeObject(req, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+            Producer.ProduceMessage("order-export", json);
+
+            return Ok(true);
+        }
 
         [HttpPut]
         public async Task<IActionResult> UpdateOrderStatus(UpdateOrderStatusReq req)
@@ -70,7 +79,5 @@ namespace MK.API.Controllers
             var result = await _orderService.UpdateOrderStatus(req);
             return StatusCode((int)result.StatusCode, result);
         }
-
-
     }
 }
