@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using MK.Application.Cache;
+using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -7,7 +8,8 @@ namespace MK.Infrastructure.Cache
 {
     public class CacheManager : ICacheManager
     {
-        //config json serialize entity
+        private readonly IDatabase _redisCache;
+
         private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = null,
@@ -15,39 +17,50 @@ namespace MK.Infrastructure.Cache
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        private IDistributedCache _distributedCache;
-
-
-        public CacheManager(IDistributedCache cache)
+        public CacheManager()
         {
-            _distributedCache = cache;
+            _redisCache = InitConnection();
+        }
+
+        private IDatabase InitConnection()
+        {
+            try
+            {
+                var configuration = ConfigurationOptions.Parse(AppConfig.CacheConfig.RedisConnectionString);
+                var redisConnection = ConnectionMultiplexer.Connect(configuration);
+                return redisConnection.GetDatabase();
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.GetBaseException();
+                throw new Exception("Can not create redis connection: " + errorMessage);
+            }
         }
 
         public async Task<(bool, T?)> GetAsync<T>(string key)
         {
             try
             {
-                var rawGetReult = await _distributedCache.GetAsync(key);
+                string rawGetReult = await _redisCache.StringGetAsync(key);
 
                 if (rawGetReult != null)
-                {
-                    var getResult = JsonSerializer.Deserialize<T>(rawGetReult, _serializerOptions);
+                    return (true, default(T));
 
-                    return (true, getResult);
-                }
+                var getResult = JsonSerializer.Deserialize<T>(rawGetReult, _serializerOptions);
+
+                return (true, getResult);
             }
             catch (Exception)
             {
+                return (false, default(T));
             }
-
-            return (false, default(T));
         }
 
         public async Task RemoveAsync(string key)
         {
             try
             {
-                await _distributedCache.RemoveAsync(key);
+                await _redisCache.KeyDeleteAsync(key);
             }
             catch (Exception)
             {
@@ -56,20 +69,83 @@ namespace MK.Infrastructure.Cache
 
         public async Task SetAsync<T>(string key, T value, TimeSpan? absoluteExpTime = null, TimeSpan? unusedExpTime = null)
         {
-            var option = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = absoluteExpTime ?? AppConfig.CacheConfig.AbsoluteExpTime,
-                SlidingExpiration = unusedExpTime ?? AppConfig.CacheConfig.UnusedExpTime
-            };
+            //var option = new DistributedCacheEntryOptions
+            //{
+            //    AbsoluteExpirationRelativeToNow = absoluteExpTime ?? AppConfig.CacheConfig.AbsoluteExpTime,
+            //    SlidingExpiration = unusedExpTime ?? AppConfig.CacheConfig.UnusedExpTime
+            //};
 
             try
             {
-                var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value, _serializerOptions));
-                await _distributedCache.SetAsync(key, bytes, option);
+                var rawData = JsonSerializer.Serialize(value, _serializerOptions);
+                await _redisCache.StringSetAsync(key, rawData, AppConfig.CacheConfig.AbsoluteExpTime);
             }
             catch (Exception)
             {
             }
         }
+
+
+        #region Disable
+        //config json serialize entity
+
+
+        //private IDistributedCache _distributedCache;
+
+
+        //public CacheManager(IDistributedCache cache)
+        //{
+        //    _distributedCache = cache;
+        //}
+
+        //public async Task<(bool, T?)> GetAsync<T>(string key)
+        //{
+        //    try
+        //    {
+        //        var rawGetReult = await _distributedCache.GetAsync(key);
+
+        //        if (rawGetReult != null)
+        //        {
+        //            var getResult = JsonSerializer.Deserialize<T>(rawGetReult, _serializerOptions);
+
+        //            return (true, getResult);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+
+        //    return (false, default(T));
+        //}
+
+        //public async Task RemoveAsync(string key)
+        //{
+        //    try
+        //    {
+        //        await _distributedCache.RemoveAsync(key);
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+        //}
+
+        //public async Task SetAsync<T>(string key, T value, TimeSpan? absoluteExpTime = null, TimeSpan? unusedExpTime = null)
+        //{
+        //    var option = new DistributedCacheEntryOptions
+        //    {
+        //        AbsoluteExpirationRelativeToNow = absoluteExpTime ?? AppConfig.CacheConfig.AbsoluteExpTime,
+        //        SlidingExpiration = unusedExpTime ?? AppConfig.CacheConfig.UnusedExpTime
+        //    };
+
+        //    try
+        //    {
+        //        var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value, _serializerOptions));
+        //        await _distributedCache.SetAsync(key, bytes, option);
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+        //}
+        #endregion Disable
     }
 }
