@@ -16,7 +16,7 @@ namespace MK.Domain.Dto.Response
         public string Description { get; set; } = null!;
         public string ImgUrl { get; set; } = null!;
         public decimal Price { get; set; }
-        public ICollection<DishRes>? Dishies {get;set;}
+        // public IEnumerable<DishRes>? Dishies {get;set;}
         public IEnumerable<DishRes>? Dishes {get;set; }
     }
 }
