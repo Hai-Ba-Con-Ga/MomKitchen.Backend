@@ -21,11 +21,11 @@ namespace MK.Domain.Common
             }
             set
             {
-                _fromDate = value ?? DateTime.MaxValue;
+                _fromDate = value ??  DateTime.MinValue;
             }
         }
 
-        private DateTime _toDate = DateTime.Now;
+        private DateTime _toDate = DateTime.MaxValue;
         public DateTime? ToDate 
         { 
             get
@@ -34,7 +34,7 @@ namespace MK.Domain.Common
             }
             set
             {
-                _toDate = value ?? DateTime.Now;
+                _toDate = value ?? DateTime.MaxValue;
             }
         }
     }
