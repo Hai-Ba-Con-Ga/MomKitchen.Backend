@@ -146,7 +146,7 @@ namespace MK.Service.Service
                 if (pagingParam.PageNumber == 1)
                 {
                     var (result, kitchenRes) = await _cacheManager.GetAsync<PagingResponse<KitchenRes>>(AppConstant.CacheKey_KitchenPage1);
-                    if (kitchenRes != null)
+                    if (kitchenRes?.Data != null || (kitchenRes?.Data?.Count() > 0))
                     {
                         return kitchenRes;
                     }

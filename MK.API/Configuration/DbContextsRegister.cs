@@ -31,37 +31,37 @@ namespace MK.API.Configuration
             builder.RegisterType<ApplicationDbContext>().As<DbContext>().InstancePerLifetimeScope();
         }
         //seed data
-        public static async Task SeedData(this IServiceCollection services)
-        {
-            using var scope = services.BuildServiceProvider().CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            await context.Database.MigrateAsync();
-            if (!context.Roles.Any())
-            {
-                List<Role> roles = new List<Role>(
-                    new Role[]
-                    {
-                        new Role
-                        {
-                            Name = "Admin",
+        //public static async Task SeedData(this IServiceCollection services)
+        //{
+        //    using var scope = services.BuildServiceProvider().CreateScope();
+        //    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        //    await context.Database.MigrateAsync();
+        //    if (!context.Roles.Any())
+        //    {
+        //        List<Role> roles = new List<Role>(
+        //            new Role[]
+        //            {
+        //                new Role
+        //                {
+        //                    Name = "Admin",
 
-                        },
-                        new Role
-                        {
-                            Name = "Customer",
-                        },
-                        new Role
-                        {
-                            Name = "Kitchen",
-                        },
-                    }
+        //                },
+        //                new Role
+        //                {
+        //                    Name = "Customer",
+        //                },
+        //                new Role
+        //                {
+        //                    Name = "Kitchen",
+        //                },
+        //            }
 
-                    );
-                await context.Roles.AddRangeAsync(roles);
-                await context.SaveChangesAsync();
+        //            );
+        //        await context.Roles.AddRangeAsync(roles);
+        //        await context.SaveChangesAsync();
 
-            }
-        }
+        //    }
+        //}
 
     }
 }

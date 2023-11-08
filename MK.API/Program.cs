@@ -106,7 +106,7 @@ public class Program
 
         app.ConfigureExceptionHandler(app.Environment.IsDevelopment());
 
-        builder.Services.SeedData().GetAwaiter().GetResult();
+        //builder.Services.SeedData().GetAwaiter().GetResult();
 
         app.UseCors("AllowAll");
 
