@@ -145,10 +145,10 @@ namespace MK.Service.Service
             {
                 if (pagingParam.PageNumber == 1)
                 {
-                    var (result, kitchenCache) = await _cacheManager.GetAsync<PagedList<KitchenRes>>(AppConstant.CacheKey_KitchenPage1);
-                    if (kitchenCache != null)
+                    var (result, kitchenRes) = await _cacheManager.GetAsync<PagingResponse<KitchenRes>>(AppConstant.CacheKey_KitchenPage1);
+                    if (kitchenRes != null)
                     {
-                        return Success(kitchenCache);
+                        return kitchenRes;
                     }
                 }
 
@@ -203,7 +203,7 @@ namespace MK.Service.Service
 
                 if (pagingParam.PageNumber == 1)
                 {
-                    await _cacheManager.SetAsync(AppConstant.CacheKey_KitchenPage1, kitchen);
+                    await _cacheManager.SetAsync(AppConstant.CacheKey_KitchenPage1, Success(kitchen));
                 }
 
                 return Success(kitchen);
