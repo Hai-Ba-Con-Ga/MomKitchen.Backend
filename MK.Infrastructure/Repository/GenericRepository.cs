@@ -186,7 +186,7 @@ namespace MK.Infrastructure.Repository
                                     .Select(t => t.Id)
                                     .FirstOrDefaultAsync();
 
-            return entity != null;
+            return entity != null && entity != Guid.Empty;
         }
         #endregion Retrieve
 

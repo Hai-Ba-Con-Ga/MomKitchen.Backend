@@ -188,7 +188,7 @@ namespace MK.Service.Service
             try
             {
                 if (!await _unitOfWork.Order.IsExist(t => t.Id == req.OrderId))
-                    throw new ArgumentException("Order not found");
+                    return BadRequest<bool>("Order not found");
 
                 var order = await _unitOfWork.Order.GetById(req.OrderId, isAsNoTracking: false);
 
